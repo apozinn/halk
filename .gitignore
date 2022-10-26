@@ -1,3 +1,13 @@
 client/node_modules
+client/concept
+client/.expo
+client/.expo-shared
+client/package-lock.json
+
 server/node_modules
 server/.env
+server/dist
+server/.swp
+server/.prettierrc
+server/package-lock.json
+server/.eslintrc.js
