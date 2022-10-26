@@ -22,7 +22,7 @@ import Modal from "react-native-modal";
 import { Userpic } from "react-native-userpic";
 
 class MessagesContainer extends Component {
-  private scrollViewRef = createRef();
+  private scrollViewRef = null;
 
   constructor(props) {
     super(props);
@@ -51,7 +51,7 @@ class MessagesContainer extends Component {
   isVisible = () => this.state.visible;
 
   ModalMessage() {
-    if (!this.state.messageModal) return <></>;
+    if (!this.state.messageModal) return;
     return (
       <Modal
         testID={"ModalMessage"}
@@ -166,21 +166,17 @@ class MessagesContainer extends Component {
     return (
       <ScrollView
         style={styles.messageContainer}
-        ref={this.scrollViewRef}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        onContentSizeChange={() =>
-          this.scrollViewRef.current.scrollToEnd({ animated: true })
-        }
       >
         {this.ModalMessage()}
         {this.chat.messages.map((message, index) => {
           const itsMyMessage =
             message.author.id === this.user.id ? true : false;
-          let content = this.chat.key
-            ? Decipher(message.content, this.chat.key)
-            : "Nova mensagem";
           const messageTime = new Date(message.createdAt).toLocaleTimeString();
+
+          let content = Decipher(message.content, this.chat.id);
+          if (!content) content = "Falha na descriptografia";
 
           let previousMessageIsMy =
             this.chat.messages[index - 1]?.author.id === message.author.id;

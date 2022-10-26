@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Modal, Platform } from "react-native";
 import { TextInput, Text } from "./Themed";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { getColors } from "../../constants/Colors";
@@ -35,7 +35,7 @@ export default function SearchChat({ navigation }) {
               </TouchableOpacity>
               <TextInput
                 placeholder="Pesquisar"
-                style={[styles.input, { backgroundColor: colors.scale1 }]}
+                style={[styles.input, { backgroundColor: "blue" }]}
               />
             </View>
             <TouchableOpacity onPress={() => {}}>
@@ -69,7 +69,7 @@ export default function SearchChat({ navigation }) {
 const styles = StyleSheet.create({
   container: {},
   inputContainer: {
-    height: 40,
+    height: Platform.OS === 'android' || Platform.OS === "ios" ? 43 : 40,
     alignItems: "center",
     padding: 10,
     flexDirection: "row",
@@ -79,5 +79,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     padding: 5,
     borderRadius: 10,
+    width: "85%",
   },
 });

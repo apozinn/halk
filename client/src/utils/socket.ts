@@ -2,6 +2,14 @@ import io from "socket.io-client";
 import * as uuid from "uuid";
 import { Cipher, Decipher } from "../../middleware/crypto";
 
+export const readMessages = ({ chats, updateChats, chat }) => {
+  chats
+    .filter((c) => c.id === chat.id)
+    .map((c) => c.messages)
+    .map((m) => console.log(m));
+  updateChats({ chats });
+};
+
 export class SocketController {
   constructor(props) {
     this.user = props.user;
@@ -16,8 +24,8 @@ export class SocketController {
   public loadEvents() {
     this.socket.on("receiveMessage", (msg) => {
       const chat = this.chats.filter((c) => c.id === msg.chat.id)[0];
-
       if (chat) {
+        if (chat.messages.some((m) => m.id === msg.id)) return;
         this.chats
           .filter((c) => c.id === msg.chat.id)
           .map((c) => c.messages.push(msg));
@@ -31,27 +39,19 @@ export class SocketController {
     });
 
     this.socket.on("readMessage", (payload) => {
-      const chat = this.chats.filter((c) => c.id === payload.chat.id)[0];
-      if (chat) {
-        chat.messages
-          .filter((m) => m.read === false)
-          .map((m) => (m.read = true));
-        this.updateChats({ chats: this.chats });
-      }
+      this.chats
+        .filter((c) => c.id === payload.chat)
+        .map((c) => {
+          c.messages.filter((m) => !m.read).map((m) => (m.read = true));
+        });
+      this.updateChats({ chats: this.chats });
     });
   }
 
-  static joinedChat({chats, chat, socket}) {
+  static joinedChat({ chats, updateChats, chat, socket }) {
     socket.emit("joinRoom", { room: chat.id, otherUser: chat.user.id });
     socket.emit("verifyIfUserIsOnline", { userId: chat.user.id });
-    socket.on("readMessage", (p) => {
-      chats
-        .filter((c) => c.id === chat.id)
-        .map((c) => {
-          c.messages.map((m) => m.read === true);
-        });
-      updateChats({ chats });
-    });
+    socket.emit("readMessage", { chat: chat.id, otherUser: chat.user.id });
   }
 
   static sendMessage({ user, chats, updateChats, chat, socket, text }) {
@@ -59,12 +59,11 @@ export class SocketController {
     const message = {
       chat: {
         id: chat.id,
-        key: chat.key,
       },
       author: user,
-      read: false,
       createdAt: timeNow,
-      content: Cipher(text, chat.key),
+      read: false,
+      content: Cipher(text, chat.id),
       id: `${timeNow}${Math.floor(
         Math.random() * (100000000 - 1000000 + 1) + 1000000
       )}`,
@@ -76,7 +75,6 @@ export class SocketController {
         toUser: chat.user.id,
         message,
         newChat: true,
-        key: chat.key,
       });
       const thisChat = chats.filter((c) => c.id === chat.id)[0];
       delete thisChat.newChat;
@@ -89,31 +87,39 @@ export class SocketController {
       });
     }
 
-    chats.filter((c) => c.id === chat.id).map((c) => c.messages.push(message));
+    chats
+      .filter((c) => c.id === chat.id)
+      .map((c) => {
+        c.messages.push(message);
+        c.messages
+          .filter((m) => m.author.id === chat.user.id)
+          .map((m) => (m.read = true));
+      });
     updateChats({ chats });
   }
 
-  static sendHalkMessage() {
+  static getHalkChat() {
     const timeNow = new Date().getTime();
-    const halkUser = {
-      id: "0",
-      phone: "+00",
+    const chatId = uuid.v4();
+
+    const user = {
+      id: uuid.v4(),
+      phone: "",
       profile: {
         name: "Halk",
-        username: "Halk",
-        avatar: require("../../assets/images/icon.png"),
+        username: "Halk team",
+        avatar: "https://imgur.com/YPIViUK.png",
         bio: "Official account of the team Halk",
       },
     };
 
-    const halkChat = {
-      id: "a384b2bc-1a3b-49d3-bdf5-1be72350c494",
-      user: halkUser,
-      key: "0000",
+    const chat = {
+      id: chatId,
+      user,
       messages: [
         {
-          author: halkUser,
-          content: "Welcome to halk!",
+          author: user,
+          content: Cipher("Welcome to Halk!", chatId),
           createdAt: timeNow,
           id: `${timeNow}${Math.floor(
             Math.random() * (100000000 - 1000000 + 1) + 1000000
@@ -123,12 +129,13 @@ export class SocketController {
       ],
     };
 
-    return halkChat;
+    return chat;
   }
 }
 
 export function CreateSocketConnection({ userId }) {
-  const socket = io("http://localhost:3000", {
+  if (!userId) return;
+  const socket = io("http://localhost:3000/", {
     transports: ["websocket"],
     auth: {
       userId,

@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Image, StatusBar, StyleSheet, View } from "react-native";
 import { RootStackScreenProps } from "../../types";
-import * as RNLocalize from "react-native-localize";
 import CountryPicker, {
   getCallingCode,
 } from "react-native-country-picker-modal";
 import { Text, TextInput } from "../../src/components/Themed";
 import VerifyPhoneFormat from "../../src/components/verifyPhoneFormat";
 import { AsYouType } from "libphonenumber-js";
+import * as Localization from 'expo-localization';
 
 export default function Register({
   navigation,
 }: RootStackScreenProps<"Register">) {
   const [phone, setPhone] = useState<any>("");
   const [callingCode, setCallingCode] = useState<any>("");
-  const [country, setCountry] = useState<any>(RNLocalize.getCountry());
+  const [country, setCountry] = useState<any>(Localization.locale);
 
   useEffect(() => {
     getCallingCode(country).then((c) => {

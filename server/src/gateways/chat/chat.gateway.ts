@@ -104,6 +104,14 @@ export class ChatGateway
     this.server.to(payload.room).emit('userTyping', payload);
   }
 
+  @SubscribeMessage('readMessage')
+  readMessage(client: Socket, payload: any) {
+    if(!payload.otherUser) return;
+    this.server
+      .to(payload.otherUser)
+      .emit('readMessage', { chat: payload.chat, user: payload.otherUser });
+  }
+
   afterInit(server: Server) {
     this.logger.log('Init');
   }

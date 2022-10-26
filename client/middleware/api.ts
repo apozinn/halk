@@ -61,8 +61,10 @@ export const verifyUsername = async (username) => {
 };
 
 export const createProfile = async (user) => {
-  const uploadAvatar = await uploadImage(user.profile.avatar);
-  user.profile.avatar = uploadAvatar;
+  if(user.profile.avatar) {
+    const uploadAvatar = await uploadImage(user.profile.avatar);
+    user.profile.avatar = uploadAvatar;
+  };
 
   return fetch(`${api_link}/register/createUser`, {
     ...POST_PARAMS,

@@ -19,6 +19,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       ReceiveCode: 'receiveCode',
       CreateProfile: 'createProfile',
       Chat: 'chat',
+      Camera: 'camera',
       NewChat: 'newChat',
       Profile: 'profile',
       Settings: 'settings',

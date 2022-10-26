@@ -82,6 +82,13 @@ let ChatGateway = class ChatGateway {
     userTyping(client, payload) {
         this.server.to(payload.room).emit('userTyping', payload);
     }
+    readMessage(client, payload) {
+        if (!payload.otherUser)
+            return;
+        this.server
+            .to(payload.otherUser)
+            .emit('readMessage', { chat: payload.chat, user: payload.otherUser });
+    }
     afterInit(server) {
         this.logger.log('Init');
     }
@@ -151,6 +158,12 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", void 0)
 ], ChatGateway.prototype, "userTyping", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('readMessage'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", void 0)
+], ChatGateway.prototype, "readMessage", null);
 ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)()
 ], ChatGateway);

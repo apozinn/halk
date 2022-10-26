@@ -65,3 +65,10 @@
     usuario nao aparece online [-]
   }
 }
+
+[ geral: definir status, conta, perfil, privacidade/segurança ]
+[ aplicativo: conversas, idioma, armazenamento, notificação, aparencia ]
+[ suporte/etc:  suporte, creditos ]
+[ updates: novidades ]
+[ conta: sair, mudar de conta ]
+[ dev: codigo fonte, licenças, debug logs, clientInfo, apiInfo ]

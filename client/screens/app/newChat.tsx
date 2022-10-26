@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { View, StyleSheet, ScrollView, Pressable, Image } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable, Image, StatusBar } from "react-native";
 import { RootStackScreenProps } from "../../types";
 import { ChatsContext } from "../../src/contexts/chats";
 import { UserContext } from "../../src/contexts/user";
@@ -137,6 +137,7 @@ export default function NewChat({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: StatusBar.currentHeight,
   },
   inputContainer: {
     flexDirection: "row",

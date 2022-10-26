@@ -51,13 +51,13 @@ class Chat extends Component {
 
   executeAction(key, props) {
     try {
-      if(key === "removeChat") {
+      if (key === "removeChat") {
         const chats = this.chats.filter((c) => c.id !== props.id);
-        if(chats) {
+        if (chats) {
           this.updateChats({ chats });
         }
       }
-    } catch(err) {
+    } catch (err) {
       console.log(err.message);
     }
   }
@@ -146,7 +146,10 @@ class Chat extends Component {
                     Config. de notificação
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.modalLink} onPress={() => this.executeAction("removeChat", this.chat)}>
+                <TouchableOpacity
+                  style={styles.modalLink}
+                  onPress={() => this.executeAction("removeChat", this.chat)}
+                >
                   <MaterialIcons
                     name="delete"
                     size={26}
@@ -181,8 +184,13 @@ class Chat extends Component {
   render() {
     const lastMessage = this.chat.messages[this.chat.messages.length - 1];
     if (!lastMessage) return null;
-    const unredMessages = this.chat.messages.filter((m) => m.read === false);
+    const unredMessages = this.chat.messages.filter(
+      (m) => m.read === false && m.author.id !== this.user.id
+    );
     const messageTime = new Date(lastMessage.createdAt).toLocaleTimeString();
+
+    let content = Decipher(lastMessage.content, this.chat.id);
+    if (!content) content = "Falha na descriptografia";
 
     if (this.socket) {
       this.socket.emit("verifyIfUserIsOnline", { userId: this.chat.user.id });
@@ -191,11 +199,6 @@ class Chat extends Component {
         (callback) => (this.state.isOnline = callback)
       );
     }
-
-    let content = this.chat.key
-      ? Decipher(lastMessage.content, this.chat.key)
-      : "Nova mensagem";
-
 
     return (
       <TouchableOpacity

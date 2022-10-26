@@ -1,8 +1,9 @@
 {
   "expo": {
     "name": "Halk",
-    "slug": "Halk",
+    "slug": "halk-message-app",
     "version": "0.1.0",
+    "owner": "apozinxr",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "Halk",
@@ -42,6 +43,11 @@
           "photosPermission": "The app accesses your photos to get your icon."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "305b36d1-5f3a-47bf-a826-cbe8acb748e1"
+      }
+    }
   }
 }

@@ -27,6 +27,7 @@ import { getColors } from "../../constants/Colors";
 import { Cipher, Decipher } from "../../middleware/crypto";
 import { Userpic } from "react-native-userpic";
 import MessagesContainer from "../../src/components/messagesContainer";
+import BottomContent from "../../src/components/bottomContent";
 
 const badgeProps = {
   size: 25,
@@ -56,7 +57,7 @@ export default function Chat({ navigation, route }) {
       var thisChat = chats.filter((c) => c.id === chatId)[0];
       if (thisChat) {
         setChat(thisChat);
-      } else setChat(new SocketController.sendHalkMessage());
+      } else navigation.goBack();
     } else navigation.goBack();
 
     socket.on("receiveMessage", (msg) => {
@@ -68,45 +69,10 @@ export default function Chat({ navigation, route }) {
 
   useEffect(() => {
     if (chat && socket) {
-      new SocketController.joinedChat({ chats, chat, socket });
+      new SocketController.joinedChat({ chats, updateChats, chat, socket });
       socket.on("receiveIfUserIsOnline", (callback) => setOnline(callback));
     }
   }, [chat]);
-
-  useEffect(() => {
-    if (!socket || !chat) return;
-    if (text.length === 0) {
-      socket.emit("userTyping", {
-        room: chat.id,
-        typing: false,
-        userId: user.id,
-      });
-    } else {
-      socket.emit("userTyping", {
-        room: chat.id,
-        typing: true,
-        userId: user.id,
-      });
-    }
-
-    socket.on("userTyping", (t) => {
-      if (t.userId === user.id) return;
-      setUserTyping(t.typing);
-    });
-  }, [text]);
-
-  function sendMessage() {
-    if (!text) return;
-    new SocketController.sendMessage({
-      user,
-      chats,
-      updateChats,
-      chat,
-      socket,
-      text,
-    });
-    setText("");
-  }
 
   return (
     <View style={styles.container}>
@@ -181,53 +147,7 @@ export default function Chat({ navigation, route }) {
           </View>
 
           <MessagesContainer {...{ user, chats, updateChats, chat, colors }} />
-
-          <View
-            style={[
-              styles.bottomContainer,
-              { backgroundColor: colors.defaultColors.card },
-            ]}
-          >
-            <View style={styles.buttonContentLeft}>
-              <TouchableOpacity style={styles.blueButton} onPress={() => {}}>
-                <Fontisto name="camera" size={20} color="white" />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.inputMessage}
-                placeholder="Mensagem..."
-                value={text}
-                onChangeText={(value) => setText(value)}
-                onSubmitEditing={() => sendMessage()}
-                maxLength={4100}
-              />
-            </View>
-
-            {text ? (
-              <TouchableOpacity
-                style={styles.blueButton}
-                onPress={() => sendMessage()}
-              >
-                <FontAwesome name="send" size={24} color="white" />
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.othersMedias}>
-                <TouchableOpacity onPress={() => {}}>
-                  <Ionicons
-                    name="ios-add-circle-outline"
-                    size={26}
-                    color={colors.tint}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity style={{ marginLeft: 8 }} onPress={() => {}}>
-                  <MaterialIcons
-                    name="keyboard-voice"
-                    size={26}
-                    color={colors.tint}
-                  />
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
+          <BottomContent {...{ chat }} />
         </>
       )}
     </View>

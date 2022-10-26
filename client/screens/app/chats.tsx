@@ -25,6 +25,11 @@ export default function Chats({ navigation }) {
       updateChats,
       socket,
     });
+
+    if (!chats.length) {
+      chats.push(new SocketController.getHalkChat());
+      updateChats({ chats });
+    }
   }, []);
 
   return (
@@ -37,29 +42,20 @@ export default function Chats({ navigation }) {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         >
-          {!chats.length ? (
+          {chats.map((chat, index) => (
             <ChatContainer
-              chat={new SocketController.sendHalkMessage()}
-              {...{ user, chats, navigation, socket, colors }}
+              {...{
+                user,
+                chats,
+                updateChats,
+                chat,
+                navigation,
+                socket,
+                colors,
+              }}
+              key={index}
             />
-          ) : (
-            <>
-              {chats.map((chat, index) => (
-                <ChatContainer
-                  {...{
-                    user,
-                    chats,
-                    updateChats,
-                    chat,
-                    navigation,
-                    socket,
-                    colors,
-                  }}
-                  key={index}
-                />
-              ))}
-            </>
-          )}
+          ))}
         </ScrollView>
       )}
       <NewChatButton navigation={navigation} />

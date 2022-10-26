@@ -13,7 +13,7 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useState } from "react";
-import { ColorSchemeName, Pressable, View } from "react-native";
+import { ColorSchemeName, Pressable, View, Platform } from "react-native";
 
 import Colors, { getColors } from "../constants/Colors";
 import useColorScheme from "../src/hooks/useColorScheme";
@@ -38,6 +38,7 @@ import ProfileScreen from "../screens/chat/profile";
 import NewChatScreen from "../screens/app/newChat";
 
 import SettingsScreen from "../screens/Menu/settings";
+import CameraScreen from "../screens/app/camera";
 
 import NotFoundScreen from "../screens/NotFoundScreen";
 
@@ -107,6 +108,11 @@ function RootNavigator() {
         component={NewChatScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="Camera"
+        component={CameraScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Group>
@@ -144,11 +150,12 @@ function BottomTabNavigator() {
             <Ionicons name="chatbox-ellipses" size={24} color={color} />
           ),
           headerStyle: {
-            height: 40,
+            height:
+              Platform.OS === "android" || Platform.OS === "ios" ? 60 : 40,
           },
           headerLeft: () => (
             <Pressable
-              onPress={() => {}}
+              onPress={() => navigation.navigate("Camera")}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
                 marginLeft: 5,

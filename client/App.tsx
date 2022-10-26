@@ -8,10 +8,12 @@ import { ChatsProvider } from "./src/contexts/chats";
 import { SocketProvider } from "./src/contexts/socket";
 import ErrorBoundary from "./screens/errorBoundary";
 import { CreateSocketConnection } from "./src/utils/socket";
+import { getColors } from './constants/Colors';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
+  const colors = getColors();
 
   if (!isLoadingComplete) {
     return null;
@@ -20,7 +22,7 @@ export default function App() {
       <UserProvider>
         <ChatsProvider>
           <SafeAreaProvider>
-            <ErrorBoundary>
+            <ErrorBoundary {...{colors}}>
               <SocketProvider>
                 <Navigation colorScheme={colorScheme} />
                 <StatusBar />

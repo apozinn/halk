@@ -68,7 +68,7 @@ export default function CreateProfile({
         <Pressable style={styles.iconContainer} onPress={() => SelectIcon()}>
           <Image
             source={
-              avatar ? avatar : require("../../assets/images/userIcon.png")
+              avatar ? avatar : {uri: "https://imgur.com/4yEDQPW.png"}
             }
             style={styles.userIcon}
           />
