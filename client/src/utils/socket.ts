@@ -108,7 +108,7 @@ export class SocketController {
       profile: {
         name: "Halk",
         username: "Halk team",
-        avatar: "https://imgur.com/YPIViUK.png",
+        avatar: "https://i.imgur.com/Xc979YU.png",
         bio: "Official account of the team Halk",
       },
     };

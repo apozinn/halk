@@ -99,7 +99,7 @@ class Chat extends Component {
                 ]}
               >
                 <Userpic
-                  size={40}
+                  size={50}
                   name={this.chat.user.profile.name}
                   source={{ uri: this.chat.user.profile.avatar }}
                   colorize={true}
@@ -110,7 +110,7 @@ class Chat extends Component {
                   badgeProps={this.badgeProps}
                   style={{ marginRight: 10 }}
                 />
-                <Text style={{ fontWeight: "bold" }}>
+                <Text style={{ fontWeight: "bold", fontSize: 15 }}>
                   {this.chat.user.profile.name}
                 </Text>
               </View>
@@ -213,7 +213,7 @@ class Chat extends Component {
         <>{this.ModalChat()}</>
         <View style={{ flexDirection: "row" }}>
           <Userpic
-            size={40}
+            size={50}
             name={this.chat.user.profile.name}
             source={{ uri: this.chat.user.profile.avatar }}
             colorize={true}
@@ -225,7 +225,7 @@ class Chat extends Component {
             style={{ marginRight: 10 }}
           />
           <View style={{ justifyContent: "center" }}>
-            <Text style={{ fontWeight: "bold" }}>
+            <Text style={{ fontWeight: "bold", fontSize: 15 }}>
               {this.chat.user.profile.name}
             </Text>
             {lastMessage.author.id === this.user.id ? (

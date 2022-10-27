@@ -32,12 +32,9 @@
   features: {
     userProfile [=]
     config. de notificação [-]
-    status [-]
-    chamadas [-]
-    menu [-] {
-      config. geral [-]
-      config. conversa [-]
-    }
+    status [=]
+    chamadas [=]
+    menu [=] 
     grupos [-]
     ligação de voz [-]
     ligação  de video [-]
@@ -50,25 +47,15 @@
     excluir mensagem
   }
   screens: {
-    tres pontos [-]
     ponto no icone na tabBar [-]
-    searchChat [-]
-    excluir chat [-]
     fixar conversa [-]
     marcar como lida [-]
     bloquear usuario [-]
     denunciar usuario [-]
     copiar id da conversa [-]
-    open camara [-]
+    open camara [=]
   }
   correções: {
     usuario nao aparece online [-]
   }
 }
-
-[ geral: definir status, conta, perfil, privacidade/segurança ]
-[ aplicativo: conversas, idioma, armazenamento, notificação, aparencia ]
-[ suporte/etc:  suporte, creditos ]
-[ updates: novidades ]
-[ conta: sair, mudar de conta ]
-[ dev: codigo fonte, licenças, debug logs, clientInfo, apiInfo ]

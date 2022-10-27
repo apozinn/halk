@@ -13,8 +13,19 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useState } from "react";
-import { ColorSchemeName, Pressable, View, Platform } from "react-native";
-
+import {
+  ColorSchemeName,
+  Pressable,
+  View,
+  Platform,
+  Button,
+} from "react-native";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
 import Colors, { getColors } from "../constants/Colors";
 import useColorScheme from "../src/hooks/useColorScheme";
 import {
@@ -23,6 +34,7 @@ import {
   RootTabScreenProps,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
+import { Text } from "../src/components/Themed";
 
 import ChatsScreen from "../screens/app/chats";
 import StatusScreen from "../screens/app/status";
@@ -126,6 +138,21 @@ function BottomTabNavigator() {
   const colorScheme = useColorScheme();
   const colors = getColors();
   const [searchChatVisibility, setSearchChatVisibility] = useState(false);
+  const [chatSearch, setChatSearch] = useState("");
+
+  const optionsStyles = {
+    optionsContainer: {
+      backgroundColor: colors.defaultColors.card,
+      padding: 5,
+      top: 0,
+    },
+  };
+  const optionStyles = {
+    optionText: {
+      color: colors.text,
+      fontSize: 15,
+    },
+  };
 
   return (
     <BottomTab.Navigator
@@ -180,7 +207,42 @@ function BottomTabNavigator() {
                   opacity: pressed ? 0.5 : 1,
                 })}
               >
-                <Feather name="more-vertical" size={22} color={colors.tint} />
+                <Menu>
+                  <MenuTrigger>
+                    <Feather
+                      name="more-vertical"
+                      size={22}
+                      color={colors.tint}
+                    />
+                  </MenuTrigger>
+                  <MenuOptions customStyles={optionsStyles}>
+                    <MenuOption
+                      onSelect={() => alert(`Save`)}
+                      text="Novo chat"
+                      customStyles={optionStyles}
+                    />
+                    <MenuOption
+                      onSelect={() => alert(`Save`)}
+                      text="Novo Grupo"
+                      customStyles={optionStyles}
+                    />
+                    <MenuOption
+                      onSelect={() => alert(`Save`)}
+                      text="Mensagens fixadas"
+                      customStyles={optionStyles}
+                    />
+                    <MenuOption
+                      onSelect={() => alert(`Save`)}
+                      text="Editar perfil"
+                      customStyles={optionStyles}
+                    />
+                    <MenuOption
+                      onSelect={() => alert(`Save`)}
+                      text="Configurações"
+                      customStyles={optionStyles}
+                    />
+                  </MenuOptions>
+                </Menu>
               </Pressable>
             </View>
           ),

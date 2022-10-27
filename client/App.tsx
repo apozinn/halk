@@ -8,7 +8,8 @@ import { ChatsProvider } from "./src/contexts/chats";
 import { SocketProvider } from "./src/contexts/socket";
 import ErrorBoundary from "./screens/errorBoundary";
 import { CreateSocketConnection } from "./src/utils/socket";
-import { getColors } from './constants/Colors';
+import { getColors } from "./constants/Colors";
+import { MenuProvider } from "react-native-popup-menu";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -22,10 +23,12 @@ export default function App() {
       <UserProvider>
         <ChatsProvider>
           <SafeAreaProvider>
-            <ErrorBoundary {...{colors}}>
+            <ErrorBoundary {...{ colors }}>
               <SocketProvider>
-                <Navigation colorScheme={colorScheme} />
-                <StatusBar />
+                <MenuProvider>
+                  <Navigation colorScheme={colorScheme} />
+                  <StatusBar />
+                </MenuProvider>
               </SocketProvider>
             </ErrorBoundary>
           </SafeAreaProvider>

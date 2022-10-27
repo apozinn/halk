@@ -44,7 +44,6 @@ export default function StatusAvatar({ navigation, stts, stories }) {
                 fill="none"
                 stroke={i[1] == 0 ? "#007dff" : "#b7b7b7"}
                 strokeWidth={2}
-                transform={{ rotation: rot, originX: 35, originY: 35 }}
               />
             </Svg>
           </View>
