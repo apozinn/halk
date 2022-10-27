@@ -12,7 +12,9 @@ import {
   DarkTheme,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { UserContext } from '../src/contexts/user';
+import { ChatsContext } from '../src/contexts/chats';
 import {
   ColorSchemeName,
   Pressable,
@@ -135,6 +137,9 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
+  const { user } = useContext(UserContext);
+  const { chats } = useContext(ChatsContext);
+
   const colorScheme = useColorScheme();
   const colors = getColors();
   const [searchChatVisibility, setSearchChatVisibility] = useState(false);
@@ -154,6 +159,8 @@ function BottomTabNavigator() {
     },
   };
 
+  const unreadChats = chats.filter((chat) => chat.messages.some(m => m.read === false)).length;
+
   return (
     <BottomTab.Navigator
       initialRouteName="Chats"
@@ -167,6 +174,7 @@ function BottomTabNavigator() {
         component={ChatsScreen}
         options={({ navigation }: RootTabScreenProps<"Chats">) => ({
           title: "Chats",
+          tabBarBadge: unreadChats,
           headerTitleStyle: {
             fontSize: 15,
             fontWeight: "bold",

@@ -11,3 +11,5 @@ server/.swp
 server/.prettierrc
 server/package-lock.json
 server/.eslintrc.js
+
+.gitignore
