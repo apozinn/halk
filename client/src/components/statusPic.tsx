@@ -35,7 +35,7 @@ export default function StatusAvatar({ navigation, stts, stories }) {
       await stories.map((i, index) => {
         arr.push(
           <View
-            style={{ position: "absolute", rotate: `${rot}deg` }}
+            style={{ position: "absolute", rotate: `${rot}deg`, top: -10, left: -10 }}
             key={index}
           >
             <Svg width="70" height="70">
@@ -66,7 +66,7 @@ export default function StatusAvatar({ navigation, stts, stories }) {
         source={{ uri: stts.author.profile.avatar }}
         colorize={true}
         borderRadius="50%"
-        style={{ marginLeft: 10, marginTop: 10 }}
+        style={{}}
       />
     
   </View>);

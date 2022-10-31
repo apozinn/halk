@@ -23,6 +23,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       NewChat: 'newChat',
       Profile: 'profile',
       Settings: 'settings',
+      StatusSettings: 'statusSettings',
       NotFound: '*',
     },
   },

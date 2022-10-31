@@ -38,11 +38,14 @@ import {
 import LinkingConfiguration from "./LinkingConfiguration";
 import { Text } from "../src/components/Themed";
 
+//app
 import ChatsScreen from "../screens/app/chats";
 import StatusScreen from "../screens/app/status";
 import CallsScreen from "../screens/app/Calls";
 import MenuScreen from "../screens/Menu/menu";
+import CameraScreen from "../screens/app/camera";
 
+//register
 import RegisterScreen from "../screens/register/register";
 import WelcomeScreen from "../screens/register/welcome";
 import ReceiveCodeScreen from "../screens/register/receiveCode";
@@ -51,11 +54,12 @@ import ChatScreen from "../screens/chat/chat";
 import ProfileScreen from "../screens/chat/profile";
 import NewChatScreen from "../screens/app/newChat";
 
+
+//settings
 import SettingsScreen from "../screens/Menu/settings";
-import CameraScreen from "../screens/app/camera";
+import StatusSettingsScreen from '../screens/settings/statusSettings';
 
 import NotFoundScreen from "../screens/NotFoundScreen";
-
 import SearchChat from "../src/components/searchChat";
 
 export default function Navigation({
@@ -126,6 +130,11 @@ function RootNavigator() {
         name="Camera"
         component={CameraScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="StatusSettings"
+        component={StatusSettingsScreen}
+        options={{ title: "Status Settings"}}
       />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Settings" component={SettingsScreen} />

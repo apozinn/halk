@@ -4,7 +4,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 export default function ConfigStatusButton({ navigation }) {
 	return (
-		<TouchableOpacity style={styles.button} onPress={() => {}}>
+		<TouchableOpacity style={styles.button} onPress={() => navigation.navigate("StatusSettings")}>
 			<AntDesign name="setting" size={25} color="white" />
 		</TouchableOpacity>
 	);

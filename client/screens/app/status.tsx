@@ -41,14 +41,6 @@ export default function Status({ navigation }: RootTabScreenProps<"Status">) {
           },
           stories: [
             [1, 0],
-            [7, 0],
-            [9, 0],
-            [1, 0],
-            [7, 0],
-            [9, 0],
-            [1, 0],
-            [7, 0],
-            [9, 0],
           ],
         },
       ]);
@@ -133,7 +125,7 @@ export default function Status({ navigation }: RootTabScreenProps<"Status">) {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <ConfigStatusButton />
+      <ConfigStatusButton {...{navigation}} />
     </View>
   );
 }
@@ -150,7 +142,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   statusContainer: {
-    marginTop: 10,
+    padding: 10,
+    marginTop: 5,
   },
   rowContainer: {
     flexDirection: "row",

@@ -44,6 +44,7 @@
     "react-native-device-info": "^10.2.0",
     "react-native-localize": "^2.2.4",
     "react-native-modal": "^13.0.1",
+    "react-native-paper": "^4.12.5",
     "react-native-popup-menu": "^0.16.1",
     "react-native-restart": "^0.0.24",
     "react-native-safe-area-context": "4.3.1",

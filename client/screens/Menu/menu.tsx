@@ -137,7 +137,7 @@ export default function Menu({ navigation }: RootTabScreenProps<"Menu">) {
             { borderTopWidth: 1, borderTopColor: colors.defaultColors.border },
           ]}
         >
-          <Text style={styles.sectionTitle}>developer</Text>
+          <Text style={styles.sectionTitle}>Suporte</Text>
 
           <TouchableOpacity style={styles.link}>
             <MaterialIcons name="help" size={25} color={colors.tint} />
@@ -186,7 +186,7 @@ export default function Menu({ navigation }: RootTabScreenProps<"Menu">) {
             { borderTopWidth: 1, borderTopColor: colors.defaultColors.border },
           ]}
         >
-          <Text style={styles.sectionTitle}>Suporte</Text>
+          <Text style={styles.sectionTitle}>Developer</Text>
           <TouchableOpacity style={styles.link}>
             <FontAwesome5 name="dev" size={25} color={colors.tint} />
             <Text style={styles.linkTitle}>Código fonte</Text>
