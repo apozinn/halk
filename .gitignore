@@ -1,5 +1,4 @@
 client/node_modules
-client/concept
 client/.expo
 client/.expo-shared
 client/package-lock.json
@@ -13,3 +12,4 @@ server/package-lock.json
 server/.eslintrc.js
 
 .gitignore
+concept
