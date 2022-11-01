@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, StatusBar, StyleSheet, View } from "react-native";
+import { Image, StatusBar, StyleSheet, View, Platform } from "react-native";
 import { RootStackScreenProps } from "../../types";
 import CountryPicker, {
   getCallingCode,
@@ -7,20 +7,20 @@ import CountryPicker, {
 import { Text, TextInput } from "../../src/components/Themed";
 import VerifyPhoneFormat from "../../src/components/verifyPhoneFormat";
 import { AsYouType } from "libphonenumber-js";
-import * as Localization from 'expo-localization';
+import * as Localization from "expo-localization";
 
 export default function Register({
   navigation,
 }: RootStackScreenProps<"Register">) {
   const [phone, setPhone] = useState<any>("");
   const [callingCode, setCallingCode] = useState<any>("");
-  const [country, setCountry] = useState<any>(Localization.locale);
+  const [country, setCountry] = useState<any>(Localization.region ?? "US");
 
   useEffect(() => {
-    getCallingCode(country).then((c) => {
-      setCallingCode("+" + c);
-    });
-  }, []);
+    if (country) {
+      getCallingCode(country).then((c) => setCallingCode("+" + c));
+    }
+  }, [country]);
 
   return (
     <View style={styles.container}>

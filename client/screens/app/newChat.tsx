@@ -7,7 +7,7 @@ import { TextInput, Text } from "../../src/components/Themed";
 import { AntDesign } from "@expo/vector-icons";
 import { getColors } from "../../constants/Colors";
 import { searchUser } from "../../middleware/api";
-import * as uuid from "uuid";
+import uuid from 'react-native-uuid';
 import { Userpic } from "react-native-userpic";
 
 export default function NewChat({

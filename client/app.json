@@ -6,7 +6,7 @@
     "owner": "apozinxr",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "Halk",
+    "scheme": "halk",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",

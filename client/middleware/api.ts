@@ -1,5 +1,5 @@
 import ImgurClient from "imgur";
-const api_link = "http://localhost:3000";
+const api_link = "18.207.126.157:3000";
 
 const POST_PARAMS = {
   method: "POST",

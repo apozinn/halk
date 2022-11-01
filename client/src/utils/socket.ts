@@ -1,12 +1,11 @@
 import io from "socket.io-client";
-import * as uuid from "uuid";
-import { Cipher, Decipher } from "../../middleware/crypto";
+import uuid from 'react-native-uuid';
 
 export const readMessages = ({ chats, updateChats, chat }) => {
   chats
     .filter((c) => c.id === chat.id)
     .map((c) => c.messages)
-    .map((m) => console.log(m));
+    .map((m) => m.read = true);
   updateChats({ chats });
 };
 
@@ -22,6 +21,7 @@ export class SocketController {
   }
 
   public loadEvents() {
+    if(!this.socket.on) return;
     this.socket.on("receiveMessage", (msg) => {
       const chat = this.chats.filter((c) => c.id === msg.chat.id)[0];
       if (chat) {
@@ -63,7 +63,7 @@ export class SocketController {
       author: user,
       createdAt: timeNow,
       read: false,
-      content: Cipher(text, chat.id),
+      content: text,
       id: `${timeNow}${Math.floor(
         Math.random() * (100000000 - 1000000 + 1) + 1000000
       )}`,
@@ -119,7 +119,7 @@ export class SocketController {
       messages: [
         {
           author: user,
-          content: Cipher("Welcome to Halk!", chatId),
+          content: "Welcome to halk!",
           createdAt: timeNow,
           id: `${timeNow}${Math.floor(
             Math.random() * (100000000 - 1000000 + 1) + 1000000
@@ -135,7 +135,7 @@ export class SocketController {
 
 export function CreateSocketConnection({ userId }) {
   if (!userId) return;
-  const socket = io("http://localhost:3000/", {
+  const socket = io("18.207.126.157:3000/", {
     transports: ["websocket"],
     auth: {
       userId,

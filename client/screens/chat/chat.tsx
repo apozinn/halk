@@ -24,7 +24,6 @@ import { ChatsContext } from "../../src/contexts/chats";
 import { SocketContext } from "../../src/contexts/socket";
 import { SocketController } from "../../src/utils/socket";
 import { getColors } from "../../constants/Colors";
-import { Cipher, Decipher } from "../../middleware/crypto";
 import { Userpic } from "react-native-userpic";
 import MessagesContainer from "../../src/components/messagesContainer";
 import BottomContent from "../../src/components/bottomContent";

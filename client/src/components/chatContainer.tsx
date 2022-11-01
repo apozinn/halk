@@ -3,7 +3,6 @@ import { StyleSheet, TouchableOpacity, View, ScrollView } from "react-native";
 import { Text } from "./Themed";
 import { Userpic } from "react-native-userpic";
 import CreateSocketConnectio from "../utils/socket";
-import { Cipher, Decipher } from "../../middleware/crypto";
 import {
   Ionicons,
   FontAwesome,
@@ -57,9 +56,7 @@ class Chat extends Component {
           this.updateChats({ chats });
         }
       }
-    } catch (err) {
-      console.log(err.message);
-    }
+    } catch (err) {}
   }
 
   ModalChat() {
@@ -188,10 +185,6 @@ class Chat extends Component {
       (m) => m.read === false && m.author.id !== this.user.id
     );
     const messageTime = new Date(lastMessage.createdAt).toLocaleTimeString();
-
-    let content = Decipher(lastMessage.content, this.chat.id);
-    if (!content) content = "Falha na descriptografia";
-
     if (this.socket) {
       this.socket.emit("verifyIfUserIsOnline", { userId: this.chat.user.id });
       this.socket.on(
@@ -237,12 +230,12 @@ class Chat extends Component {
                   style={{ marginRight: 2 }}
                 />
                 <Text style={styles.messageContent}>
-                  {content.length > 28 ? content.slice(0, 28) + "..." : content}
+                  {lastMessage.content.length > 28 ? lastMessage.content.slice(0, 28) + "..." : lastMessage.content}
                 </Text>
               </View>
             ) : (
               <Text>
-                {content.length > 30 ? content.slice(0, 30) + "..." : content}
+                {lastMessage.content.length > 30 ? lastMessage.content.slice(0, 30) + "..." : lastMessage.content}
               </Text>
             )}
           </View>

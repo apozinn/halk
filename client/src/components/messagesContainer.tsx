@@ -16,7 +16,6 @@ import {
   Fontisto,
   Entypo,
 } from "@expo/vector-icons";
-import { Cipher, Decipher } from "../../middleware/crypto";
 import { Text } from "./Themed";
 import Modal from "react-native-modal";
 import { Userpic } from "react-native-userpic";
@@ -175,9 +174,6 @@ class MessagesContainer extends Component {
             message.author.id === this.user.id ? true : false;
           const messageTime = new Date(message.createdAt).toLocaleTimeString();
 
-          let content = Decipher(message.content, this.chat.id);
-          if (!content) content = "Falha na descriptografia";
-
           let previousMessageIsMy =
             this.chat.messages[index - 1]?.author.id === message.author.id;
           let nextMessageIsMy =
@@ -229,7 +225,7 @@ class MessagesContainer extends Component {
                   onLongPress={() => {
                     this.setState({
                       messageModal: message,
-                      messageModalContent: content,
+                      messageModalContent: message.content,
                     });
                     this.open();
                   }}
@@ -242,7 +238,7 @@ class MessagesContainer extends Component {
                         : this.colors.defaultColors.text,
                     }}
                   >
-                    {content}
+                    {message.content}
                   </Text>
                 </Pressable>
                 <View

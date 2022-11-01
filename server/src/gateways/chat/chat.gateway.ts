@@ -9,7 +9,6 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import * as uuid from 'uuid';
-import { Cipher, Decipher } from '../../../middleware/crypto';
 
 @WebSocketGateway()
 export class ChatGateway
@@ -63,15 +62,6 @@ export class ChatGateway
         key: payload.key,
       };
 
-      if (payload.key) {
-        payload.message.content = Decipher(
-          payload.message.content,
-          payload.key,
-        );
-      } else {
-        payload.message.content = 'Falha na descriptografia';
-      }
-
       newChat.messages.push(payload.message);
 
       if (this.connectedUsers?.some((u) => u.userId === userId)) {
@@ -106,7 +96,7 @@ export class ChatGateway
 
   @SubscribeMessage('readMessage')
   readMessage(client: Socket, payload: any) {
-    if(!payload.otherUser) return;
+    if (!payload.otherUser) return;
     this.server
       .to(payload.otherUser)
       .emit('readMessage', { chat: payload.chat, user: payload.otherUser });
