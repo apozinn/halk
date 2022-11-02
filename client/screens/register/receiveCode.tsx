@@ -11,6 +11,7 @@ import {
 import useColorScheme from "../../src/hooks/useColorScheme";
 import { UserContext } from "../../src/contexts/user";
 import { verifyCode } from "../../middleware/api";
+import { ChatsContext } from '../../src/contexts/chats';
 
 export default function ReceiveCode({
   navigation,
@@ -23,14 +24,28 @@ export default function ReceiveCode({
     setValue,
   });
 
-  const { user } = useContext(UserContext);
+  const { user, updateUser } = useContext(UserContext);
+  const { chats, updateChats } = useContext(ChatsContext);
 
   useEffect(() => {
     if (value.length === 6) {
       verifyCode(user.id, value).then((data) => {
-        if (data.verify) {
-          navigation.navigate("CreateProfile");
-        } else alert("codigo invalido, tente novamente.");
+        if(data.verify) {
+          if(data.existingAccount) {
+          updateUser({
+            user: existingAccount.user,
+            logged: true,
+          });
+          updateChats({chats: data.existingAccount.chats});
+          navigation.navigate("Root");
+        } else navigation.navigate("CreateProfile");
+        }
+        if(data.invalidCode) {
+          alert("Código inválido, tente novamente");
+        }
+        if(data.error) {
+          alert("Houve um erro em nossos servidores, tente novamente mais tarde.");
+        }
       });
     }
   }, [value]);

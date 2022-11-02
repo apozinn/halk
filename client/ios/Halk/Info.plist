@@ -25,7 +25,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>Halk</string>
+          <string>halk</string>
           <string>com.apozin.halk</string>
         </array>
       </dict>

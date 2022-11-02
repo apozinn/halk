@@ -31,6 +31,8 @@ export declare class UserController {
     deleteAccount(req: any): Promise<void>;
     searchUser(req: any): Promise<(import("mongoose").Document<unknown, any, {
         chats: any[];
+        following: any[];
+        status: any[];
         id?: string;
         phone?: string;
         profile?: {
@@ -41,6 +43,8 @@ export declare class UserController {
         };
     }> & {
         chats: any[];
+        following: any[];
+        status: any[];
         id?: string;
         phone?: string;
         profile?: {

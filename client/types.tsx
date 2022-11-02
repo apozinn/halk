@@ -20,6 +20,7 @@ export type RootStackParamList = {
   NewChat: undefined;
   Settings: undefined;
   Camera: undefined;
+  StatusPlayer: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<

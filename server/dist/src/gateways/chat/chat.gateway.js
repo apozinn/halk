@@ -13,7 +13,6 @@ exports.ChatGateway = void 0;
 const common_1 = require("@nestjs/common");
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
-const crypto_1 = require("../../../middleware/crypto");
 let ChatGateway = class ChatGateway {
     constructor() {
         this.logger = new common_1.Logger('ChatGateway');
@@ -44,7 +43,7 @@ let ChatGateway = class ChatGateway {
             this.server.to(payload.room).emit('receiveMessage', payload.message);
         }
         if ((_b = this.connectedUsers) === null || _b === void 0 ? void 0 : _b.some((u) => u.userId === userId)) {
-            (_c = this.bufferMessages) === null || _c === void 0 ? void 0 : _c.push(payload.message);
+            (_c = this.bufferMessages) === null || _c === void 0 ? void 0 : _c.push(payload);
         }
         if (payload.newChat) {
             const newChat = {
@@ -53,12 +52,6 @@ let ChatGateway = class ChatGateway {
                 messages: [],
                 key: payload.key,
             };
-            if (payload.key) {
-                payload.message.content = (0, crypto_1.Decipher)(payload.message.content, payload.key);
-            }
-            else {
-                payload.message.content = 'Falha na descriptografia';
-            }
             newChat.messages.push(payload.message);
             if ((_d = this.connectedUsers) === null || _d === void 0 ? void 0 : _d.some((u) => u.userId === userId)) {
                 this.server.to(userReceive.socketId).emit('newChat', { newChat });
@@ -116,12 +109,10 @@ let ChatGateway = class ChatGateway {
                 }
             });
         }
-        this.logger.log(`Client connected: ${client.id}`);
     }
     handleDisconnect(client) {
         var _a;
         this.connectedUsers = (_a = this.connectedUsers) === null || _a === void 0 ? void 0 : _a.filter((u) => u.socketId !== client.id);
-        this.logger.log(`Client disconnected: ${client.id}`);
     }
 };
 __decorate([

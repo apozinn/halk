@@ -1,11 +1,11 @@
 import io from "socket.io-client";
-import uuid from 'react-native-uuid';
+import uuid from "react-native-uuid";
 
 export const readMessages = ({ chats, updateChats, chat }) => {
   chats
     .filter((c) => c.id === chat.id)
     .map((c) => c.messages)
-    .map((m) => m.read = true);
+    .map((m) => (m.read = true));
   updateChats({ chats });
 };
 
@@ -21,7 +21,7 @@ export class SocketController {
   }
 
   public loadEvents() {
-    if(!this.socket.on) return;
+    if (!this.socket.on) return;
     this.socket.on("receiveMessage", (msg) => {
       const chat = this.chats.filter((c) => c.id === msg.chat.id)[0];
       if (chat) {
@@ -97,50 +97,17 @@ export class SocketController {
       });
     updateChats({ chats });
   }
-
-  static getHalkChat() {
-    const timeNow = new Date().getTime();
-    const chatId = uuid.v4();
-
-    const user = {
-      id: uuid.v4(),
-      phone: "",
-      profile: {
-        name: "Halk",
-        username: "Halk team",
-        avatar: "https://i.imgur.com/Xc979YU.png",
-        bio: "Official account of the team Halk",
-      },
-    };
-
-    const chat = {
-      id: chatId,
-      user,
-      messages: [
-        {
-          author: user,
-          content: "Welcome to halk!",
-          createdAt: timeNow,
-          id: `${timeNow}${Math.floor(
-            Math.random() * (100000000 - 1000000 + 1) + 1000000
-          )}`,
-          read: false,
-        },
-      ],
-    };
-
-    return chat;
-  }
 }
 
 export function CreateSocketConnection({ userId }) {
   if (!userId) return;
-  const socket = io("18.207.126.157:3000/", {
+  const socket = io("http://localhost:3000/", {
     transports: ["websocket"],
     auth: {
       userId,
     },
   });
-
   return socket;
 }
+
+// "18.207.126.157:3000/"

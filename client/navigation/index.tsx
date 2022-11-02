@@ -44,6 +44,7 @@ import StatusScreen from "../screens/app/status";
 import CallsScreen from "../screens/app/Calls";
 import MenuScreen from "../screens/Menu/menu";
 import CameraScreen from "../screens/app/camera";
+import StatusView from "../screens/app/statusView";
 
 //register
 import RegisterScreen from "../screens/register/register";
@@ -129,6 +130,11 @@ function RootNavigator() {
       <Stack.Screen
         name="Camera"
         component={CameraScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="StatusView"
+        component={StatusView}
         options={{ headerShown: false }}
       />
       <Stack.Screen

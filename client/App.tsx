@@ -6,6 +6,7 @@ import Navigation from "./navigation";
 import { UserProvider } from "./src/contexts/user";
 import { ChatsProvider } from "./src/contexts/chats";
 import { SocketProvider } from "./src/contexts/socket";
+import { BufferProvider } from "./src/contexts/buffer";
 import ErrorBoundary from "./screens/errorBoundary";
 import { CreateSocketConnection } from "./src/utils/socket";
 import { getColors } from "./constants/Colors";
@@ -20,20 +21,21 @@ export default function App() {
     return null;
   } else {
     return (
-      <UserProvider>
-        <ChatsProvider>
-          <SafeAreaProvider>
-            <ErrorBoundary {...{ colors }}>
+      <ErrorBoundary {...{ colors }}>
+        <UserProvider>
+          <ChatsProvider>
+            <BufferProvider>
               <SocketProvider>
-                <MenuProvider>
-                  <Navigation colorScheme={colorScheme} />
-                  <StatusBar />
-                </MenuProvider>
+                <SafeAreaProvider>
+                  <MenuProvider>
+                    <Navigation colorScheme={colorScheme} />
+                  </MenuProvider>
+                </SafeAreaProvider>
               </SocketProvider>
-            </ErrorBoundary>
-          </SafeAreaProvider>
-        </ChatsProvider>
-      </UserProvider>
+            </BufferProvider>
+          </ChatsProvider>
+        </UserProvider>
+      </ErrorBoundary>
     );
   }
 }

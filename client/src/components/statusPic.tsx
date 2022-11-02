@@ -3,7 +3,7 @@ import { View, StyleSheet, Image } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 import { Userpic } from "react-native-userpic";
 
-export default function StatusAvatar({ navigation, stts, stories }) {
+export default function StatusAvatar({ navigation, author, stories }) {
   const [pd, setPd] = useState("");
   const [path, setPath] = useState([]);
 
@@ -35,14 +35,19 @@ export default function StatusAvatar({ navigation, stts, stories }) {
       await stories.map((i, index) => {
         arr.push(
           <View
-            style={{ position: "absolute", rotate: `${rot}deg`, top: -10, left: -10 }}
+            style={{
+              position: "absolute",
+              rotate: `${rot}deg`,
+              top: -10,
+              left: -10,
+            }}
             key={index}
           >
             <Svg width="70" height="70">
               <Path
                 d={pd}
                 fill="none"
-                stroke={i[1] == 0 ? "#007dff" : "#b7b7b7"}
+                stroke={!i.view ? "#007dff" : "#b7b7b7"}
                 strokeWidth={2}
               />
             </Svg>
@@ -58,16 +63,17 @@ export default function StatusAvatar({ navigation, stts, stories }) {
     init(stories);
   }, [stories, pd]);
 
-  return (<View style={{ alignItems: 'baseline' }}>
+  return (
+    <View style={{ alignItems: "baseline" }}>
       {path}
       <Userpic
         size={50}
-        name={stts.author.profile.name}
-        source={{ uri: stts.author.profile.avatar }}
+        name={author.profile.name}
+        source={{ uri: author.profile.avatar }}
         colorize={true}
         borderRadius="50%"
         style={{}}
       />
-    
-  </View>);
+    </View>
+  );
 }

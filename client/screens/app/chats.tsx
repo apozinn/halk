@@ -8,6 +8,7 @@ import { getColors } from "../../constants/Colors";
 import { SocketController } from "../../src/utils/socket";
 import NewChatButton from "../../src/components/newChat";
 import ChatContainer from "../../src/components/chatContainer";
+import HalkController from '../../src/utils/halk';
 
 export default function Chats({ navigation }) {
   const { user, logged, updateUser } = useContext(UserContext);
@@ -26,10 +27,9 @@ export default function Chats({ navigation }) {
     });
 
     if (!chats.length) {
-      chats.push(new SocketController.getHalkChat());
+      chats.push(new HalkController().halkChat());
       updateChats({ chats });
     }
-
     if(!logged) return navigation.navigate("Welcome");
   }, []);
 

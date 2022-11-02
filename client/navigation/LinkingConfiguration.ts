@@ -24,6 +24,7 @@ const linking: LinkingOptions<RootStackParamList> = {
       Profile: 'profile',
       Settings: 'settings',
       StatusSettings: 'statusSettings',
+      StatusView: 'statusView',
       NotFound: '*',
     },
   },

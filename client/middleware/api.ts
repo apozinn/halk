@@ -1,5 +1,5 @@
 import ImgurClient from "imgur";
-const api_link = "18.207.126.157:3000";
+const api_link = "http://localhost:3000";
 
 const POST_PARAMS = {
   method: "POST",
@@ -79,6 +79,12 @@ export const searchUser = async (search) => {
     ...POST_PARAMS,
     body: JSON.stringify({ search: search }),
   })
+    .then((res) => res.json())
+    .then((res) => res);
+};
+
+export const getStatus = async(userId) => {
+  return fetch(`${api_link}/status/getStatus/${userId}`)
     .then((res) => res.json())
     .then((res) => res);
 };

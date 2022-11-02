@@ -25,6 +25,8 @@
 import { Schema } from 'mongoose';
 declare const User: import("mongoose").Model<{
     chats: any[];
+    following: any[];
+    status: any[];
     id?: string;
     phone?: string;
     profile?: {
@@ -35,6 +37,8 @@ declare const User: import("mongoose").Model<{
     };
 }, {}, {}, {}, Schema<any, import("mongoose").Model<any, any, any, any, any>, {}, {}, {}, {}, "type", {
     chats: any[];
+    following: any[];
+    status: any[];
     id?: string;
     phone?: string;
     profile?: {

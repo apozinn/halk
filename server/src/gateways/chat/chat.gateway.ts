@@ -51,7 +51,7 @@ export class ChatGateway
     }
 
     if (this.connectedUsers?.some((u) => u.userId === userId)) {
-      this.bufferMessages?.push(payload.message);
+      this.bufferMessages?.push(payload);
     }
 
     if (payload.newChat) {
@@ -134,14 +134,11 @@ export class ChatGateway
           }
         });
     }
-
-    this.logger.log(`Client connected: ${client.id}`);
   }
 
   handleDisconnect(client: Socket) {
     this.connectedUsers = this.connectedUsers?.filter(
       (u) => u.socketId !== client.id,
     );
-    this.logger.log(`Client disconnected: ${client.id}`);
   }
 }

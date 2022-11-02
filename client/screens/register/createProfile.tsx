@@ -14,7 +14,6 @@ export default function CreateProfile({
   const [avatar, setAvatar] = useState("");
   const [bio, setBio] = useState("");
   const [existsUsername, setExistsUsername] = useState(false);
-
   const { user, logged, updateUser } = useContext(UserContext);
 
   function Create() {

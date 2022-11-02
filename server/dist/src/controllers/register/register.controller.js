@@ -61,19 +61,30 @@ let RegisterController = class RegisterController {
             charset: 'numeric',
         });
         const id = (0, uuid_1.v4)();
-        (0, code_1.default)({ id, code });
+        (0, code_1.default)({ id, code, phone });
         const codeSend = await this.sendSms(phone, code);
-        return { phone, code, id, codeSend };
+        return { phone, id, codeSend };
     }
     async verifyCode(req) {
         const id = req.body.id;
         const code = req.body.code;
         const cache = (0, code_1.default)();
-        if (cache.codes.some((c) => c.id === id && c.code === code)) {
-            return { verify: true };
+        const thisCode = cache.codes.filter((c) => c.id === id && c.code === code)[0];
+        if (thisCode) {
+            const existingAccount = await user_1.default.findOne({ phone: thisCode.phone });
+            if (existingAccount) {
+                const user = existingAccount;
+                const chats = existingAccount.chats;
+                delete user.chats;
+                delete user.status;
+                return { user, chats, verify: true };
+            }
+            else {
+                return { verify: true };
+            }
         }
         else
-            return { verify: false };
+            return { invalidCode: true };
     }
 };
 __decorate([

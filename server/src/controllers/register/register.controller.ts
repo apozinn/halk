@@ -6,7 +6,6 @@ import * as twilio from 'twilio';
 import * as dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
 import CodeCache from '../../../middleware/cache/code';
-
 dotenv.config();
 
 @Controller('register')
@@ -58,10 +57,10 @@ export class RegisterController {
       charset: 'numeric',
     });
     const id = uuidv4();
-    CodeCache({ id, code });
+    CodeCache({ id, code, phone });
 
     const codeSend = await this.sendSms(phone, code);
-    return { phone, code, id, codeSend };
+    return { phone, id, codeSend };
   }
 
   @Post('/verifyCode')
@@ -70,9 +69,23 @@ export class RegisterController {
     const code = req.body.code;
 
     const cache = CodeCache();
+    const thisCode = cache.codes.filter(
+      (c) => c.id === id && c.code === code,
+    )[0];
 
-    if (cache.codes.some((c) => c.id === id && c.code === code)) {
-      return { verify: true };
-    } else return { verify: false };
+    if (thisCode) {
+      const existingAccount = await User.findOne({ phone: thisCode.phone });
+      if (existingAccount) {
+        const user = existingAccount;
+        const chats = existingAccount.chats;
+
+        delete user.chats;
+        delete user.status;
+
+        return { user, chats, verify: true };
+      } else {
+        return { verify: true };
+      }
+    } else return { invalidCode: true };
   }
 }

@@ -15,11 +15,49 @@ export declare class RegisterController {
     }>;
     sendCode(req: any): Promise<{
         phone: any;
-        code: string;
         id: string;
         codeSend: boolean;
     }>;
     verifyCode(req: any): Promise<{
+        user: import("mongoose").Document<unknown, any, {
+            chats: any[];
+            following: any[];
+            status: any[];
+            id?: string;
+            phone?: string;
+            profile?: {
+                name?: string;
+                username?: string;
+                avatar?: string;
+                bio?: string;
+            };
+        }> & {
+            chats: any[];
+            following: any[];
+            status: any[];
+            id?: string;
+            phone?: string;
+            profile?: {
+                name?: string;
+                username?: string;
+                avatar?: string;
+                bio?: string;
+            };
+        } & {
+            _id: import("mongoose").Types.ObjectId;
+        };
+        chats: any[];
         verify: boolean;
+        invalidCode?: undefined;
+    } | {
+        verify: boolean;
+        user?: undefined;
+        chats?: undefined;
+        invalidCode?: undefined;
+    } | {
+        invalidCode: boolean;
+        user?: undefined;
+        chats?: undefined;
+        verify?: undefined;
     }>;
 }

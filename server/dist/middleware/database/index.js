@@ -14,10 +14,7 @@ async function Connect() {
     let Connect = mongoose_1.default.connection;
     let url = process.env.DATABASE_URL;
     if (!url)
-        return console.log("Não foi possivel encontrar o link de acesso da sua database.");
-    Connect.on("connected", () => {
-        console.log("Database conectada.");
-    });
+        return console.error("Plese provider a mongoDB url");
     await mongoose_1.default.connect(url, options);
 }
 exports.default = Connect;

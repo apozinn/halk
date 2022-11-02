@@ -15,6 +15,14 @@ import { FontAwesome, Entypo, EvilIcons, Ionicons } from "@expo/vector-icons";
 import { getColors } from "../../constants/Colors";
 import ConfigStatusButton from "../../src/components/configStatusButton";
 import StatusPic from "../../src/components/statusPic";
+import { SocketController } from "../../src/utils/socket";
+import { getStatus } from "../../middleware/api";
+import HalkController from "../../src/utils/halk";
+import { BufferContext } from '../../src/contexts/buffer';
+
+var moment = require("moment");
+var momentDurationFormatSetup = require("moment-duration-format");
+momentDurationFormatSetup(moment);
 
 const badgeProps = {
   size: 50,
@@ -25,28 +33,23 @@ const badgeProps = {
 export default function Status({ navigation }: RootTabScreenProps<"Status">) {
   const { user } = useContext(UserContext);
   const { chats } = useContext(ChatsContext);
+  const { buffer, updateChats } = useContext(BufferContext);
   const [status, setStatus] = useState([]);
   const colors = getColors();
 
   useEffect(() => {
     if (!status.length) {
-      setStatus((current) => [
-        ...current,
-        {
-          author: {
-            profile: {
-              name: "Halk",
-              avatar: "",
-            },
-          },
-          stories: [
-            [1, 0],
-          ],
-        },
-      ]);
+      getStatus(user.id).then((cb) => {
+        if (cb.length) {
+          setStatus((current) => [...current, ...cb]);
+        } else {
+          setStatus((current) => [
+            ...current,
+            ...new HalkController().halkStatus(),
+          ]);
+        }
+      });
     }
-
-    // <Ionicons name="add-outline" size={24} color="black" />
   }, []);
 
   return (
@@ -54,7 +57,7 @@ export default function Status({ navigation }: RootTabScreenProps<"Status">) {
       <View style={styles.userContainer}>
         <TouchableOpacity
           style={styles.rowContainer}
-          onPress={() => console.log("open camera")}
+          onPress={() => {}}
         >
           <Userpic
             size={50}
@@ -78,13 +81,13 @@ export default function Status({ navigation }: RootTabScreenProps<"Status">) {
         <View style={styles.rowContainer}>
           <TouchableOpacity
             style={styles.blueButton}
-            onPress={() => console.log("open camera two")}
+            onPress={() => {}}
           >
             <Entypo name="camera" size={22} color="white" />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.blueButton}
-            onPress={() => console.log("open text")}
+            onPress={() => {}}
           >
             <FontAwesome name="pencil" size={22} color="white" />
           </TouchableOpacity>
@@ -104,28 +107,39 @@ export default function Status({ navigation }: RootTabScreenProps<"Status">) {
           ]}
         />
       </View>
-
       <ScrollView style={styles.statusContainer}>
-        {status.map((stts, index) => (
-          <TouchableOpacity
-            style={styles.statusBlock}
-            key={index}
-            onPress={() => console.log(stts)}
-          >
-            <StatusPic
+        {status.map((stts, index) => {
+          const { author, stories } = stts;
+          let time = moment
+            .duration(stories[stories.length - 1])
+            .format(
+              "h [hora] hh [horas] m [minuto] mm [minutos] s [segundo] ss [segundos]",
+              { trim: "both" }
+            );
+          if (time.includes("segundos")) {
+            time = "Agora mesmo";
+          } else time = `Há ${time}`;
+
+          return (
+            <TouchableOpacity
+              style={styles.statusBlock}
               key={index}
-              {...{ stts, navigation, stories: stts.stories }}
-            />
-            <View style={{ marginLeft: 15 }}>
-              <Text style={{ fontWeight: "bold" }}>
-                {stts.author.profile.name}
-              </Text>
-              <Text style={{ fontSize: 12 }}>agora mesmo</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+              onPress={() =>
+                navigation.navigate("StatusView", { author, stories })
+              }
+            >
+              <StatusPic key={index} {...{ navigation, author, stories }} />
+              <View style={{ marginLeft: 15 }}>
+                <Text style={{ fontWeight: "bold" }}>
+                  {author.profile.name}
+                </Text>
+                <Text style={{ fontSize: 12 }}>{time}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
-      <ConfigStatusButton {...{navigation}} />
+      <ConfigStatusButton {...{ navigation }} />
     </View>
   );
 }
