@@ -24,7 +24,7 @@ export default class HalkController {
 		const timeNow = new Date().getTime();
 
 		const chat = {
-			id: generateRandomId(),
+			id: this.generateRandomId(),
 			user: this.halkUser,
 			messages: [
 				{
@@ -50,6 +50,12 @@ export default class HalkController {
 						createdAt: timeNow,
 						type: "text",
 						content: "Welcome to Halk app!",
+					},
+					{
+						id: this.generateRandomId(),
+						createdAt: timeNow,
+						type: "text",
+						content: "A open source app!",
 					},
 				],
 			},

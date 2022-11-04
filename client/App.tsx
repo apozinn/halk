@@ -11,6 +11,7 @@ import ErrorBoundary from "./screens/errorBoundary";
 import { CreateSocketConnection } from "./src/utils/socket";
 import { getColors } from "./constants/Colors";
 import { MenuProvider } from "react-native-popup-menu";
+import { SettingsProvider } from "./src/contexts/settings";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -25,13 +26,15 @@ export default function App() {
         <UserProvider>
           <ChatsProvider>
             <BufferProvider>
-              <SocketProvider>
-                <SafeAreaProvider>
-                  <MenuProvider>
-                    <Navigation colorScheme={colorScheme} />
-                  </MenuProvider>
-                </SafeAreaProvider>
-              </SocketProvider>
+              <SettingsProvider>
+                <SocketProvider>
+                  <SafeAreaProvider>
+                    <MenuProvider>
+                      <Navigation colorScheme={colorScheme} />
+                    </MenuProvider>
+                  </SafeAreaProvider>
+                </SocketProvider>
+              </SettingsProvider>
             </BufferProvider>
           </ChatsProvider>
         </UserProvider>

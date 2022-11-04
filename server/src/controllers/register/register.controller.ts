@@ -58,7 +58,6 @@ export class RegisterController {
     });
     const id = uuidv4();
     CodeCache({ id, code, phone });
-
     const codeSend = await this.sendSms(phone, code);
     return { phone, id, codeSend };
   }
@@ -67,7 +66,6 @@ export class RegisterController {
   async verifyCode(@Req() req) {
     const id = req.body.id;
     const code = req.body.code;
-
     const cache = CodeCache();
     const thisCode = cache.codes.filter(
       (c) => c.id === id && c.code === code,
@@ -78,11 +76,11 @@ export class RegisterController {
       if (existingAccount) {
         const user = existingAccount;
         const chats = existingAccount.chats;
-
         delete user.chats;
         delete user.status;
-
-        return { user, chats, verify: true };
+        delete user._id;
+        delete user.__v;
+        return { user, chats, verify: true, existingAccount: true };
       } else {
         return { verify: true };
       }

@@ -187,6 +187,6 @@ const styles = StyleSheet.create({
   statusBlock: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5,
+    marginBottom: 20,
   },
 });

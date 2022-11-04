@@ -3,6 +3,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface UserInterface {
   logged: boolean;
+  newUser: {
+    completedTour: Array;
+    isNew: boolean;
+  };
   user: {
     id: string;
     phone: string;
@@ -22,15 +26,23 @@ export const UserProvider = ({ children }: any) => {
   const [loads, setLoads] = useState(0);
 
   const updateUser = (newUser: any) => {
-    setUser({
-      logged: newUser.logged,
-      user: newUser.user,
-      updateUser: updateUser,
+    AsyncStorage.getItem("user").then((data: any) => {
+      var dt = JSON.parse(data);
+      setUser({
+        logged: newUser.logged ? newUser.logged : dt.logged,
+        newUser: newUser.newUser ? newUser.newUser : dt.newUser,
+        user: newUser.user ? newUser.user : dt.user,
+        updateUser,
+      })
     });
   };
 
   const initialValue: UserInterface = {
     logged: false,
+    newUser: {
+      completedTour: [],
+      isNew: true,
+    },
     user: {
       id: "",
       phone: "",

@@ -77,7 +77,9 @@ let RegisterController = class RegisterController {
                 const chats = existingAccount.chats;
                 delete user.chats;
                 delete user.status;
-                return { user, chats, verify: true };
+                delete user._id;
+                delete user.__v;
+                return { user, chats, verify: true, existingAccount: true };
             }
             else {
                 return { verify: true };

@@ -33,10 +33,10 @@ export default function ReceiveCode({
         if(data.verify) {
           if(data.existingAccount) {
           updateUser({
-            user: existingAccount.user,
+            user: data.user,
             logged: true,
           });
-          updateChats({chats: data.existingAccount.chats});
+          updateChats({chats: data.chats});
           navigation.navigate("Root");
         } else navigation.navigate("CreateProfile");
         }

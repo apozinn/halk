@@ -2,24 +2,37 @@ import { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface SettingsInterface {
-  settings: Array;
-  updateUser: Function;
+  status: {
+    privacity: String;
+  };
+  chats: {
+    theme: String;
+  };
+  updateSettings: Function;
 }
 
-export const SettingsContext = createContext<SettingsInterface>({} as SettingsInterface);
+export const SettingsContext = createContext<SettingsInterface>(
+  {} as SettingsInterface
+);
 
 export const SettingsProvider = ({ children }: any) => {
   const [loads, setLoads] = useState(0);
 
   const updateSettings = (newSettings: any) => {
     setSettings({
-      settings: newSettings.settings,
+      status: newSettings.status,
+      chats: newSettings.chats,
       updateSettings: updateSettings,
     });
   };
 
   const initialValue: SettingsInterface = {
-    settings: [],
+    status: {
+      privacity: "all",
+    },
+    chats: {
+      theme: "default",
+    },
     updateSettings: updateSettings,
   };
 

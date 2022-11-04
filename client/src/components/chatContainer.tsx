@@ -185,7 +185,7 @@ class Chat extends Component {
       (m) => m.read === false && m.author.id !== this.user.id
     );
     const messageTime = new Date(lastMessage.createdAt).toLocaleTimeString();
-    if (this.socket) {
+    if (this.socket.emit) {
       this.socket.emit("verifyIfUserIsOnline", { userId: this.chat.user.id });
       this.socket.on(
         "receiveIfUserIsOnline",

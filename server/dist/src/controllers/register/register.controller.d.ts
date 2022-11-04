@@ -48,16 +48,19 @@ export declare class RegisterController {
         };
         chats: any[];
         verify: boolean;
+        existingAccount: boolean;
         invalidCode?: undefined;
     } | {
         verify: boolean;
         user?: undefined;
         chats?: undefined;
+        existingAccount?: undefined;
         invalidCode?: undefined;
     } | {
         invalidCode: boolean;
         user?: undefined;
         chats?: undefined;
         verify?: undefined;
+        existingAccount?: undefined;
     }>;
 }

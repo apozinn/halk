@@ -23,7 +23,7 @@ export default function StatusHeader({ navigation, author, thisStatus, stories }
 
 		setStatusTime(progress);
 		function upProgress() {
-			progress += 0.033;
+			progress += 0.0165;
 			if (progress > 1) {
 				clearInterval(intervalId);
 				if (route.name === "StatusView") {
@@ -42,7 +42,7 @@ export default function StatusHeader({ navigation, author, thisStatus, stories }
 			}
 		}
 
-		intervalId = setInterval(() => upProgress(), 1000);
+		intervalId = setInterval(() => upProgress(), 250);
 	}, [navigation, author, thisStatus, stories, route]);
 
 	return (

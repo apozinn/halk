@@ -13,8 +13,8 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useState, useContext } from "react";
-import { UserContext } from '../src/contexts/user';
-import { ChatsContext } from '../src/contexts/chats';
+import { UserContext } from "../src/contexts/user";
+import { ChatsContext } from "../src/contexts/chats";
 import {
   ColorSchemeName,
   Pressable,
@@ -40,26 +40,32 @@ import { Text } from "../src/components/Themed";
 
 //app
 import ChatsScreen from "../screens/app/chats";
-import StatusScreen from "../screens/app/status";
 import CallsScreen from "../screens/app/Calls";
-import MenuScreen from "../screens/Menu/menu";
 import CameraScreen from "../screens/app/camera";
-import StatusView from "../screens/app/statusView";
+import NewChatScreen from "../screens/app/newChat";
+import MenuScreen from "../screens/app/menu";
+
+//chat
+import ChatScreen from "../screens/chat/chat";
+import ProfileScreen from "../screens/chat/profile";
 
 //register
 import RegisterScreen from "../screens/register/register";
 import WelcomeScreen from "../screens/register/welcome";
 import ReceiveCodeScreen from "../screens/register/receiveCode";
 import CreateProfileScreen from "../screens/register/createProfile";
-import ChatScreen from "../screens/chat/chat";
-import ProfileScreen from "../screens/chat/profile";
-import NewChatScreen from "../screens/app/newChat";
-
 
 //settings
-import SettingsScreen from "../screens/Menu/settings";
-import StatusSettingsScreen from '../screens/settings/statusSettings';
+import SettingsScreen from "../screens/settings/settings";
+import StatusSettingsScreen from "../screens/settings/statusSettings";
 
+//status
+import StatusScreen from "../screens/status/status";
+import StatusViewScreen from "../screens/status/statusView";
+import StatusCreateMediaScreen from "../screens/status/statusCreateMedia";
+import StatusCreateTextScreen from "../screens/status/statusCreateText";
+
+//etc
 import NotFoundScreen from "../screens/NotFoundScreen";
 import SearchChat from "../src/components/searchChat";
 
@@ -134,13 +140,23 @@ function RootNavigator() {
       />
       <Stack.Screen
         name="StatusView"
-        component={StatusView}
+        component={StatusViewScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="StatusCreateMedia"
+        component={StatusCreateMediaScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="StatusCreateText"
+        component={StatusCreateTextScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name="StatusSettings"
         component={StatusSettingsScreen}
-        options={{ title: "Status Settings"}}
+        options={{ title: "Status Settings" }}
       />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Settings" component={SettingsScreen} />
@@ -174,7 +190,9 @@ function BottomTabNavigator() {
     },
   };
 
-  const unreadChats = chats.filter((chat) => chat.messages.some(m => m.read === false)).length;
+  const unreadChats = chats.filter((chat) =>
+    chat.messages.some((m) => m.read === false)
+  ).length;
 
   return (
     <BottomTab.Navigator

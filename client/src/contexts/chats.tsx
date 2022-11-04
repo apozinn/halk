@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface ChatsInterface {
   chats: Array;
-  updateUser: Function;
+  updateChats: Function;
 }
 
 export const ChatsContext = createContext<ChatsInterface>({} as ChatsInterface);

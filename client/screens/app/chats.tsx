@@ -9,6 +9,7 @@ import { SocketController } from "../../src/utils/socket";
 import NewChatButton from "../../src/components/newChat";
 import ChatContainer from "../../src/components/chatContainer";
 import HalkController from '../../src/utils/halk';
+import ChatTour from '../../src/tour/chat.tour';
 
 export default function Chats({ navigation }) {
   const { user, logged, updateUser } = useContext(UserContext);
@@ -37,7 +38,7 @@ export default function Chats({ navigation }) {
     <View style={{ flex: 1 }}>
       {!logged ? (
         <></>
-      ) : (
+      ) : (<>
         <ScrollView
           style={{ padding: 5 }}
           showsVerticalScrollIndicator={false}
@@ -58,8 +59,9 @@ export default function Chats({ navigation }) {
             />
           ))}
         </ScrollView>
-      )}
-      <NewChatButton navigation={navigation} />
+        <NewChatButton navigation={navigation} />
+        {user.isNewUser ? <ChatTour/> : <></>}
+      </>)}
     </View>
   );
 }

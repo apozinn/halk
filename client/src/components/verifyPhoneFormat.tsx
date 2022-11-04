@@ -8,7 +8,6 @@ import { UserContext } from "../contexts/user";
 export default function VerifyPhoneFormat({ phone, navigation }: any) {
   const [modalVisible, setModalVisible] = useState(false);
   const { user, logged, updateUser } = useContext(UserContext);
-
   function Verify() {
     if (!phone || !navigation) return null;
 
@@ -37,13 +36,13 @@ export default function VerifyPhoneFormat({ phone, navigation }: any) {
                   <Pressable
                     onPress={() => {
                       setModalVisible(!modalVisible);
-                      sendSms(phone).then((data) => {
+                      sendSms(phone.split(" ").join("")).then((data) => {
                         if (data.codeSend) {
                           updateUser({
                             logged: logged,
                             user: {
                               id: data.id,
-                              phone: phone,
+                              phone,
                               profile: user.profile,
                             },
                           });

@@ -3,17 +3,19 @@ import { View, StyleSheet, Pressable, TouchableOpacity } from "react-native";
 import { Text, TextInput } from "../../src/components/Themed";
 import { getColors } from "../../constants/Colors";
 import StatusHeader from "../../src/components/statusHeader";
-import { BufferContext } from '../../src/contexts/buffer';
+import { BufferContext } from "../../src/contexts/buffer";
 
 export default function StatusView({ navigation, route }) {
 	const [thisStatus, setThisStatus] = useState();
 	const [author, setAuthor] = useState();
 	const [stories, setStories] = useState();
-	const colors = getColors(); 
-	const { buffer, updateBuffer } = useContext(BufferContext);
+	const colors = getColors();
+	const buffer = useContext(BufferContext);
 
 	useEffect(() => {
-		return;
+		if (!route.params) {
+			return navigation.navigate("Root");
+		}
 		const stories = route.params.stories;
 		const author = route.params.author;
 
@@ -21,21 +23,34 @@ export default function StatusView({ navigation, route }) {
 			let _this;
 			let pos = 0;
 
-			while(!_this) {
-				if(stories.length === 1) {
+			while (!_this) {
+				if (stories.length === 1) {
 					_this = stories[0];
 				} else {
-					if(!buffer.status.openned.some((s) => s.id === stories[pos].id)) {
-						_this = stories[pos];
-					} 
+					if (stories[pos]) {
+						if (
+							!buffer.status.openned.some(
+								(s) => s === stories[pos].id
+							)
+						) {
+							if (stories[pos]) {
+								_this = stories[pos];
+							}
+						}
+					} else {
+						_this = {};
+						return navigation.navigate("Root");
+					}
 					pos++;
 				}
 			}
 			setThisStatus(_this);
 			setStories(stories);
 			setAuthor(author);
-			buffer.status.openned.push(thisStatus);
-			updateBuffer(buffer);
+			if (_this.id) {
+				buffer.status.openned.push(_this.id);
+				buffer.updateBuffer(buffer);
+			}
 		} else navigation.navigate("Root");
 	}, [navigation, route]);
 
@@ -46,6 +61,24 @@ export default function StatusView({ navigation, route }) {
 		return `#${randomColor}`;
 	};
 
+	function previous() {
+		const previousStatus = stories[stories.indexOf(thisStatus) - 1];
+		if (previousStatus) {
+			setThisStatus(previousStatus);
+		} else {
+			return navigation.goBack();
+		}
+	}
+
+	function next() {
+		const nextStatus = stories[stories.indexOf(thisStatus) + 1];
+		if (nextStatus) {
+			setThisStatus(nextStatus);
+		} else {
+			return navigation.goBack();
+		}
+	}
+
 	return (
 		<View style={[styles.container]}>
 			{!thisStatus ? null : (
@@ -55,7 +88,9 @@ export default function StatusView({ navigation, route }) {
 						backgroundColor: generateColor(),
 					}}
 				>
-					<StatusHeader {...{ navigation, author, thisStatus, stories }} />
+					<StatusHeader
+						{...{ navigation, author, thisStatus, stories }}
+					/>
 					<Pressable style={styles.textType}>
 						{thisStatus.type === "text" ? (
 							<Text
@@ -69,6 +104,24 @@ export default function StatusView({ navigation, route }) {
 						) : (
 							<Image source={thisStatus.content} />
 						)}
+						<Pressable
+							style={[
+								styles.intraButtons,
+								{ left: 0 },
+							]}
+							onPress={() => previous()}
+						>
+							<Text> </Text>
+						</Pressable>
+						<Pressable
+							style={[
+								styles.intraButtons,
+								{ right: 0 },
+							]}
+							onPress={() => next()}
+						>
+							<Text> </Text>
+						</Pressable>
 					</Pressable>
 				</View>
 			)}
@@ -86,4 +139,9 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	mediaType: {},
+	intraButtons: {
+		position: "absolute",
+		width: "50%",
+		height: "100%",
+	},
 });
