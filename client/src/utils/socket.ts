@@ -109,5 +109,3 @@ export function CreateSocketConnection({ userId }) {
   });
   return socket;
 }
-
-// "18.207.126.157:3000/"
