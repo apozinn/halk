@@ -18,7 +18,7 @@ import StatusPic from "../../src/components/statusPic";
 import { SocketController } from "../../src/utils/socket";
 import { getStatus } from "../../middleware/api";
 import HalkController from "../../src/utils/halk";
-import { BufferContext } from '../../src/contexts/buffer';
+import { BufferContext } from "../../src/contexts/buffer";
 
 var moment = require("moment");
 var momentDurationFormatSetup = require("moment-duration-format");
@@ -33,7 +33,7 @@ const badgeProps = {
 export default function Status({ navigation }: RootTabScreenProps<"Status">) {
   const { user } = useContext(UserContext);
   const { chats } = useContext(ChatsContext);
-  const { buffer, updateChats } = useContext(BufferContext);
+  const { statusBuffer, updateBuffer } = useContext(BufferContext);
   const [status, setStatus] = useState([]);
   const colors = getColors();
 
@@ -55,43 +55,77 @@ export default function Status({ navigation }: RootTabScreenProps<"Status">) {
   return (
     <View style={styles.container}>
       <View style={styles.userContainer}>
-        <TouchableOpacity
-          style={styles.rowContainer}
-          onPress={() => {}}
-        >
-          <Userpic
-            size={50}
-            name={user.profile.name}
-            source={{ uri: user.profile.avatar }}
-            colorize={true}
-            borderRadius="50%"
-            badge={true}
-            badgeColor={"#2f95dc"}
-            badgePosition={"bottom-right"}
-            badgeProps={badgeProps}
-            style={{ marginRight: 10 }}
-          />
-          <View>
-            <Text style={{ fontWeight: "bold" }}>Meu status</Text>
-            <Text style={{ fontSize: 13 }}>
-              Toque para atualizar seu status
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <View style={styles.rowContainer}>
-          <TouchableOpacity
-            style={styles.blueButton}
-            onPress={() => {}}
-          >
-            <Entypo name="camera" size={22} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.blueButton}
-            onPress={() => {}}
-          >
-            <FontAwesome name="pencil" size={22} color="white" />
-          </TouchableOpacity>
-        </View>
+        {statusBuffer.posted.length ? (
+          <>
+            <TouchableOpacity
+              style={[styles.rowContainer, { marginLeft: 10 }]}
+              onPress={() =>
+                navigation.navigate("StatusView", {
+                  author: user,
+                  stories: statusBuffer.posted,
+                })
+              }
+            >
+              <StatusPic
+                {...{ navigation, author: user, stories: statusBuffer.posted }}
+              />
+              <View style={{ marginLeft: 10 }}>
+                <Text style={{ fontWeight: "bold" }}>Meu status</Text>
+                <Text style={{ fontSize: 13 }}>
+                  Toque para visualizar seus status
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <View style={styles.rowContainer}>
+              <TouchableOpacity style={styles.blueButton} onPress={() => {}}>
+                <Entypo name="camera" size={22} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.blueButton}
+                onPress={() => navigation.navigate("StatusCreateText")}
+              >
+                <FontAwesome name="pencil" size={22} color="white" />
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : (
+          <>
+            <TouchableOpacity
+              style={styles.rowContainer}
+              onPress={() => navigation.navigate("StatusCreateMedia")}
+            >
+              <Userpic
+                size={50}
+                name={user.profile.name}
+                source={{ uri: user.profile.avatar }}
+                colorize={true}
+                borderRadius="50%"
+                badge={true}
+                badgeColor={"#2f95dc"}
+                badgePosition={"bottom-right"}
+                badgeProps={badgeProps}
+                style={{ marginRight: 10 }}
+              />
+              <View>
+                <Text style={{ fontWeight: "bold" }}>Meu status</Text>
+                <Text style={{ fontSize: 13 }}>
+                  Toque para atualizar seu status
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <View style={styles.rowContainer}>
+              <TouchableOpacity style={styles.blueButton} onPress={() => {}}>
+                <Entypo name="camera" size={22} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.blueButton}
+                onPress={() => navigation.navigate("StatusCreateText")}
+              >
+                <FontAwesome name="pencil" size={22} color="white" />
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </View>
       <View
         style={[

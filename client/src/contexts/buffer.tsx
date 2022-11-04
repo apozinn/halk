@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface BufferInterface {
-  status: {
+  statusBuffer: {
     openned: Array;
     posted: Array;
   };
@@ -17,14 +17,20 @@ export const BufferProvider = ({ children }: any) => {
   const [loads, setLoads] = useState(0);
 
   const updateBuffer = (newBuffer: any) => {
-    setBuffer({
-      status: newBuffer.status,
-      updateBuffer: updateBuffer,
+    AsyncStorage.getItem("buffer").then((data: any) => {
+      const dt = JSON.parse(data);
+
+      setBuffer({
+        statusBuffer: newBuffer.statusBuffer
+          ? newBuffer.statusBuffer
+          : dt.statusBuffer,
+        updateBuffer,
+      });
     });
   };
 
   const initialValue: BufferInterface = {
-    status: {
+    statusBuffer: {
       openned: [],
       posted: [],
     },

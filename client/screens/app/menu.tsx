@@ -128,7 +128,7 @@ export default function Menu({ navigation }: RootTabScreenProps<"Menu">) {
           </TouchableOpacity>
           <TouchableOpacity style={styles.link}>
             <FontAwesome5 name="palette" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Aparecnia</Text>
+            <Text style={styles.linkTitle}>Aparência</Text>
           </TouchableOpacity>
         </View>
         <View

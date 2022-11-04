@@ -88,3 +88,12 @@ export const getStatus = async(userId) => {
     .then((res) => res.json())
     .then((res) => res);
 };
+
+export const postStatus = async (user, status) => {
+  return fetch(`${api_link}/status/postStatus`, {
+    ...POST_PARAMS,
+    body: JSON.stringify({ user, status }),
+  })
+    .then((res) => res.json())
+    .then((res) => res);
+};

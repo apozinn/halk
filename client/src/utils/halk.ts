@@ -1,14 +1,10 @@
-export default class HalkController {
-	private generateRandomId = () => {
-		const timeNow = new Date().getTime();
-		return `${timeNow}${Math.floor(
-			Math.random() * (100000000 - 1000000 + 1) + 1000000
-		)}`;
-	};
-	halkUser = {};
+import Tools from './tools';
 
+export default class HalkController extends Tools {
+	halkUser = {};
 	constructor() {
-		this.halkUser = {
+		super();
+			this.halkUser = {
 			id: this.generateRandomId(),
 			phone: "+1 01010101010",
 			profile: {
@@ -50,12 +46,13 @@ export default class HalkController {
 						createdAt: timeNow,
 						type: "text",
 						content: "Welcome to Halk app!",
+						color: this.generateRandomColor(),
 					},
 					{
 						id: this.generateRandomId(),
 						createdAt: timeNow,
 						type: "text",
-						content: "A open source app!",
+						color: this.generateRandomColor(),
 					},
 				],
 			},

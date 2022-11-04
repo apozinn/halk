@@ -25,6 +25,8 @@ const linking: LinkingOptions<RootStackParamList> = {
       Settings: 'settings',
       StatusSettings: 'statusSettings',
       StatusView: 'statusView',
+      StatusCreateText: 'statusCreateText',
+      StatusCreateMedia: 'statusCreateMedia',
       NotFound: '*',
     },
   },

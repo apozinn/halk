@@ -8,12 +8,14 @@ export class StatusController {
 
 	@Post('/postStatus')
 	async postStatus(@Req() req) {
+		const user = req.body.user;
 		const thisStatus = req.body.status;
+
 		if(thisStatus) {
 			await User.findOneAndUpdate(
-				{ id: thisStatus.author.id },
+				{ id: user.id },
 				{$push: { status: thisStatus }},
-			).then((cb) => console.log(cb));
+			);
 			return { post: true };
 		} else return { error: true };
 	}

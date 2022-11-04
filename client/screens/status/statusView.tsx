@@ -10,7 +10,7 @@ export default function StatusView({ navigation, route }) {
 	const [author, setAuthor] = useState();
 	const [stories, setStories] = useState();
 	const colors = getColors();
-	const buffer = useContext(BufferContext);
+	const { statusBuffer, updateBuffer } = useContext(BufferContext);
 
 	useEffect(() => {
 		if (!route.params) {
@@ -29,7 +29,7 @@ export default function StatusView({ navigation, route }) {
 				} else {
 					if (stories[pos]) {
 						if (
-							!buffer.status.openned.some(
+							!statusBuffer.openned.some(
 								(s) => s === stories[pos].id
 							)
 						) {
@@ -48,18 +48,11 @@ export default function StatusView({ navigation, route }) {
 			setStories(stories);
 			setAuthor(author);
 			if (_this.id) {
-				buffer.status.openned.push(_this.id);
-				buffer.updateBuffer(buffer);
+				statusBuffer.openned.push(_this.id);
+				updateBuffer({ statusBuffer });
 			}
 		} else navigation.navigate("Root");
 	}, [navigation, route]);
-
-	const generateColor = () => {
-		const randomColor = Math.floor(Math.random() * 16777215)
-			.toString(16)
-			.padStart(6, "0");
-		return `#${randomColor}`;
-	};
 
 	function previous() {
 		const previousStatus = stories[stories.indexOf(thisStatus) - 1];
@@ -85,7 +78,7 @@ export default function StatusView({ navigation, route }) {
 				<View
 					style={{
 						flex: 1,
-						backgroundColor: generateColor(),
+						backgroundColor: thisStatus.color,
 					}}
 				>
 					<StatusHeader
@@ -105,19 +98,13 @@ export default function StatusView({ navigation, route }) {
 							<Image source={thisStatus.content} />
 						)}
 						<Pressable
-							style={[
-								styles.intraButtons,
-								{ left: 0 },
-							]}
+							style={[styles.intraButtons, { left: 0 }]}
 							onPress={() => previous()}
 						>
 							<Text> </Text>
 						</Pressable>
 						<Pressable
-							style={[
-								styles.intraButtons,
-								{ right: 0 },
-							]}
+							style={[styles.intraButtons, { right: 0 }]}
 							onPress={() => next()}
 						>
 							<Text> </Text>
