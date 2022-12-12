@@ -8,12 +8,14 @@ export class AppService {
   verifyAcessToken(acessToken): any {
     const secretphrase = process.env.API_SECRET_PHRASE;
     const key = process.env.API_KEY;
-    const decryptedToken = decrypt(acessToken, key);
 
-    if (decryptedToken) {
-      if (decryptedToken === secretphrase) {
-        return {
-          allowedAccess: true,
+    if (acessToken) {
+      const decryptedToken = decrypt(acessToken, key);
+      if(decryptedToken) {
+        if (decryptedToken === secretphrase) {
+          return {
+            allowedAccess: true,
+          };
         }
       }
     }
