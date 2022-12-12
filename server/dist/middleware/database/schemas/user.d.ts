@@ -24,27 +24,31 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { Schema } from 'mongoose';
 declare const User: import("mongoose").Model<{
+    status: any[];
     chats: any[];
     following: any[];
-    status: any[];
+    createdAt: Date;
     id?: string;
     phone?: string;
     profile?: {
         name?: string;
         username?: string;
         avatar?: string;
+        banner?: string;
         bio?: string;
     };
 }, {}, {}, {}, Schema<any, import("mongoose").Model<any, any, any, any, any>, {}, {}, {}, {}, "type", {
+    status: any[];
     chats: any[];
     following: any[];
-    status: any[];
+    createdAt: Date;
     id?: string;
     phone?: string;
     profile?: {
         name?: string;
         username?: string;
         avatar?: string;
+        banner?: string;
         bio?: string;
     };
 }>>;

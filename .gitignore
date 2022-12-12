@@ -2,6 +2,7 @@ client/node_modules
 client/.expo
 client/.expo-shared
 client/package-lock.json
+client/.buckconfig
 
 server/node_modules
 server/.env
@@ -10,6 +11,6 @@ server/.swp
 server/.prettierrc
 server/package-lock.json
 server/.eslintrc.js
-
-*.gitignore
 concept
+
+halk-oldclient

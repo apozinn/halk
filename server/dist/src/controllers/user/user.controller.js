@@ -20,17 +20,67 @@ let UserController = class UserController {
     constructor(appService) {
         this.appService = appService;
     }
-    async editProfile(req) { }
-    async deleteAccount(req) { }
-    async searchUser(req) {
+    async editUser(req, headers) {
+        const acess = this.appService.verifyAcessToken(headers.acesstoken);
+        if (!acess.allowedAccess) {
+            return acess;
+        }
+        const userId = req.body.userId;
+        const edits = req.body.edits;
+        try {
+            await edits.forEach(async (edit) => {
+                const { editName, editValue } = edit;
+                await user_1.default.findOneAndUpdate({ id: userId }, {
+                    $set: { editName: editValue },
+                });
+            });
+            return { editSucess: true };
+        }
+        catch (err) {
+            return {
+                error: {
+                    code: 500,
+                    message: 'There was an error editing this user',
+                },
+            };
+        }
+    }
+    async deleteAccount(req, headers) {
+        const acess = this.appService.verifyAcessToken(headers.acesstoken);
+        if (!acess.allowedAccess) {
+            return acess;
+        }
+        const userId = req.body.userId;
+        try {
+            await user_1.default.findOneAndDelete({ id: userId });
+            return { deleteSucess: true };
+        }
+        catch (err) {
+            return {
+                error: {
+                    code: 500,
+                    message: 'There was an error delete this user',
+                },
+            };
+        }
+    }
+    async searchUser(req, headers) {
+        const acess = this.appService.verifyAcessToken(headers.acesstoken);
+        if (!acess.allowedAccess) {
+            return acess;
+        }
         const search = req.body.search;
         const allUsers = await user_1.default.find({});
-        const user = allUsers.filter((u) => u.id === search ||
+        const users = allUsers.filter((u) => u.id === search ||
             u.profile.name.includes(search) ||
             u.profile.username.includes(search));
-        return user;
+        return users.map((u) => this.appService.publicUserProps(u));
     }
-    async verifyUsername(req) {
+    async verifyUsername(req, headers) {
+        const acess = this.appService.verifyAcessToken(headers.acesstoken);
+        if (!acess.allowedAccess) {
+            return acess;
+        }
         const username = req.body.username;
         const verify = await user_1.default.findOne({ 'profile.username': username });
         if (verify) {
@@ -41,31 +91,35 @@ let UserController = class UserController {
     }
 };
 __decorate([
-    (0, common_1.Post)('/editProfile'),
+    (0, common_1.Post)('/editUser'),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "editProfile", null);
+], UserController.prototype, "editUser", null);
 __decorate([
-    (0, common_1.Post)('/deleteAccount'),
+    (0, common_1.Post)('/deleteUser'),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "deleteAccount", null);
 __decorate([
     (0, common_1.Post)('/searchUser'),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "searchUser", null);
 __decorate([
     (0, common_1.Post)('/verifyUsername'),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "verifyUsername", null);
 UserController = __decorate([

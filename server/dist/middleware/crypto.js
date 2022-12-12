@@ -1,16 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Decipher = exports.Cipher = void 0;
-var CryptoJS = require("crypto-js");
-function Cipher(text, key) {
-    const cipherText = CryptoJS.AES.encrypt(text, key).toString();
-    return cipherText;
+exports.decrypt = exports.encrypt = void 0;
+const CryptoJS = require("crypto-js");
+const AES = require("crypto-js/aes");
+function encrypt(data, key) {
+    return AES.encrypt(data, key).toString();
 }
-exports.Cipher = Cipher;
-function Decipher(text, key) {
-    const bytes = CryptoJS.AES.decrypt(text, key);
-    const decipherText = bytes.toString(CryptoJS.enc.Utf8);
-    return decipherText;
+exports.encrypt = encrypt;
+function decrypt(data, key) {
+    const bytes = AES.decrypt(data, key);
+    return bytes.toString(CryptoJS.enc.Utf8);
 }
-exports.Decipher = Decipher;
+exports.decrypt = decrypt;
 //# sourceMappingURL=crypto.js.map

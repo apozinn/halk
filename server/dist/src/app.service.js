@@ -8,9 +8,35 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
+const crypto_1 = require("../middleware/crypto");
+const dotenv = require("dotenv");
+dotenv.config();
 let AppService = class AppService {
-    getHello() {
-        return 'Hello World!';
+    verifyAcessToken(acessToken) {
+        const secretphrase = process.env.API_SECRET_PHRASE;
+        const key = process.env.API_KEY;
+        const decryptedToken = (0, crypto_1.decrypt)(acessToken, key);
+        if (decryptedToken) {
+            if (decryptedToken === secretphrase) {
+                return {
+                    allowedAccess: true,
+                };
+            }
+        }
+        return {
+            error: {
+                code: 403,
+                message: 'Access is denied, only requests from the main application are accepted.',
+            },
+        };
+    }
+    publicUserProps(user) {
+        return {
+            id: user.id,
+            phone: user.phone,
+            createdAt: user.createdAt,
+            profile: user.profile,
+        };
     }
 };
 AppService = __decorate([

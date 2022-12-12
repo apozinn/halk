@@ -1,0 +1,5 @@
+dist
+.env
+.swp
+.eslintrc.js
+.prettierrc

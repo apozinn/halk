@@ -32,13 +32,17 @@ let RegisterController = class RegisterController {
         const twilio_phone = process.env.TWILIO_PHONE;
         const client = twilio(accountSid, authToken);
         const message = await client.messages.create({
-            body: `Halk verification code: ${code}`,
+            body: `Here is your halk verification code: ${code}`,
             from: twilio_phone,
             to: phone,
         });
         return message.errorCode ? false : true;
     }
-    async CreateUser(req) {
+    async CreateUser(req, headers) {
+        const acess = this.appService.verifyAcessToken(headers.acesstoken);
+        if (!acess.allowedAccess) {
+            return acess;
+        }
         const user = req.body.user;
         const verification = await user_1.default.findOne({ id: user.id });
         if (verification) {
@@ -54,7 +58,11 @@ let RegisterController = class RegisterController {
             created: true,
         };
     }
-    async sendCode(req) {
+    async sendCode(req, headers) {
+        const acess = this.appService.verifyAcessToken(headers.acesstoken);
+        if (!acess.allowedAccess) {
+            return acess;
+        }
         const phone = req.body.phone;
         const code = randomString.generate({
             length: 6,
@@ -65,7 +73,11 @@ let RegisterController = class RegisterController {
         const codeSend = await this.sendSms(phone, code);
         return { phone, id, codeSend };
     }
-    async verifyCode(req) {
+    async verifyCode(req, headers) {
+        const acess = this.appService.verifyAcessToken(headers.acesstoken);
+        if (!acess.allowedAccess) {
+            return acess;
+        }
         const id = req.body.id;
         const code = req.body.code;
         const cache = (0, code_1.default)();
@@ -92,22 +104,25 @@ let RegisterController = class RegisterController {
 __decorate([
     (0, common_1.Post)('/createUser'),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], RegisterController.prototype, "CreateUser", null);
 __decorate([
     (0, common_1.Post)('/sendSms'),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], RegisterController.prototype, "sendCode", null);
 __decorate([
     (0, common_1.Post)('/verifyCode'),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], RegisterController.prototype, "verifyCode", null);
 RegisterController = __decorate([

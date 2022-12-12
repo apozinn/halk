@@ -1,4 +1,4 @@
-import { Controller, Post, Req } from '@nestjs/common';
+import { Controller, Post, Req, Headers } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import User from '../../../middleware/database/schemas/user';
 import * as randomString from 'randomstring';
@@ -19,7 +19,7 @@ export class RegisterController {
 
     const client = twilio(accountSid, authToken);
     const message = await client.messages.create({
-      body: `Halk verification code: ${code}`,
+      body: `Here is your halk verification code: ${code}`,
       from: twilio_phone,
       to: phone,
     });
@@ -28,7 +28,12 @@ export class RegisterController {
   }
 
   @Post('/createUser')
-  async CreateUser(@Req() req) {
+  async CreateUser(@Req() req, @Headers() headers) {
+    const acess = this.appService.verifyAcessToken(headers.acesstoken);
+    if (!acess.allowedAccess) {
+      return acess;
+    }
+
     const user = req.body.user;
     const verification = await User.findOne({ id: user.id });
 
@@ -49,7 +54,12 @@ export class RegisterController {
   }
 
   @Post('/sendSms')
-  async sendCode(@Req() req) {
+  async sendCode(@Req() req, @Headers() headers) {
+    const acess = this.appService.verifyAcessToken(headers.acesstoken);
+    if (!acess.allowedAccess) {
+      return acess;
+    }
+
     const phone = req.body.phone;
 
     const code = randomString.generate({
@@ -63,7 +73,12 @@ export class RegisterController {
   }
 
   @Post('/verifyCode')
-  async verifyCode(@Req() req) {
+  async verifyCode(@Req() req, @Headers() headers) {
+    const acess = this.appService.verifyAcessToken(headers.acesstoken);
+    if (!acess.allowedAccess) {
+      return acess;
+    }
+
     const id = req.body.id;
     const code = req.body.code;
     const cache = CodeCache();

@@ -4,7 +4,6 @@ import ConnectDb from '../middleware/database/index';
 
 async function bootstrap() {
   await ConnectDb();
-
   const app = await NestFactory.create(AppModule, { cors: true });
   app.enableCors();
   await app.listen(3000);

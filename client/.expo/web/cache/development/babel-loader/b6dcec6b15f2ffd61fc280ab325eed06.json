@@ -1,1 +1,0 @@
-{"ast":null,"code":"export * from \"./Userpic\";\nexport * from \"./Badge\";","map":{"version":3,"names":[],"sources":["/home/samuel/Documentos/projetos/mobile/halk/client/node_modules/react-native-userpic/src/index.tsx"],"sourcesContent":["export * from './Userpic';\nexport * from './Badge';\n"],"mappings":"AAAA;AACA"},"metadata":{},"sourceType":"module"}

@@ -2,7 +2,9 @@
   "expo": {
     "name": "Halk",
     "slug": "halk-message-app",
-    "version": "0.1.0",
+    "description": "A open source message app",
+    "privacy": "public",
+    "version": "0.10.0",
     "owner": "apozinxr",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -28,22 +30,11 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.apozin.halk",
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "package": "com.apozin.halk"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "The app accesses your photos to get your icon."
-        }
-      ]
-    ],
     "extra": {
       "eas": {
         "projectId": "305b36d1-5f3a-47bf-a826-cbe8acb748e1"

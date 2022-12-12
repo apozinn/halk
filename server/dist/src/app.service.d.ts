@@ -1,3 +1,9 @@
 export declare class AppService {
-    getHello(): string;
+    verifyAcessToken(acessToken: any): any;
+    publicUserProps(user: any): {
+        id: any;
+        phone: any;
+        createdAt: any;
+        profile: any;
+    };
 }

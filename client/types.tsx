@@ -1,3 +1,8 @@
+/**
+ * Learn more about using TypeScript with React Navigation:
+ * https://reactnavigation.org/docs/typescript/
+ */
+
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -10,19 +15,8 @@ declare global {
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
+  Modal: undefined;
   NotFound: undefined;
-  Welcome: undefined;
-  Register: undefined;
-  ReceiveCode: undefined;
-  CreateProfile: undefined;
-  Chat: undefined;
-  Profile: undefined;
-  NewChat: undefined;
-  Settings: undefined;
-  Camera: undefined;
-  StatusView: undefined;
-  StatusCreateText: undefined;
-  StatusCreateMedia: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -31,10 +25,8 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
 >;
 
 export type RootTabParamList = {
-  Chats: undefined;
-  Status: undefined;
-  Calls: undefined;
-  Menu: undefined;
+  TabOne: undefined;
+  TabTwo: undefined;
 };
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<
