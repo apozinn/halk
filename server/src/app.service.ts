@@ -14,7 +14,7 @@ export class AppService {
       if (decryptedToken === secretphrase) {
         return {
           allowedAccess: true,
-        };
+        }
       }
     }
 
