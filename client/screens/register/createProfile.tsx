@@ -28,6 +28,13 @@ export default function CreateProfile({
       },
     };
 
+    updateUser({
+      logged: true,
+      user: newUser,
+    });
+    navigation.navigate("Root");
+    return;
+
     createProfile(newUser).then((data) => {
       if (data.err)
         return alert("houve um erro ao criar o seu perfil, tente novamente");

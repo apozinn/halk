@@ -36,6 +36,17 @@ export default function VerifyPhoneFormat({ phone, navigation }: any) {
                   <Pressable
                     onPress={() => {
                       setModalVisible(!modalVisible);
+
+                      updateUser({
+                        logged: logged,
+                        user: {
+                          id: '97839283983982938928392',
+                          phone,
+                          profile: user.profile,
+                        },
+                      });
+                      navigation.navigate("CreateProfile");
+                      return;
                       sendSms(phone.split(" ").join("")).then((data) => {
                         if (data.codeSend) {
                           updateUser({

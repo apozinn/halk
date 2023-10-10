@@ -32,6 +32,11 @@ export default function Chats({ navigation }) {
       updateChats({ chats });
     }
     if(!logged) return navigation.navigate("Welcome");
+
+    updateUser({
+      ...user,
+      logged: false,
+    });
   }, []);
 
   return (

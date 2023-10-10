@@ -1,4 +1,3 @@
-import ImgurClient from "imgur";
 const api_link = "http://localhost:3000";
 
 const POST_PARAMS = {
@@ -8,11 +7,22 @@ const POST_PARAMS = {
   },
 };
 
+export async function CreateAccount(username: string, password: string) {
+  return fetch(`${api_link}/createAccount`, {
+    ...POST_PARAMS,
+    body: JSON.stringify({username, password}),
+  })
+    .then((res) => res.json())
+    .then((res) => res);
+}
+
+
+
 export const uploadImage = async (image: any) => {
   const clientId = process.env.IMGUR_ID;
   const clientSecret = process.env.IMGUR_SECRET;
 
-  function blobToBase64(blob) {
+  function blobToBase64(blob: Blob) {
     return new Promise((resolve, _) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result);
@@ -20,20 +30,10 @@ export const uploadImage = async (image: any) => {
     });
   }
 
-  var blobToBase64 = function (blob, callback) {
-    var reader = new FileReader();
-    reader.onload = function () {
-      var dataUrl = reader.result;
-      var base64 = dataUrl.split(",")[1];
-      callback(base64);
-    };
-    reader.readAsDataURL(blob);
-  };
-
   return "https://i.imgur.com/Gaor20G.jpeg";
 };
 
-export const sendSms = async (phone) => {
+export const sendSms = async (phone: any) => {
   return fetch(`${api_link}/register/sendSms`, {
     ...POST_PARAMS,
     body: JSON.stringify({ phone: phone }),
@@ -42,7 +42,7 @@ export const sendSms = async (phone) => {
     .then((res) => res);
 };
 
-export const verifyCode = async (id, code) => {
+export const verifyCode = async (id: string, code: string) => {
   return fetch(`${api_link}/register/verifyCode`, {
     ...POST_PARAMS,
     body: JSON.stringify({ id: id, code: code }),
@@ -51,7 +51,7 @@ export const verifyCode = async (id, code) => {
     .then((res) => res);
 };
 
-export const verifyUsername = async (username) => {
+export const verifyUsername = async (username: string) => {
   return fetch(`${api_link}/user/verifyUsername`, {
     ...POST_PARAMS,
     body: JSON.stringify({ username: username }),
@@ -60,7 +60,7 @@ export const verifyUsername = async (username) => {
     .then((res) => res);
 };
 
-export const createProfile = async (user) => {
+export const createProfile = async (user: { id?: string; phone?: string; profile: any; }) => {
   if(user.profile.avatar) {
     const uploadAvatar = await uploadImage(user.profile.avatar);
     user.profile.avatar = uploadAvatar;
@@ -74,7 +74,7 @@ export const createProfile = async (user) => {
     .then((res) => res);
 };
 
-export const searchUser = async (search) => {
+export const searchUser = async (search: string) => {
   return fetch(`${api_link}/user/searchUser`, {
     ...POST_PARAMS,
     body: JSON.stringify({ search: search }),
@@ -83,13 +83,13 @@ export const searchUser = async (search) => {
     .then((res) => res);
 };
 
-export const getStatus = async(userId) => {
+export const getStatus = async(userId: string) => {
   return fetch(`${api_link}/status/getStatus/${userId}`)
     .then((res) => res.json())
     .then((res) => res);
 };
 
-export const postStatus = async (user, status) => {
+export const postStatus = async (user: { id: string; phone: string; profile: { name: string; username: string; avatar: string; bio: string; }; }, status: { id: string; createdAt: number; type: string; content: string; color: string; }) => {
   return fetch(`${api_link}/status/postStatus`, {
     ...POST_PARAMS,
     body: JSON.stringify({ user, status }),

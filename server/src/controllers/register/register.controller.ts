@@ -50,6 +50,7 @@ export class RegisterController {
 
   @Post('/sendSms')
   async sendCode(@Req() req) {
+    return "cu";
     const phone = req.body.phone;
 
     const code = randomString.generate({
