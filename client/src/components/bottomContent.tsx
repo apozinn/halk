@@ -28,23 +28,23 @@ export default function BottomContent({ chat }) {
 	useEffect(() => {
 		if (!socket || !chat) return;
 		if (text.length === 0) {
-			socket.emit("userTyping", {
-				room: chat.id,
-				typing: false,
-				userId: user.id,
-			});
+			// socket.emit("userTyping", {
+			// 	room: chat.id,
+			// 	typing: false,
+			// 	userId: user.id,
+			// });
 		} else {
-			socket.emit("userTyping", {
-				room: chat.id,
-				typing: true,
-				userId: user.id,
-			});
+			// socket.emit("userTyping", {
+			// 	room: chat.id,
+			// 	typing: true,
+			// 	userId: user.id,
+			// });
 		}
 
-		socket.on("userTyping", (t) => {
-			if (t.userId === user.id) return;
-			setUserTyping(t.typing);
-		});
+		// socket.on("userTyping", (t) => {
+		// 	if (t.userId === user.id) return;
+		// 	setUserTyping(t.typing);
+		// });
 	}, [text]);
 
 	function sendMessage() {

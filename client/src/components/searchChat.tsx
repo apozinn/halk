@@ -115,7 +115,7 @@ export default function SearchChat({ navigation }) {
                     <TouchableOpacity
                       style={styles.chatContent}
                       onPress={() =>
-                        navigation.navigate("chat", { id: chat.id })
+                        navigation.navigate("Chat", { id: chat.id })
                       }
                       key={index}
                     >

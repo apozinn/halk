@@ -59,17 +59,17 @@ export default function Chat({ navigation, route }) {
       } else navigation.goBack();
     } else navigation.goBack();
 
-    socket.on("receiveMessage", (msg) => {
-      if (chat.messages.some((m) => m.id === msg.id)) return;
-      chats.filter((c) => c.id === chatId).map((c) => c.messages.push(msg));
-      updateChats({ chats });
-    });
+    // socket.on("receiveMessage", (msg) => {
+    //   if (chat.messages.some((m) => m.id === msg.id)) return;
+    //   chats.filter((c) => c.id === chatId).map((c) => c.messages.push(msg));
+    //   updateChats({ chats });
+    // });
   }, []);
 
   useEffect(() => {
     if (chat && socket) {
       new SocketController.joinedChat({ chats, updateChats, chat, socket });
-      socket.on("receiveIfUserIsOnline", (callback) => setOnline(callback));
+      // socket.on("receiveIfUserIsOnline", (callback) => setOnline(callback));
     }
   }, [chat]);
 

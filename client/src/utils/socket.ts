@@ -49,9 +49,9 @@ export class SocketController {
   }
 
   static joinedChat({ chats, updateChats, chat, socket }) {
-    socket.emit("joinRoom", { room: chat.id, otherUser: chat.user.id });
-    socket.emit("verifyIfUserIsOnline", { userId: chat.user.id });
-    socket.emit("readMessage", { chat: chat.id, otherUser: chat.user.id });
+    // socket.emit("joinRoom", { room: chat.id, otherUser: chat.user.id });
+    // socket.emit("verifyIfUserIsOnline", { userId: chat.user.id });
+    // socket.emit("readMessage", { chat: chat.id, otherUser: chat.user.id });
   }
 
   static sendMessage({ user, chats, updateChats, chat, socket, text }) {
@@ -70,21 +70,21 @@ export class SocketController {
     };
 
     if (chat.newChat) {
-      socket.emit("sendMessage", {
-        room: chat.id,
-        toUser: chat.user.id,
-        message,
-        newChat: true,
-      });
+      // socket.emit("sendMessage", {
+      //   room: chat.id,
+      //   toUser: chat.user.id,
+      //   message,
+      //   newChat: true,
+      // });
       const thisChat = chats.filter((c) => c.id === chat.id)[0];
       delete thisChat.newChat;
       updateChats({ chats });
     } else {
-      socket.emit("sendMessage", {
-        room: chat.id,
-        toUser: chat.user.id,
-        message,
-      });
+      // socket.emit("sendMessage", {
+      //   room: chat.id,
+      //   toUser: chat.user.id,
+      //   message,
+      // });
     }
 
     chats

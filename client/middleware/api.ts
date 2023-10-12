@@ -1,4 +1,4 @@
-const api_link = "http://localhost:3000";
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 const POST_PARAMS = {
   method: "POST",
@@ -8,7 +8,7 @@ const POST_PARAMS = {
 };
 
 export async function CreateAccount(username: string, password: string) {
-  return fetch(`${api_link}/createAccount`, {
+  return fetch(`${apiUrl}/createAccount`, {
     ...POST_PARAMS,
     body: JSON.stringify({username, password}),
   })
@@ -34,7 +34,7 @@ export const uploadImage = async (image: any) => {
 };
 
 export const sendSms = async (phone: any) => {
-  return fetch(`${api_link}/register/sendSms`, {
+  return fetch(`${apiUrl}/register/sendSms`, {
     ...POST_PARAMS,
     body: JSON.stringify({ phone: phone }),
   })
@@ -43,7 +43,7 @@ export const sendSms = async (phone: any) => {
 };
 
 export const verifyCode = async (id: string, code: string) => {
-  return fetch(`${api_link}/register/verifyCode`, {
+  return fetch(`${apiUrl}/register/verifyCode`, {
     ...POST_PARAMS,
     body: JSON.stringify({ id: id, code: code }),
   })
@@ -52,7 +52,7 @@ export const verifyCode = async (id: string, code: string) => {
 };
 
 export const verifyUsername = async (username: string) => {
-  return fetch(`${api_link}/user/verifyUsername`, {
+  return fetch(`${apiUrl}/user/verifyUsername`, {
     ...POST_PARAMS,
     body: JSON.stringify({ username: username }),
   })
@@ -66,7 +66,7 @@ export const createProfile = async (user: { id?: string; phone?: string; profile
     user.profile.avatar = uploadAvatar;
   };
 
-  return fetch(`${api_link}/register/createUser`, {
+  return fetch(`${apiUrl}/register/createUser`, {
     ...POST_PARAMS,
     body: JSON.stringify({ user: user }),
   })
@@ -75,7 +75,7 @@ export const createProfile = async (user: { id?: string; phone?: string; profile
 };
 
 export const searchUser = async (search: string) => {
-  return fetch(`${api_link}/user/searchUser`, {
+  return fetch(`${apiUrl}/user/searchUser`, {
     ...POST_PARAMS,
     body: JSON.stringify({ search: search }),
   })
@@ -84,13 +84,13 @@ export const searchUser = async (search: string) => {
 };
 
 export const getStatus = async(userId: string) => {
-  return fetch(`${api_link}/status/getStatus/${userId}`)
+  return fetch(`${apiUrl}/status/getStatus/${userId}`)
     .then((res) => res.json())
     .then((res) => res);
 };
 
 export const postStatus = async (user: { id: string; phone: string; profile: { name: string; username: string; avatar: string; bio: string; }; }, status: { id: string; createdAt: number; type: string; content: string; color: string; }) => {
-  return fetch(`${api_link}/status/postStatus`, {
+  return fetch(`${apiUrl}/status/postStatus`, {
     ...POST_PARAMS,
     body: JSON.stringify({ user, status }),
   })
