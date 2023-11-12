@@ -1,4 +1,4 @@
-import { Text as DefaultText, View as DefaultView, TextInput as DefaultTextInput } from 'react-native';
+import { Text as DefaultText, View as DefaultView, TextInput as DefaultTextInput, ButtonProps, Pressable } from 'react-native';
 import Colors from '../../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 

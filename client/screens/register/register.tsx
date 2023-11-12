@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Image, StatusBar, StyleSheet, View } from "react-native";
+import { Image, StatusBar, StyleSheet, Pressable } from "react-native";
 import { RootStackScreenProps } from "../../types";
-import { Text } from "../../src/components/Themed";
-import { Checkbox, Button, TextInput } from "react-native-paper";
+import { Text, View, useThemeColor } from "../../src/components/Themed";
+import { Checkbox, TextInput } from "react-native-paper";
 import { CreateAccount } from "../../middleware/api";
+import { getColors } from "../../constants/Colors";
 
 export default function Register({
   navigation,
 }: RootStackScreenProps<"Register">) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const colors = getColors();
 
   function createAccount() {
     if(username.length <= 5 || password.length <= 5) return console.log("invalid password or username");
@@ -37,14 +39,21 @@ export default function Register({
           label="Username"
           value={username}
           onChangeText={(text) => setUsername(text)}
-          style={styles.input}
-          underlineColor={"#b5e3e6"}
+          style={{
+            backgroundColor: colors.secondary,
+          }}
+          underlineColor={colors.appColor}
+          activeUnderlineColor={colors.appColor}
         />
         <TextInput
           label="PassWord"
           value={password}
           onChangeText={(text) => setPassword(text)}
-          style={styles.input}
+          style={{
+            backgroundColor: colors.secondary,
+          }}
+          underlineColor={colors.appColor}
+          activeUnderlineColor={colors.appColor}
         />
       </View>
       <View>
@@ -56,15 +65,13 @@ export default function Register({
         />
       </View>
       <View style={{ alignItems: "center" }}>
-        <Button mode="contained" onPress={() => createAccount()}>
-          Create Account!
-        </Button>
+        <Pressable>
+          <Text>Create Account</Text>
+        </Pressable>
       </View>
       <View style={styles.singinContainer}>
         <Text style={styles.signinLabel}>Already have a account?</Text>
-        <Button mode="text" onPress={() => console.log("Pressed")}>
-          Sign In
-        </Button>
+        
       </View>
     </View>
   );
@@ -74,7 +81,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight,
-    backgroundColor: "#191f2d",
   },
   iconContainer: {
     flexDirection: "column",
@@ -89,19 +95,14 @@ const styles = StyleSheet.create({
   registerLabel: {
     fontSize: 35,
     fontWeight: "bold",
-    color: "#e9edf4",
   },
   registerLabelLine: {
-    backgroundColor: "#b5e3e6",
+    backgroundColor: "#00B0FF",
     height: 10,
     width: 130,
     borderWidth: 1,
-    borderColor: "#b5e3e6",
+    borderColor: "#00B0FF",
     borderRadius: 10,
-  },
-  input: {
-    backgroundColor: "#2f3541",
-    color: "#fff",
   },
   inputsContainer: {
     margin: 10,

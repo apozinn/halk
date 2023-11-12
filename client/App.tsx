@@ -13,6 +13,7 @@ import { getColors } from "./constants/Colors";
 import { MenuProvider } from "react-native-popup-menu";
 import { SettingsProvider } from "./src/contexts/settings";
 import { View, Text } from "react-native";
+import { useEffect } from "react";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

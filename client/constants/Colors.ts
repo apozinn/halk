@@ -12,6 +12,8 @@ const colors = {
     tabIconDefault: "#ccc",
     tabIconSelected: tintColorLight,
     scale1: "#fff1",
+    secondary: "#E0E0E0",
+    appColor: "#00B0FF",
   },
   dark: {
     text: "#fff",
@@ -20,6 +22,8 @@ const colors = {
     tabIconDefault: "#ccc",
     tabIconSelected: tintColorDark,
     scale1: "#222",
+    secondary: "#E0E0E0",
+    appColor: "#00B0FF",
   },
 };
 
