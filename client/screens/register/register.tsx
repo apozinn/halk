@@ -1,24 +1,78 @@
 import React, { useEffect, useState } from "react";
-import { Image, StatusBar, StyleSheet, Pressable } from "react-native";
+import { Image, StatusBar, StyleSheet, Alert, Pressable, TouchableOpacity } from "react-native";
 import { RootStackScreenProps } from "../../types";
-import { Text, View, useThemeColor } from "../../src/components/Themed";
-import { Checkbox, TextInput } from "react-native-paper";
-import { CreateAccount } from "../../middleware/api";
+import { Text, View } from "../../src/components/Themed";
+import { TextInput, Button } from "react-native-paper";
+import { CreateAccount, Login } from "../../middleware/api";
 import { getColors } from "../../constants/Colors";
 
 export default function Register({
   navigation,
 }: RootStackScreenProps<"Register">) {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isNewUser, setIsNewUser] = useState(true);
   const colors = getColors();
 
+  function verifyLength() {
+    if (username.length <= 3) {
+      Alert.alert(
+        'Invalid username',
+        'The username must have at least 4 characters',
+        [
+          { text: 'Ok' },
+        ],
+        { cancelable: true }
+      );
+      return false;
+    }
+    if (password.length <= 5) {
+      Alert.alert(
+        'Invalid password',
+        'The password must have at least 5 characters',
+        [
+          { text: 'Ok' },
+        ],
+        { cancelable: true }
+      );
+      return false;
+    }
+    return true;
+  }
+
   function createAccount() {
-    if(username.length <= 5 || password.length <= 5) return console.log("invalid password or username");
+    if (!verifyLength()) return;
     CreateAccount(username, password).then((res) => {
-      if(res.userExists) {
-        console.log("This Username is already used.");
-      } else navigation.navigate("Root");
+      if (res.userExists) {
+        Alert.alert(
+          'Invalid username',
+          'This username is already used',
+          [
+            { text: 'Ok' },
+          ],
+          { cancelable: true }
+        );
+      } else {
+        navigation.navigate("Root");
+      }
+    });
+  }
+
+  function login() {
+    if (!verifyLength()) return;
+    Login(username, password).then((res) => {
+      if (!res.logged) {
+        Alert.alert(
+          "",
+          res.reason,
+          [
+            { text: 'Ok' },
+          ],
+          { cancelable: true }
+        );
+      } else {
+        navigation.navigate("Root");
+      }
     });
   }
 
@@ -31,7 +85,11 @@ export default function Register({
         />
       </View>
       <View style={{ margin: 10 }}>
-        <Text style={styles.registerLabel}>Register</Text>
+        {isNewUser ? (
+          <Text style={styles.registerLabel}>Register</Text>
+        ) : (
+          <Text style={styles.registerLabel}>Login</Text>
+        )}
         <View style={styles.registerLabelLine}></View>
       </View>
       <View style={styles.inputsContainer}>
@@ -56,22 +114,29 @@ export default function Register({
           activeUnderlineColor={colors.appColor}
         />
       </View>
-      <View>
-        <Checkbox.Item
-          label="I accept the terms of use and contract"
-          status="checked"
-          labelStyle={styles.checkLabel}
-          position="leading"
-        />
+      <View style={{
+        alignContent: "center",
+        alignItems: "center"
+      }}>
+        <TouchableOpacity onPress={() => { setIsNewUser(!isNewUser) }}>
+          {isNewUser ? (
+            <Text>I already have a account</Text>
+          ) : (
+            <Text>I don't have a account</Text>
+          )}
+
+        </TouchableOpacity>
       </View>
-      <View style={{ alignItems: "center" }}>
-        <Pressable>
-          <Text>Create Account</Text>
-        </Pressable>
-      </View>
-      <View style={styles.singinContainer}>
-        <Text style={styles.signinLabel}>Already have a account?</Text>
-        
+      <View style={styles.bottomButton}>
+        {isNewUser ? (
+          <Button labelStyle={{ color: colors.appColor }} mode="outlined" onPress={() => createAccount()} style={styles.signButton}>
+            Create Account
+          </Button>
+        ) : (
+          <Button labelStyle={{ color: colors.appColor }} mode="outlined" onPress={() => login()} style={styles.signButton}>
+            Login
+          </Button>
+        )}
       </View>
     </View>
   );
@@ -109,17 +174,16 @@ const styles = StyleSheet.create({
     gap: 10,
     color: "#e9edf4",
   },
-  checkLabel: {
-    color: "#e9edf4",
-  },
-  singinContainer: {
-    alignContent: "center",
-    alignItems: "center",
+  bottomButton: {
+    flex: 1,
+    alignContent: "flex-end",
+    alignItems: "flex-end",
     flexDirection: "row",
-    gap: 10,
     alignSelf: "center",
+    marginBottom: 30,
   },
-  signinLabel: {
-    color: "#e9edf4",
+  signButton: {
+    borderRadius: 20,
+    color: 'red'
   },
 });

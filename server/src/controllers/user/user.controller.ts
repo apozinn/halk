@@ -37,5 +37,29 @@ export class UserController {
     } else return { exists: false };
   }
 
-  
+  @Post('/login')
+  async login(@Req() req) {
+    const username:string = req.body.username;
+    const password:string = req.body.password;
+    const user = await User.findOne({ 'profile.username': username });
+
+    if(user) {
+      if(user.password == password) {
+        return {
+          logged: true,
+          user,
+        };
+      } else {
+        return {
+          logged: false,
+          reason: "Invalid password",
+        };
+      }
+    } else {
+      return {
+        logged: false,
+        reason: "User don't finded",
+      };
+    }
+  }
 }

@@ -12,6 +12,7 @@ const UserSchema = new Schema({
         avatar: {type: String},
         bio: {type: String},
     },
+    password: {type: String},
 });
 
 const User = model('User', UserSchema);
