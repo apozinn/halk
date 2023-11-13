@@ -8,7 +8,7 @@ const POST_PARAMS = {
 };
 
 export async function CreateAccount(username: string, password: string) {
-  return fetch(`${apiUrl}/createAccount`, {
+  return fetch(`${apiUrl}/user/createAccount`, {
     ...POST_PARAMS,
     body: JSON.stringify({username, password}),
   })

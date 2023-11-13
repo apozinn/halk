@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, StatusBar, StyleSheet, Alert, Pressable, TouchableOpacity } from "react-native";
 import { RootStackScreenProps } from "../../types";
 import { Text, View } from "../../src/components/Themed";
 import { TextInput, Button } from "react-native-paper";
 import { CreateAccount, Login } from "../../middleware/api";
 import { getColors } from "../../constants/Colors";
+import { UserContext } from "../../src/contexts/user";
 
 export default function Register({
   navigation,
@@ -12,6 +13,7 @@ export default function Register({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isNewUser, setIsNewUser] = useState(true);
+  const { user, updateUser } = useContext(UserContext);
   const colors = getColors();
 
   function verifyLength() {
@@ -43,7 +45,7 @@ export default function Register({
   function createAccount() {
     if (!verifyLength()) return;
     CreateAccount(username, password).then((res) => {
-      if (res.userExists) {
+      if (res.userAlreadyExists) {
         Alert.alert(
           'Invalid username',
           'This username is already used',
@@ -53,7 +55,16 @@ export default function Register({
           { cancelable: true }
         );
       } else {
-        navigation.navigate("Root");
+        console.log(res);
+        updateUser({
+          ...user,
+          logged: false,
+          profile: {
+            ...user.profile,
+            id: res.user.profile.id,
+          }
+        })
+        navigation.navigate("CreateProfile");
       }
     });
   }

@@ -1,6 +1,7 @@
 import { Controller, Post, Req } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import User from '../../../middleware/database/schemas/user';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('user')
 export class UserController {
@@ -60,6 +61,37 @@ export class UserController {
         logged: false,
         reason: "User don't finded",
       };
+    }
+  }
+
+  @Post('/createAccount')
+  async createAccount(@Req() req) {
+    const username: string = req.body.username;
+    const password: string = req.body.password;
+    const userAlreadyExists = await User.findOne({'profile.username': username });
+
+    if(userAlreadyExists) {
+      return { userAlreadyExists };
+    } else {
+      const newUser = {
+        id: uuidv4(),
+        password: password,
+        profile: {
+          username
+        },
+      };
+
+      const user = await User.create(newUser);
+      if(user) {
+        return {
+          created: true,
+          user,
+        };
+      } else {
+        return {
+          created: false,
+        };
+      }
     }
   }
 }

@@ -52,7 +52,6 @@ import ProfileScreen from "../screens/chat/profile";
 //register
 import RegisterScreen from "../screens/register/register";
 import WelcomeScreen from "../screens/register/welcome";
-import ReceiveCodeScreen from "../screens/register/receiveCode";
 import CreateProfileScreen from "../screens/register/createProfile";
 
 //settings
@@ -106,11 +105,6 @@ function RootNavigator() {
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ReceiveCode"
-        component={ReceiveCodeScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

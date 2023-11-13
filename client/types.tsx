@@ -13,7 +13,6 @@ export type RootStackParamList = {
   NotFound: undefined;
   Welcome: undefined;
   Register: undefined;
-  ReceiveCode: undefined;
   CreateProfile: undefined;
   Chat: undefined;
   Profile: undefined;
@@ -23,6 +22,7 @@ export type RootStackParamList = {
   StatusView: undefined;
   StatusCreateText: undefined;
   StatusCreateMedia: undefined;
+  StatusSettings: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
