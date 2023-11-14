@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import useCachedResources from "./src/hooks/useCachedResources";
 import useColorScheme from "./src/hooks/useColorScheme";
@@ -8,12 +7,9 @@ import { ChatsProvider } from "./src/contexts/chats";
 import { SocketProvider } from "./src/contexts/socket";
 import { BufferProvider } from "./src/contexts/buffer";
 import ErrorBoundary from "./screens/errorBoundary";
-import { CreateSocketConnection } from "./src/utils/socket";
 import { getColors } from "./constants/Colors";
 import { MenuProvider } from "react-native-popup-menu";
 import { SettingsProvider } from "./src/contexts/settings";
-import { View, Text } from "react-native";
-import { useEffect } from "react";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

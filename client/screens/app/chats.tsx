@@ -36,6 +36,8 @@ export default function Chats({ navigation }) {
       ...user,
       logged: false,
     });
+
+    console.log(user);
   }, []);
 
   return (

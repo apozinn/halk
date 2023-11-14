@@ -213,7 +213,7 @@ function BottomTabNavigator() {
           ),
           headerStyle: {
             height:
-              Platform.OS === "android" || Platform.OS === "ios" ? 60 : 40,
+              Platform.OS === "android" || Platform.OS === "ios" ? 90 : 40,
           },
           headerLeft: () => (
             <Pressable

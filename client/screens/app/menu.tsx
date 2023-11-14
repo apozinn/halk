@@ -1,10 +1,9 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import {
   View,
   StyleSheet,
   StatusBar,
   TouchableOpacity,
-  SectionList,
   ScrollView,
 } from "react-native";
 import { RootTabScreenProps } from "../../types";
@@ -15,9 +14,8 @@ import {
   AntDesign,
   Ionicons,
 } from "@expo/vector-icons";
-import { Text, TextInput } from "../../src/components/Themed";
+import { Text } from "../../src/components/Themed";
 import { UserContext } from "../../src/contexts/user";
-import { ChatsContext } from "../../src/contexts/chats";
 import { Userpic } from "react-native-userpic";
 import { getColors } from "../../constants/Colors";
 
@@ -28,10 +26,25 @@ const badgeProps = {
 };
 
 export default function Menu({ navigation }: RootTabScreenProps<"Menu">) {
-  const { user } = useContext(UserContext);
-  const { chats } = useContext(ChatsContext);
-  const [calls, setCalls] = useState([]);
+  const { user, updateUser } = useContext(UserContext);
   const colors = getColors();
+
+  function exit(): void {
+    updateUser({
+      logged: false,
+      user: {
+        id: "",
+        phone: "",
+        profile: {
+          name: "",
+          username: "",
+          avatar: "",
+          bio: "",
+        },
+      },
+    });
+    navigation.navigate("Register");
+  }
 
   return (
     <View style={styles.container}>
@@ -44,20 +57,33 @@ export default function Menu({ navigation }: RootTabScreenProps<"Menu">) {
           },
         ]}
       >
-        <TouchableOpacity style={styles.profileContainer} onPress={() => {}}>
-          <Userpic
-            size={60}
-            name={user.profile.name}
-            source={{ uri: user.profile.avatar }}
-            colorize={true}
-            borderRadius="50%"
-            badge={true}
-            badgeColor={"#2f95dc"}
-            badgePosition={"bottom-right"}
-            badgeProps={badgeProps}
-            style={{ marginRight: 10 }}
-          />
-
+        <TouchableOpacity style={styles.profileContainer} onPress={() => { }}>
+          {user.profile.avatar.length ? (
+            <Userpic
+              size={60}
+              name={user.profile.username}
+              source={{ uri: user.profile.avatar }}
+              colorize={true}
+              borderRadius="50%"
+              badge={true}
+              badgeColor={"#919191"}
+              badgePosition={"bottom-right"}
+              badgeProps={badgeProps}
+              style={{ marginRight: 10 }}
+            />
+          ) : (
+            <Userpic
+              size={60}
+              name={user.profile.avatar}
+              colorize={true}
+              borderRadius="50%"
+              badge={true}
+              badgeColor={"#919191"}
+              badgePosition={"bottom-right"}
+              badgeProps={badgeProps}
+              style={{ marginRight: 10 }}
+            />
+          )}
           <View>
             <Text style={{ fontWeight: "bold", fontSize: 17 }}>{user.profile.name}</Text>
             <Text style={{ fontSize: 14 }}>{user.profile.username}</Text>
@@ -159,7 +185,7 @@ export default function Menu({ navigation }: RootTabScreenProps<"Menu">) {
           ]}
         >
           <Text style={styles.sectionTitle}>Conta</Text>
-          <TouchableOpacity style={styles.link}>
+          <TouchableOpacity style={styles.link} onPress={() => exit()}>
             <MaterialIcons name="exit-to-app" size={25} color={colors.tint} />
             <Text style={styles.linkTitle}>Sair</Text>
           </TouchableOpacity>

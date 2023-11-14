@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   searchInput: {
     borderRadius: 10,
     width: "100%",
-    height: 30,
+    height: 40,
     padding: 10,
   },
   chatContent: {
