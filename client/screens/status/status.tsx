@@ -94,18 +94,32 @@ export default function Status({ navigation }: RootTabScreenProps<"Status">) {
               style={styles.rowContainer}
               onPress={() => navigation.navigate("StatusCreateMedia")}
             >
-              <Userpic
-                size={50}
-                name={user.profile.name}
-                source={{ uri: user.profile.avatar }}
-                colorize={true}
-                borderRadius="50%"
-                badge={true}
-                badgeColor={"#2f95dc"}
-                badgePosition={"bottom-right"}
-                badgeProps={badgeProps}
-                style={{ marginRight: 10 }}
-              />
+              {user.profile.avatar.length ? (
+            <Userpic
+              size={60}
+              name={user.profile.username}
+              source={{ uri: user.profile.avatar }}
+              colorize={true}
+              borderRadius="50%"
+              badge={true}
+              badgeColor={"#919191"}
+              badgePosition={"bottom-right"}
+              badgeProps={badgeProps}
+              style={{ marginRight: 10 }}
+            />
+          ) : (
+            <Userpic
+              size={60}
+              name={user.profile.avatar}
+              colorize={true}
+              borderRadius="50%"
+              badge={true}
+              badgeColor={"#919191"}
+              badgePosition={"bottom-right"}
+              badgeProps={badgeProps}
+              style={{ marginRight: 10 }}
+            />
+          )}
               <View>
                 <Text style={{ fontWeight: "bold" }}>Meu status</Text>
                 <Text style={{ fontSize: 13 }}>

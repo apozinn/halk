@@ -12,6 +12,12 @@ import {
 } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 
+const badgeProps = {
+  size: 50,
+  borderRadius: 50,
+  animate: true,
+};
+
 class Chat extends Component {
   public scrollViewRef: React.RefObject<ScrollView> = createRef();
   public badgeProps = {
@@ -71,6 +77,8 @@ class Chat extends Component {
         scrollOffsetMax={100}
         propagateSwipe={true}
         style={styles.modal}
+        onBackButtonPress={() => this.close()}
+        onBackdropPress={() => this.close()}
       >
         <View style={styles.scrollableModal}>
           <ScrollView onScroll={this.handleOnScroll} scrollEventThrottle={16}>
@@ -95,18 +103,32 @@ class Chat extends Component {
                   { backgroundColor: this.colors.background },
                 ]}
               >
-                <Userpic
-                  size={50}
-                  name={this.chat.user.profile.name}
-                  source={{ uri: this.chat.user.profile.avatar }}
-                  colorize={true}
-                  borderRadius="50%"
-                  badge={true}
-                  badgeColor={this.state.isOnline ? "#00ff0d" : "#919191"}
-                  badgePosition={"bottom-right"}
-                  badgeProps={this.badgeProps}
-                  style={{ marginRight: 10 }}
-                />
+                {this.chat.user.profile.avatar.length ? (
+            <Userpic
+              size={60}
+              name={this.chat.user.profile.username}
+              source={{ uri: this.chat.user.profile.avatar }}
+              colorize={true}
+              borderRadius="50%"
+              badge={true}
+              badgeColor={"#919191"}
+              badgePosition={"bottom-right"}
+              badgeProps={badgeProps}
+              style={{ marginRight: 10 }}
+            />
+          ) : (
+            <Userpic
+              size={60}
+              name={this.chat.user.profile.avatar}
+              colorize={true}
+              borderRadius="50%"
+              badge={true}
+              badgeColor={"#919191"}
+              badgePosition={"bottom-right"}
+              badgeProps={badgeProps}
+              style={{ marginRight: 10 }}
+            />
+          )}
                 <Text style={{ fontWeight: "bold", fontSize: 15 }}>
                   {this.chat.user.profile.name}
                 </Text>
@@ -205,18 +227,32 @@ class Chat extends Component {
       >
         <>{this.ModalChat()}</>
         <View style={{ flexDirection: "row" }}>
-          <Userpic
-            size={50}
-            name={this.chat.user.profile.name}
-            source={{ uri: this.chat.user.profile.avatar }}
-            colorize={true}
-            borderRadius="50%"
-            badge={true}
-            badgeColor={this.state.isOnline ? "#00ff0d" : "#919191"}
-            badgePosition={"bottom-right"}
-            badgeProps={this.badgeProps}
-            style={{ marginRight: 10 }}
-          />
+        {this.chat.user.profile.avatar.length ? (
+            <Userpic
+              size={60}
+              name={this.chat.user.profile.username}
+              source={{ uri: this.chat.user.profile.avatar }}
+              colorize={true}
+              borderRadius="50%"
+              badge={true}
+              badgeColor={"#919191"}
+              badgePosition={"bottom-right"}
+              badgeProps={badgeProps}
+              style={{ marginRight: 10 }}
+            />
+          ) : (
+            <Userpic
+              size={60}
+              name={this.chat.user.profile.avatar}
+              colorize={true}
+              borderRadius="50%"
+              badge={true}
+              badgeColor={"#919191"}
+              badgePosition={"bottom-right"}
+              badgeProps={badgeProps}
+              style={{ marginRight: 10 }}
+            />
+          )}
           <View style={{ justifyContent: "center" }}>
             <Text style={{ fontWeight: "bold", fontSize: 15 }}>
               {this.chat.user.profile.name}

@@ -112,14 +112,24 @@ export default function NewChat({
                 onPress={() => goToChat(user)}
               >
                 <View style={styles.leftContent}>
-                  <Userpic
-                    size={50}
-                    name={user.profile.name}
-                    source={{ uri: user.profile.avatar }}
-                    colorize={true}
-                    borderRadius="50%"
-                    style={{ marginRight: 10 }}
-                  />
+                  {user.profile.avatar.length ? (
+                    <Userpic
+                      size={60}
+                      name={user.profile.username}
+                      source={{ uri: user.profile.avatar }}
+                      colorize={true}
+                      borderRadius="50%"
+                      style={{ marginRight: 10 }}
+                    />
+                  ) : (
+                    <Userpic
+                      size={60}
+                      name={user.profile.avatar}
+                      colorize={true}
+                      borderRadius="50%"
+                      style={{ marginRight: 10 }}
+                    />
+                  )}
                   <View style={{ justifyContent: "center" }}>
                     <Text style={styles.username}>{user.profile.username}</Text>
                     <Text style={styles.name}>{user.profile.name}</Text>

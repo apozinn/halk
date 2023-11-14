@@ -22,11 +22,21 @@ export const UserProvider = ({ children }: any) => {
   const [loads, setLoads] = useState(0);
 
   const updateUser = (newUser: any) => {
+    console.log("updateUser", newUser);
     AsyncStorage.getItem("user").then((data: any) => {
       var dt = JSON.parse(data);
       setUser({
         logged: newUser.logged ? newUser.logged : dt.logged,
-        user: newUser.user ? newUser.user : dt.user,
+        user: {
+          id: newUser.user.id ?? dt.user,
+          phone: "",
+          profile: {
+            name: newUser.user.profile.name ?? dt.user.profile.name,
+            username: newUser.user.profile.username ?? dt.user.profile.username,
+            avatar: newUser.user.profile.avatar ?? dt.user.profile.avatar,
+            bio: newUser.user.profile.bio ?? dt.user.profile.bio,
+          }
+        },
         updateUser,
       })
     });

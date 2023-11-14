@@ -17,7 +17,6 @@ export async function CreateAccount(username: string, password: string) {
 }
 
 export async function Login(username:string, password:string) {
-  console.log(apiUrl);
   return fetch(`${apiUrl}/user/login`, {
     ...POST_PARAMS,
     body: JSON.stringify({username, password}),
@@ -25,7 +24,6 @@ export async function Login(username:string, password:string) {
     .then((res) => res.json())
     .then((res) => res);
 }
-
 
 
 export const uploadImage = async (image: any) => {

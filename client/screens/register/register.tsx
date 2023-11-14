@@ -55,15 +55,11 @@ export default function Register({
           { cancelable: true }
         );
       } else {
-        console.log(res);
         updateUser({
+          logged: true,
+          id: res.user.id,
           ...user,
-          logged: false,
-          profile: {
-            ...user.profile,
-            id: res.user.profile.id,
-          }
-        })
+        });
         navigation.navigate("CreateProfile");
       }
     });
@@ -82,6 +78,14 @@ export default function Register({
           { cancelable: true }
         );
       } else {
+        updateUser({
+          logged: true,
+          user: {
+            id: res.user.id,
+            profile: { ...res.user.profile},
+          },
+        });
+        console.log("after", user);
         navigation.navigate("Root");
       }
     });

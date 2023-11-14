@@ -101,18 +101,32 @@ export default function Chat({ navigation, route }) {
                 }
                 style={styles.userProfile}
               >
-                <Userpic
-                  size={40}
-                  name={chat.user.profile.name}
-                  source={{ uri: chat.user.profile.avatar }}
-                  colorize={true}
-                  borderRadius="50%"
-                  badge={true}
-                  badgeColor={online ? "#00ff0d" : "#919191"}
-                  badgePosition={"bottom-right"}
-                  badgeProps={badgeProps}
-                  style={{ marginRight: 10 }}
-                />
+                {user.profile.avatar.length ? (
+            <Userpic
+              size={60}
+              name={user.profile.username}
+              source={{ uri: chat.user.profile.avatar }}
+              colorize={true}
+              borderRadius="50%"
+              badge={true}
+              badgeColor={"#919191"}
+              badgePosition={"bottom-right"}
+              badgeProps={badgeProps}
+              style={{ marginRight: 10 }}
+            />
+          ) : (
+            <Userpic
+              size={60}
+              name={chat.user.profile.avatar}
+              colorize={true}
+              borderRadius="50%"
+              badge={true}
+              badgeColor={"#919191"}
+              badgePosition={"bottom-right"}
+              badgeProps={badgeProps}
+              style={{ marginRight: 10 }}
+            />
+          )}
                 <View style={{ alignItems: "flex-start" }}>
                   <Text style={{ fontWeight: "bold" }}>
                     {chat.user.profile.name}

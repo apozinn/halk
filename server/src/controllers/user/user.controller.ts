@@ -44,11 +44,17 @@ export class UserController {
     const password:string = req.body.password;
     const user = await User.findOne({ 'profile.username': username });
 
+    const userObject = {
+      id: user.id,
+      following: user.following,
+      profile: user.profile,
+    };
+
     if(user) {
       if(user.password == password) {
         return {
           logged: true,
-          user,
+          user: userObject,
         };
       } else {
         return {
@@ -82,10 +88,16 @@ export class UserController {
       };
 
       const user = await User.create(newUser);
+      const userObject = {
+        id: user.id,
+        following: user.following,
+        profile: user.profile,
+      };
+
       if(user) {
         return {
           created: true,
-          user,
+          user: userObject,
         };
       } else {
         return {
