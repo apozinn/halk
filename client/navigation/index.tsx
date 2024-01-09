@@ -53,6 +53,8 @@ import ProfileScreen from "../screens/chat/profile";
 import RegisterScreen from "../screens/register/register";
 import WelcomeScreen from "../screens/register/welcome";
 import CreateProfileScreen from "../screens/register/createProfile";
+import SignScreen from "../screens/register/sign";
+import LoginScreen from "../screens/register/login";
 
 //settings
 import SettingsScreen from "../screens/settings/settings";
@@ -100,6 +102,16 @@ function RootNavigator() {
       <Stack.Screen
         name="Welcome"
         component={WelcomeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Sign"
+        component={SignScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

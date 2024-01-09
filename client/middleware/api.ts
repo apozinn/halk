@@ -27,18 +27,13 @@ export async function Login(username:string, password:string) {
 
 
 export const uploadImage = async (image: any) => {
-  const clientId = process.env.IMGUR_ID;
-  const clientSecret = process.env.IMGUR_SECRET;
-
-  function blobToBase64(blob: Blob) {
-    return new Promise((resolve, _) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.readAsDataURL(blob);
-    });
-  }
-
-  return "https://i.imgur.com/Gaor20G.jpeg";
+  return await fetch(`${apiUrl}/user/uploadAvatar`, {
+    method: 'POST',
+    body: image,
+    headers: {
+      'content-type': 'multipart/form-data',
+    },
+  });
 };
 
 export const sendSms = async (phone: any) => {

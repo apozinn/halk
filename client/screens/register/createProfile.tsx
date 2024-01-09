@@ -3,7 +3,7 @@ import { Image, Pressable, StatusBar, StyleSheet, View } from "react-native";
 import { RootStackScreenProps } from "../../types";
 import { Text, TextInput } from "../../src/components/Themed";
 import * as ImagePicker from "expo-image-picker";
-import { createProfile, verifyUsername } from "../../middleware/api";
+import { createProfile, verifyUsername, uploadImage } from "../../middleware/api";
 import { UserContext } from "../../src/contexts/user";
 
 export default function CreateProfile({
@@ -62,9 +62,26 @@ export default function CreateProfile({
       quality: 1,
     });
 
-    if (!result.cancelled) {
-      setAvatar(result.uri);
+    if (result.canceled) {
+      return;
     }
+
+
+    // ImagePicker saves the taken photo to disk and returns a local URI to it
+    let localUri = result.assets[0].uri
+    let filename = localUri.split('/').pop();
+  
+    // Infer the type of the image
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+  
+    // Upload the image using the fetch and FormData APIs
+    let formData = new FormData();
+    // Assume "photo" is the name of the form field the server expects
+    formData.append('photo', localUri);
+
+    setAvatar(localUri);
+    uploadImage(formData);
   }
 
   return (

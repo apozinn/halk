@@ -106,4 +106,9 @@ export class UserController {
       }
     }
   }
+
+  @Post('/uploadAvatar')
+  async uploadAvatar(@Req() req) {
+    console.log(req.body);
+  }
 }

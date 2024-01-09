@@ -10,6 +10,7 @@ import ErrorBoundary from "./screens/errorBoundary";
 import { getColors } from "./constants/Colors";
 import { MenuProvider } from "react-native-popup-menu";
 import { SettingsProvider } from "./src/contexts/settings";
+import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -29,6 +30,7 @@ export default function App() {
                   <SafeAreaProvider>
                     <MenuProvider>
                       <Navigation colorScheme={colorScheme} />
+                      <StatusBar/>
                     </MenuProvider>
                   </SafeAreaProvider>
                 </SocketProvider>

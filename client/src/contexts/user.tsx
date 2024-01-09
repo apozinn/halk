@@ -22,7 +22,6 @@ export const UserProvider = ({ children }: any) => {
   const [loads, setLoads] = useState(0);
 
   const updateUser = (newUser: any) => {
-    console.log("updateUser", newUser);
     AsyncStorage.getItem("user").then((data: any) => {
       var dt = JSON.parse(data);
       setUser({

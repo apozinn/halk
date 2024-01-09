@@ -10,6 +10,7 @@ import { UserContext } from "../../src/contexts/user";
 export default function Register({
   navigation,
 }: RootStackScreenProps<"Register">) {
+  navigation.navigate("CreateProfile");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isNewUser, setIsNewUser] = useState(true);
