@@ -26,7 +26,7 @@ export default function SearchChat({ navigation }) {
   const handleOnScroll = (event) => {
     setScrollOfSet(event.nativeEvent.contentOffset.y);
   };
-  const handleScrollTo = (p) => {};
+  const handleScrollTo = (p) => { };
 
   const close = () => setVisible(false);
   const open = () => setVisible(true);
@@ -44,6 +44,8 @@ export default function SearchChat({ navigation }) {
         scrollOffsetMax={100}
         propagateSwipe={true}
         style={styles.modal}
+        onBackButtonPress={() => close()}
+        onBackdropPress={() => close()}
       >
         <View style={styles.scrollableModal}>
           <ScrollView onScroll={handleOnScroll} scrollEventThrottle={16}>
@@ -72,12 +74,12 @@ export default function SearchChat({ navigation }) {
                   (chat, index) => (
                     <TouchableOpacity style={styles.chatPw} key={index}>
                       <Userpic
-        size={50}
-        name={chat.user.profile.name}
-        source={{ uri: chat.user.profile.avatar }}
-        colorize={true}
-        borderRadius="50%"
-      />
+                        size={50}
+                        name={chat.user.profile.name}
+                        source={{ uri: chat.user.profile.avatar }}
+                        colorize={true}
+                        borderRadius="50%"
+                      />
                     </TouchableOpacity>
                   )
                 )}
@@ -101,7 +103,7 @@ export default function SearchChat({ navigation }) {
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
               >
-              {!search ? <></> : <>{chats
+                {!search ? <></> : <>{chats
                   .filter(
                     (chat) =>
                       chat.user.profile.name
@@ -149,7 +151,7 @@ export default function SearchChat({ navigation }) {
       <TouchableOpacity
         onPress={() => open()}
         style={{
-          marginRight: 5,
+          marginRight: 10,
         }}
       >
         <AntDesign name="search1" size={22} color={colors.tint} />

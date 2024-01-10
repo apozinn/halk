@@ -14,8 +14,6 @@ import {
   Ionicons,
   Feather,
   FontAwesome,
-  MaterialIcons,
-  Fontisto,
 } from "@expo/vector-icons";
 import { RootStackScreenProps } from "../../types";
 import { TextInput, Text } from "../../src/components/Themed";

@@ -8,7 +8,7 @@ export default function Welcome({
   return (
     <View style={styles.container}>
       <View style={styles.centeredView}>
-        <Image source={require("../../assets/images/halk.png")} style={styles.image} />
+        <Image source={require("../../assets/images/halk_icon.png")} style={styles.image} />
         <Text style={styles.title}>Welcome to Halk</Text>
         <Text style={styles.description}>
           This is a basic and open source template of a real-time messaging app made in react-native and expo, visit the source code on our github, download and customize it however you want!
@@ -97,6 +97,6 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   loginButton: {
-    backgroundColor: "#2f95dc"
+    backgroundColor: "#19dcdc"
   }
 });

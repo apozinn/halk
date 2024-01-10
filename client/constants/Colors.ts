@@ -1,8 +1,8 @@
 import { DefaultTheme, DarkTheme } from "@react-navigation/native";
 import useColorScheme from "../src/hooks/useColorScheme";
 
-const tintColorLight = "#2f95dc";
-const tintColorDark = "#fff";
+const tintColorLight = "#19dcdc";
+const tintColorDark = "#19dcdc";
 
 const colors = {
   light: {

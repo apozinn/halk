@@ -223,16 +223,12 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color }) => (
             <Ionicons name="chatbox-ellipses" size={24} color={color} />
           ),
-          headerStyle: {
-            height:
-              Platform.OS === "android" || Platform.OS === "ios" ? 90 : 40,
-          },
           headerLeft: () => (
             <Pressable
               onPress={() => navigation.navigate("Camera")}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
-                marginLeft: 5,
+                marginLeft: 10,
               })}
             >
               <Entypo name="camera" size={22} color={colors.tint} />
@@ -244,7 +240,7 @@ function BottomTabNavigator() {
                 justifyContent: "space-between",
                 flexDirection: "row",
                 alignItems: "center",
-                marginRight: 5,
+                marginRight: 10,
               }}
             >
               <SearchChat navigation={navigation} />
