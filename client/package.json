@@ -52,7 +52,8 @@
     "react-native-userpic": "^1.0.0",
     "react-native-uuid": "^2.0.1",
     "react-native-web": "~0.19.6",
-    "socket.io-client": "^4.5.2"
+    "socket.io-client": "^4.5.2",
+    "expo-crypto": "~12.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

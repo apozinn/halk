@@ -86,7 +86,6 @@ export default function Register({
             profile: { ...res.user.profile},
           },
         });
-        console.log("after", user);
         navigation.navigate("Root");
       }
     });

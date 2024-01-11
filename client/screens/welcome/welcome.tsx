@@ -16,14 +16,14 @@ export default function Welcome({
       </View>
       <View style={styles.buttonsContainer}>
         <TouchableOpacity onPress={() => {
-          navigation.navigate("Sign");
+          navigation.navigate("SignIn");
         }} style={{ ...styles.outlineButton, ...styles.signButton }}>
-          <Text style={{ fontSize: 17 }}>Sign</Text>
+          <Text style={{ fontSize: 17 }}>Sign In</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {
-          navigation.navigate("Login");
+          navigation.navigate("SignUp");
         }} style={{ ...styles.outlineButton, ...styles.loginButton }}>
-          <Text style={{ fontSize: 17 }}>Login</Text>
+          <Text style={{ fontSize: 17 }}>Sign Up</Text>
         </TouchableOpacity>
       </View>
     </View>

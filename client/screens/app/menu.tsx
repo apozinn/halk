@@ -43,7 +43,7 @@ export default function Menu({ navigation }: RootTabScreenProps<"Menu">) {
         },
       },
     });
-    navigation.navigate("Register");
+    navigation.navigate("Welcome");
   }
 
   return (

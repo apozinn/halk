@@ -29,8 +29,6 @@ export default function Chats({ navigation }) {
     if (!chats.length) {
       chats.push(new HalkController().halkChat());
       updateChats({ chats });
-
-      console.log(user, logged, "a");
     }
     if (!logged){
       navigation.navigate("Welcome");

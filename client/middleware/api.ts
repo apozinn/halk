@@ -16,8 +16,8 @@ export async function CreateAccount(username: string, password: string) {
     .then((res) => res);
 }
 
-export async function Login(username:string, password:string) {
-  return fetch(`${apiUrl}/user/login`, {
+export async function SignIn(username:string, password:string) {
+  return fetch(`${apiUrl}/user/signin`, {
     ...POST_PARAMS,
     body: JSON.stringify({username, password}),
   })

@@ -50,11 +50,11 @@ import ChatScreen from "../screens/chat/chat";
 import ProfileScreen from "../screens/chat/profile";
 
 //register
-import RegisterScreen from "../screens/register/register";
-import WelcomeScreen from "../screens/register/welcome";
-import CreateProfileScreen from "../screens/register/createProfile";
-import SignScreen from "../screens/register/sign";
-import LoginScreen from "../screens/register/login";
+import RegisterScreen from "../screens/welcome/register";
+import WelcomeScreen from "../screens/welcome/welcome";
+import CreateProfileScreen from "../screens/welcome/createProfile";
+import SignScreen from "../screens/welcome/signIn";
+import LoginScreen from "../screens/welcome/signUp";
 
 //settings
 import SettingsScreen from "../screens/settings/settings";
@@ -105,12 +105,12 @@ function RootNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Sign"
+        name="SignIn"
         component={SignScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Login"
+        name="SignUp"
         component={LoginScreen}
         options={{ headerShown: false }}
       />
@@ -213,7 +213,7 @@ function BottomTabNavigator() {
         component={ChatsScreen}
         options={({ navigation }: RootTabScreenProps<"Chats">) => ({
           title: "Chats",
-          tabBarBadge: unreadChats,
+          tabBarBadge: unreadChats > 0 ? unreadChats : null,
           headerTitleStyle: {
             fontSize: 15,
             fontWeight: "bold",

@@ -5,13 +5,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Post('/editProfile')
-  async editProfile(@Req() req) {}
+  async editProfile(@Req() req) { }
 
   @Post('/deleteAccount')
-  async deleteAccount(@Req() req) {}
+  async deleteAccount(@Req() req) { }
 
   @Post('/searchUser')
   async searchUser(@Req() req) {
@@ -38,20 +38,20 @@ export class UserController {
     } else return { exists: false };
   }
 
-  @Post('/login')
+  @Post('/signin')
   async login(@Req() req) {
-    const username:string = req.body.username;
-    const password:string = req.body.password;
+    const username: string = req.body.username;
+    const password: string = req.body.password;
     const user = await User.findOne({ 'profile.username': username });
 
-    const userObject = {
-      id: user.id,
-      following: user.following,
-      profile: user.profile,
-    };
+    if (user) {
+      const userObject = {
+        id: user.id,
+        following: user.following,
+        profile: user.profile,
+      };
 
-    if(user) {
-      if(user.password == password) {
+      if (user.password == password) {
         return {
           logged: true,
           user: userObject,
@@ -74,9 +74,9 @@ export class UserController {
   async createAccount(@Req() req) {
     const username: string = req.body.username;
     const password: string = req.body.password;
-    const userAlreadyExists = await User.findOne({'profile.username': username });
+    const userAlreadyExists = await User.findOne({ 'profile.username': username });
 
-    if(userAlreadyExists) {
+    if (userAlreadyExists) {
       return { userAlreadyExists };
     } else {
       const newUser = {
@@ -94,7 +94,7 @@ export class UserController {
         profile: user.profile,
       };
 
-      if(user) {
+      if (user) {
         return {
           created: true,
           user: userObject,

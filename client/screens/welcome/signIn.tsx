@@ -2,15 +2,37 @@ import { View, Image, StyleSheet, TouchableOpacity, StatusBar } from "react-nati
 import { RootStackScreenProps } from "../../types";
 import { Text } from "../../src/components/Themed";
 import { Ionicons } from '@expo/vector-icons';
-import { TextInput, Button } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 import { getColors } from "../../constants/Colors";
-import { useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import * as Crypto from 'expo-crypto';
+import { SignIn } from "../../middleware/api";
+import { UserContext } from "../../src/contexts/user";
 
-export default function SignScreen({ navigation }: RootStackScreenProps<"Sign">) {
+export default function SignInScreen({ navigation }: RootStackScreenProps<"SignIn">) {
+    const { user, updateUser } = useContext(UserContext);
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errorReason, setErrorReason] = useState("");
     const colors = getColors();
+
+    async function SignInRequest() {
+        const encrypted_password = await Crypto.digestStringAsync(
+            Crypto.CryptoDigestAlgorithm.SHA256, password
+        );
+        const result = await SignIn(username, encrypted_password);
+        if (result.logged) {
+            updateUser({
+                logged: true,
+                user: result.user
+            });
+            navigation.navigate("Root");
+        } else {
+            setErrorReason(result.reason);
+            setPassword("");
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -20,9 +42,11 @@ export default function SignScreen({ navigation }: RootStackScreenProps<"Sign">)
                 </TouchableOpacity>
                 <Image source={require("../../assets/images/halk_icon.png")} style={styles.logo} />
             </View>
-
             <View style={styles.mainContainert}>
-                <Text style={{ fontSize: 40, fontWeight: "bold" }}>Sign</Text>
+                <View style={styles.titleContainer}>
+                    <Text style={{ fontSize: 40, fontWeight: "bold" }}>Sign In</Text>
+                    <View style={{ ...styles.titleLine, ...{ backgroundColor: colors.tint } }}></View>
+                </View>
                 <TextInput
                     label="Username"
                     mode="outlined"
@@ -31,23 +55,6 @@ export default function SignScreen({ navigation }: RootStackScreenProps<"Sign">)
                     activeOutlineColor={colors.tint}
                     outlineColor={colors.secondary}
                     onChangeText={(newUsername) => setUsername(newUsername)}
-                    theme={{
-                        colors: {
-                            text: colors.text,
-                            placeholder: colors.text,
-                            background: colors.background,
-                        }
-                    }}
-                />
-                <TextInput
-                    label="Email"
-                    mode="outlined"
-                    value={email}
-                    placeholder="Email"
-                    activeOutlineColor={colors.tint}
-                    outlineColor={colors.secondary}
-                    placeholderTextColor={colors.text}
-                    onChangeText={(newEmail) => setEmail(newEmail)}
                     theme={{
                         colors: {
                             text: colors.text,
@@ -74,9 +81,10 @@ export default function SignScreen({ navigation }: RootStackScreenProps<"Sign">)
                     }}
                 />
             </View>
-            <TouchableOpacity style={{ ...styles.registerButton, ...{ backgroundColor: colors.tint } }} onPress={() => navigation.navigate("Root")}>
+            <TouchableOpacity style={{ ...styles.registerButton, ...{ backgroundColor: colors.tint } }} onPress={() => SignInRequest()}>
                 <Text style={{ fontSize: 17, fontWeight: "bold" }}>Continue</Text>
             </TouchableOpacity>
+            <Text style={styles.errorReason}>{errorReason}</Text>
         </View>
     );
 }
@@ -108,4 +116,15 @@ const styles = StyleSheet.create({
         margin: 15,
         borderRadius: 5
     },
+    titleContainer: {
+    },
+    titleLine: {
+        width: 130,
+        height: 5,
+        borderRadius: 100
+    },
+    errorReason: {
+        color: "red",
+        textAlign: "center",
+    }
 });
