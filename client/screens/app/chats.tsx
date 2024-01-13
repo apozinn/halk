@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import { RootTabScreenProps } from "../../types";
+import { View, ScrollView } from "react-native";
 import { UserContext } from "../../src/contexts/user";
 import { ChatsContext } from "../../src/contexts/chats";
 import { SocketContext } from "../../src/contexts/socket";
@@ -17,28 +16,20 @@ export default function Chats({ navigation }) {
   const colors = getColors();
 
   useEffect(() => {
-    if (!user || !chats || !socket) return;
-    new SocketController({
-      user,
-      updateUser,
-      chats,
-      updateChats,
-      socket,
-    });
+    if(user && chats && socket) {
+      if (!logged) {
+        navigation.navigate("Welcome");
+        return;
+      }
 
-    if (!chats.length) {
-      chats.push(new HalkController().halkChat());
-      updateChats({ chats });
+      new SocketController({
+        user,
+        updateUser,
+        chats,
+        updateChats,
+        socket,
+      });
     }
-    if (!logged){
-      navigation.navigate("Welcome");
-      return;
-    }
-
-    updateUser({
-      ...user,
-      logged: false,
-    });
   }, []);
 
   return (

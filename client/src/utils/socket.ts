@@ -101,7 +101,7 @@ export class SocketController {
 
 export function CreateSocketConnection({ userId }) {
   if (!userId) return;
-  const socket = io("http://localhost:3000/", {
+  const socket = io(process.env.EXPO_PUBLIC_API_URL, {
     transports: ["websocket"],
     auth: {
       userId,

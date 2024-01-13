@@ -12,7 +12,6 @@ import { UserContext } from "../../src/contexts/user";
 export default function SignInScreen({ navigation }: RootStackScreenProps<"SignIn">) {
     const { user, updateUser } = useContext(UserContext);
     const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorReason, setErrorReason] = useState("");
     const colors = getColors();

@@ -101,7 +101,7 @@ export default function Chat({ navigation, route }) {
               >
                 {user.profile.avatar.length ? (
             <Userpic
-              size={60}
+              size={45}
               name={user.profile.username}
               source={{ uri: chat.user.profile.avatar }}
               colorize={true}
@@ -114,7 +114,7 @@ export default function Chat({ navigation, route }) {
             />
           ) : (
             <Userpic
-              size={60}
+              size={45}
               name={chat.user.profile.avatar}
               colorize={true}
               borderRadius="50%"
@@ -125,12 +125,12 @@ export default function Chat({ navigation, route }) {
               style={{ marginRight: 10 }}
             />
           )}
-                <View style={{ alignItems: "flex-start" }}>
-                  <Text style={{ fontWeight: "bold" }}>
+                <View>
+                  <Text style={{ fontWeight: "bold", fontSize: 18 }}>
                     {chat.user.profile.name}
                   </Text>
                   {userTyping ? (
-                    <Text style={styles.isOnline}>Digitando...</Text>
+                    <Text style={styles.isOnline}>{""}</Text>
                   ) : (
                     <Text style={styles.isOnline}>
                       {online ? "online" : ""}
@@ -179,6 +179,8 @@ const styles = StyleSheet.create({
   topContainerLeft: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    alignContent: "center"
   },
   topContainerRight: {
     flexDirection: "row",

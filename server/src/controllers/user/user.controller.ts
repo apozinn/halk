@@ -38,7 +38,7 @@ export class UserController {
     } else return { exists: false };
   }
 
-  @Post('/signin')
+  @Post('/signIn')
   async login(@Req() req) {
     const username: string = req.body.username;
     const password: string = req.body.password;
@@ -70,14 +70,17 @@ export class UserController {
     }
   }
 
-  @Post('/createAccount')
+  @Post('/signUp')
   async createAccount(@Req() req) {
     const username: string = req.body.username;
     const password: string = req.body.password;
     const userAlreadyExists = await User.findOne({ 'profile.username': username });
 
     if (userAlreadyExists) {
-      return { userAlreadyExists };
+      return {
+        created: false,
+        reason: "There is already a user with this username",
+      }
     } else {
       const newUser = {
         id: uuidv4(),
@@ -102,6 +105,7 @@ export class UserController {
       } else {
         return {
           created: false,
+          reason: "An error occurred while creating the account"
         };
       }
     }

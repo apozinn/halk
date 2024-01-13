@@ -229,7 +229,7 @@ class Chat extends Component {
         <View style={{ flexDirection: "row" }}>
         {this.chat.user.profile.avatar.length ? (
             <Userpic
-              size={60}
+              size={55}
               name={this.chat.user.profile.username}
               source={{ uri: this.chat.user.profile.avatar }}
               colorize={true}
@@ -254,7 +254,7 @@ class Chat extends Component {
             />
           )}
           <View style={{ justifyContent: "center" }}>
-            <Text style={{ fontWeight: "bold", fontSize: 15 }}>
+            <Text style={{ fontWeight: "bold", fontSize: 17 }}>
               {this.chat.user.profile.name}
             </Text>
             {lastMessage.author.id === this.user.id ? (
@@ -270,7 +270,7 @@ class Chat extends Component {
                 </Text>
               </View>
             ) : (
-              <Text>
+              <Text style={styles.messageContent}>
                 {lastMessage.content.length > 30 ? lastMessage.content.slice(0, 30) + "..." : lastMessage.content}
               </Text>
             )}
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   },
   messageContent: {
     fontSize: 13,
-    opacity: 0.7,
+    opacity: 0.8,
     alignItems: "center",
   },
   messageDate: {
@@ -308,11 +308,10 @@ const styles = StyleSheet.create({
   },
   unread: {
     backgroundColor: "#2f95dc",
-    borderRadius: 100,
-    minWidth: 15,
-    minHeight: 15,
+    borderRadius: 50,
     textAlign: "center",
     color: "white",
+    paddingHorizontal: 5,
   },
   modal: {
     justifyContent: "flex-end",

@@ -7,8 +7,8 @@ const POST_PARAMS = {
   },
 };
 
-export async function CreateAccount(username: string, password: string) {
-  return fetch(`${apiUrl}/user/createAccount`, {
+export async function SignUp(username: string, password: string) {
+  return fetch(`${apiUrl}/user/signUp`, {
     ...POST_PARAMS,
     body: JSON.stringify({username, password}),
   })
@@ -17,7 +17,7 @@ export async function CreateAccount(username: string, password: string) {
 }
 
 export async function SignIn(username:string, password:string) {
-  return fetch(`${apiUrl}/user/signin`, {
+  return fetch(`${apiUrl}/user/signIn`, {
     ...POST_PARAMS,
     body: JSON.stringify({username, password}),
   })
