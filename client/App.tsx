@@ -1,15 +1,14 @@
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import useCachedResources from "./src/hooks/useCachedResources";
-import useColorScheme from "./src/hooks/useColorScheme";
-import Navigation from "./navigation";
-import { UserProvider } from "./src/contexts/user";
-import { ChatsProvider } from "./src/contexts/chats";
-import { SocketProvider } from "./src/contexts/socket";
-import { BufferProvider } from "./src/contexts/buffer";
-import ErrorBoundary from "./screens/errorBoundary";
-import { getColors } from "./constants/Colors";
+import useCachedResources from "@/hooks/useCachedResources";
+import useColorScheme from "@/hooks/useColorScheme";
+import { UserProvider } from "@/contexts/user";
+import { ChatsProvider } from "@/contexts/chats";
+import { SocketProvider } from "@/contexts/socket";
+import { BufferProvider } from "@/contexts/buffer";
+import ErrorBoundary from "./app/errorBoundary";
+import { getColors } from "@/constants/Colors";
 import { MenuProvider } from "react-native-popup-menu";
-import { SettingsProvider } from "./src/contexts/settings";
+import { SettingsProvider } from "@/contexts/settings";
 import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
@@ -29,7 +28,6 @@ export default function App() {
                 <SocketProvider>
                   <SafeAreaProvider>
                     <MenuProvider>
-                      <Navigation colorScheme={colorScheme} />
                       <StatusBar/>
                     </MenuProvider>
                   </SafeAreaProvider>

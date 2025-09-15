@@ -15,17 +15,26 @@ export class UserController {
 
   @Post('/searchUser')
   async searchUser(@Req() req) {
-    const search = req.body.search;
+    try {
+      const search = req.body.search;
+      if (!search.length)
+        return [];
 
-    const allUsers = await User.find({});
-    const user = allUsers.filter(
-      (u) =>
-        u.id === search ||
-        u.profile.name.includes(search) ||
-        u.profile.username.includes(search),
-    );
+      const allUsers = await User.find({});
+      if (!allUsers)
+        return [];
 
-    return user;
+      const user = allUsers.filter(
+        (u) =>
+          u.id === search ||
+          u.profile.name.includes(search) ||
+          u.profile.username.includes(search),
+      );
+
+      return user ?? [];
+    } catch (error) {
+      console.log("error in searchUser, error: ", error);
+    }
   }
 
   @Post('/verifyUsername')
@@ -43,6 +52,7 @@ export class UserController {
     const username: string = req.body.username;
     const password: string = req.body.password;
     const user = await User.findOne({ 'profile.username': username });
+    console.log(username, password);
 
     if (user) {
       const userObject = {
