@@ -52,7 +52,6 @@ export class UserController {
     const username: string = req.body.username;
     const password: string = req.body.password;
     const user = await User.findOne({ 'profile.username': username });
-    console.log(username, password);
 
     if (user) {
       const userObject = {
@@ -123,6 +122,5 @@ export class UserController {
 
   @Post('/uploadAvatar')
   async uploadAvatar(@Req() req) {
-    console.log(req.body);
   }
 }

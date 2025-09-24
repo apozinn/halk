@@ -25,7 +25,6 @@ export default function SignInScreen() {
             Crypto.CryptoDigestAlgorithm.SHA256, password
         );
         const result = await SignIn(username, password);
-        console.log(result);
 
         if (result.logged) {
             updateUser({

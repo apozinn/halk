@@ -1,4 +1,4 @@
-const apiUrl = "http://192.168.0.106:3000";
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 const POST_PARAMS = {
   method: "POST",
@@ -17,7 +17,6 @@ export async function SignUp(username: string, password: string) {
 }
 
 export async function SignIn(username:string, password:string) {
-  console.log(apiUrl);
   const c = fetch(`${apiUrl}/user/signIn`, {
     ...POST_PARAMS,
     body: JSON.stringify({username, password}),

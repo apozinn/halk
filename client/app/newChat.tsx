@@ -18,11 +18,11 @@ export default function NewChat() {
   const { user } = useContext(UserContext);
   const colors = getColors();
   const navigation = useRouter();
-  
+
   useEffect(() => {
     if (search) {
       searchUser(search).then((data) => {
-        if(data) {
+        if (data) {
           setResults(data);
         }
       });
@@ -71,8 +71,7 @@ export default function NewChat() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
+    <View style={styles.container}>
       <View
         style={[
           styles.inputContainer,
@@ -86,7 +85,7 @@ export default function NewChat() {
           style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}
           onPress={() => navigation.navigate("Root")}
         >
-          <AntDesign name="arrowleft" size={25} color={colors.tint} />
+          <AntDesign name="arrow-left" size={25} color={colors.tint} />
         </Pressable>
         <TextInput
           style={[styles.input, { backgroundColor: colors.defaultColors.card }]}
@@ -147,7 +146,6 @@ export default function NewChat() {
         )}
       </ScrollView>
     </View>
-    </SafeAreaView>
   );
 }
 

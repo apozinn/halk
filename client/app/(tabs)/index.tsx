@@ -1,14 +1,12 @@
 import React, { useContext, useEffect } from "react";
-import { View, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
 import { UserContext } from "@/contexts/user";
 import { ChatsContext } from "@/contexts/chats";
 import { SocketContext } from "@/contexts/socket";
 import { getColors } from "../../constants/Colors";
 import { SocketController } from "../../utils/socket";
-import NewChatButton from "../../components/ui/newChat";
+import NewChatButton from "../../components/ui/newChatButton";
 import ChatContainer from "../../components/ui/chatContainer";
-import HalkController from '../../utils/halk';
-import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedView } from "@/components/ThemedView";
 

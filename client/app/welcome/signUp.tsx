@@ -39,7 +39,7 @@ export default function SignUpScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.topContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
+                <TouchableOpacity onPress={() => navigation.back()}>
                     <Ionicons name="chevron-back" size={28} color="white" />
                 </TouchableOpacity>
                 <Image source={require("../../assets/images/halk_icon.png")} style={styles.logo} />

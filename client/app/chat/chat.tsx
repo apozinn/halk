@@ -65,12 +65,10 @@ export default function Chat({ route }) {
         setChat(thisChat);
       } else navigation.goBack();
     } else navigation.goBack();
-    console.log("id do chat: ", id);
   }, []);
 
   useEffect(() => {
     socket.on("receiveMessage", (msg) => {
-      console.log("mensagem recebida: ", msg);
       if (chat) {
         if (chat.messages.some((m) => m.id === msg.id)) return;
         chats.filter((c) => c.id === chat.id).map((c) => c.messages.push(msg));

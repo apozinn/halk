@@ -69,8 +69,6 @@ export class SocketController {
     };
 
     if (chat.newChat) {
-      console.log("2: ", socket.emit);
-
       socket.emit("sendMessage", {
         room: chat.id,
         toUser: chat.user.id,

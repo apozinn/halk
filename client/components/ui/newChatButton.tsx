@@ -1,9 +1,9 @@
 import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
-export default function NewChat() { 
+export default function NewChatButton() {
   const navigation = useRouter();
   return (
     <Pressable
@@ -23,8 +23,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#2f95dc",
     padding: 10,
     position: "absolute",
-    bottom: 30,
-    right: 15,
+    bottom: "2%",
+    right: "2%",
     alignItems: "center",
     justifyContent: "center",
   },
