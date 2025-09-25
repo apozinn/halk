@@ -5,9 +5,11 @@ import ConnectDb from '../middleware/database/index';
 async function bootstrap() {
   await ConnectDb();
 
+  const port = process.env.PORT;
+
   const app = await NestFactory.create(AppModule, { cors: true });
   app.enableCors();
-  await app.listen(3000);
+  await app.listen(port);
 }
 
 bootstrap();
