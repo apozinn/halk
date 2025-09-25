@@ -12,8 +12,6 @@ export default function VerifyIfUserIsLogged({ children }: { children: React.Rea
     } else {
       router.replace("/welcome/welcome");
     }
-
-    router.replace("/welcome/welcome");
   }, [logged]);
 
   return children

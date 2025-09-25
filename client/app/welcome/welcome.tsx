@@ -14,7 +14,7 @@ export default function Welcome() {
 
       <ThemedView style={styles.contentArea}>
         <ThemedText style={styles.title}>
-          Halk: Your Conversations, Elevated.
+          Your Conversations Elevated.
         </ThemedText>
 
         <Image
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
 
   title: {
     fontWeight: 'bold',
-    fontSize: 25,
+    fontSize: 30,
     marginBottom: 30,
     textAlign: 'center',
   },

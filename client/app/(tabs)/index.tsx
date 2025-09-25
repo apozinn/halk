@@ -9,6 +9,7 @@ import NewChatButton from "../../components/ui/newChatButton";
 import ChatContainer from "../../components/ui/chatContainer";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedView } from "@/components/ThemedView";
+import { router } from "expo-router";
 
 export default function Chats() {
   const { user, logged, updateUser } = useContext(UserContext);

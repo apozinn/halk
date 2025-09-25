@@ -1,29 +1,24 @@
 import { View, Image, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
-import { RootStackScreenProps } from "@/types";
 import { Text } from "../../components/ui/Themed";
 import { Ionicons } from '@expo/vector-icons';
 import { TextInput } from "react-native-paper";
 import { getColors } from "../../constants/Colors";
-import { useEffect, useState, useContext } from "react";
-import * as Crypto from 'expo-crypto';
+import { useState, useContext } from "react";
 import { SignIn } from "../../middleware/api";
 import { UserContext } from "@/contexts/user";
 import { useRouter } from "expo-router";
 
-
 export default function SignInScreen() {
-    const { user, updateUser } = useContext(UserContext);
+    const { updateUser } = useContext(UserContext);
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errorReason, setErrorReason] = useState("");
-    const colors = getColors();
-  const router = useRouter();
 
+    const colors = getColors();
+    const router = useRouter();
 
     async function SignInRequest() {
-        const encrypted_password = await Crypto.digestStringAsync(
-            Crypto.CryptoDigestAlgorithm.SHA256, password
-        );
         const result = await SignIn(username, password);
 
         if (result.logged) {
@@ -31,7 +26,7 @@ export default function SignInScreen() {
                 logged: true,
                 user: result.user
             });
-            router.navigate("app/(tabs)/index");
+            router.navigate("/");
         } else {
             setErrorReason(result.reason);
             setPassword("");
@@ -42,7 +37,7 @@ export default function SignInScreen() {
         <View style={styles.container}>
             <View style={styles.topContainer}>
                 <TouchableOpacity onPress={() => router.back()}>
-                    <Ionicons name="chevron-back" size={28} color="white" />
+                    <Ionicons name="chevron-back" size={28} color={colors.icon} />
                 </TouchableOpacity>
                 <Image source={require("../../assets/images/halk_icon.png")} style={styles.logo} />
             </View>
@@ -86,7 +81,7 @@ export default function SignInScreen() {
                 />
             </View>
             <TouchableOpacity style={{ ...styles.registerButton, ...{ backgroundColor: colors.tint } }} onPress={() => SignInRequest()}>
-                <Text style={{ fontSize: 17, fontWeight: "bold" }}>Continue</Text>
+                <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>Continue</Text>
             </TouchableOpacity>
             <Text style={styles.errorReason}>{errorReason}</Text>
         </View>

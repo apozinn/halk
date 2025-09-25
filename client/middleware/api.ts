@@ -1,4 +1,4 @@
-const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+const public_api_url = process.env.EXPO_PUBLIC_API_URL;
 
 const POST_PARAMS = {
   method: "POST",
@@ -8,7 +8,7 @@ const POST_PARAMS = {
 };
 
 export async function SignUp(username: string, password: string) {
-  return fetch(`${apiUrl}/user/signUp`, {
+  return fetch(`${public_api_url}/auth/signUp`, {
     ...POST_PARAMS,
     body: JSON.stringify({username, password}),
   })
@@ -17,7 +17,7 @@ export async function SignUp(username: string, password: string) {
 }
 
 export async function SignIn(username:string, password:string) {
-  const c = fetch(`${apiUrl}/user/signIn`, {
+  const c = fetch(`${public_api_url}/auth/signIn`, {
     ...POST_PARAMS,
     body: JSON.stringify({username, password}),
   })
@@ -30,7 +30,7 @@ export async function SignIn(username:string, password:string) {
 
 
 export const uploadImage = async (image: any) => {
-  return await fetch(`${apiUrl}/user/uploadAvatar`, {
+  return await fetch(`${public_api_url}/user/uploadAvatar`, {
     method: 'POST',
     body: image,
     headers: {
@@ -40,7 +40,7 @@ export const uploadImage = async (image: any) => {
 };
 
 export const sendSms = async (phone: any) => {
-  return fetch(`${apiUrl}/register/sendSms`, {
+  return fetch(`${public_api_url}/register/sendSms`, {
     ...POST_PARAMS,
     body: JSON.stringify({ phone: phone }),
   })
@@ -49,7 +49,7 @@ export const sendSms = async (phone: any) => {
 };
 
 export const verifyCode = async (id: string, code: string) => {
-  return fetch(`${apiUrl}/register/verifyCode`, {
+  return fetch(`${public_api_url}/register/verifyCode`, {
     ...POST_PARAMS,
     body: JSON.stringify({ id: id, code: code }),
   })
@@ -58,7 +58,7 @@ export const verifyCode = async (id: string, code: string) => {
 };
 
 export const verifyUsername = async (username: string) => {
-  return fetch(`${apiUrl}/user/verifyUsername`, {
+  return fetch(`${public_api_url}/user/verifyUsername`, {
     ...POST_PARAMS,
     body: JSON.stringify({ username: username }),
   })
@@ -72,7 +72,7 @@ export const createProfile = async (user: { id?: string; phone?: string; profile
     user.profile.avatar = uploadAvatar;
   };
 
-  return fetch(`${apiUrl}/register/createUser`, {
+  return fetch(`${public_api_url}/register/createUser`, {
     ...POST_PARAMS,
     body: JSON.stringify({ user: user }),
   })
@@ -81,7 +81,7 @@ export const createProfile = async (user: { id?: string; phone?: string; profile
 };
 
 export const searchUser = async (search: string) => {
-  return fetch(`${apiUrl}/user/searchUser`, {
+  return fetch(`${public_api_url}/user/searchUser`, {
     ...POST_PARAMS,
     body: JSON.stringify({ search: search }),
   })
@@ -90,13 +90,13 @@ export const searchUser = async (search: string) => {
 };
 
 export const getStatus = async(userId: string) => {
-  return fetch(`${apiUrl}/status/getStatus/${userId}`)
+  return fetch(`${public_api_url}/status/getStatus/${userId}`)
     .then((res) => res.json())
     .then((res) => res);
 };
 
 export const postStatus = async (user: { id: string; phone: string; profile: { name: string; username: string; avatar: string; bio: string; }; }, status: { id: string; createdAt: number; type: string; content: string; color: string; }) => {
-  return fetch(`${apiUrl}/status/postStatus`, {
+  return fetch(`${public_api_url}/status/postStatus`, {
     ...POST_PARAMS,
     body: JSON.stringify({ user, status }),
   })
