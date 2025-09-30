@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Image, StatusBar, StyleSheet, Alert, Pressable, TouchableOpacity } from "react-native";
-import { RootStackScreenProps } from "@/types";
 import { Text, View } from "../../components/ui/Themed";
 import { TextInput, Button } from "react-native-paper";
 import { } from "../../middleware/api";
@@ -137,7 +136,7 @@ export default function Register() {
           {isNewUser ? (
             <Text>I already have a account</Text>
           ) : (
-            <Text>I don't have a account</Text>
+            <Text>{`I don't have a account`}</Text>
           )}
 
         </TouchableOpacity>

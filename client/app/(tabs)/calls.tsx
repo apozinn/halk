@@ -11,7 +11,7 @@ import { UserContext } from "@/contexts/user";
 import { ChatsContext } from "@/contexts/chats";
 import { getColors } from "../../constants/Colors";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedView } from "@/components/ThemedView";
 
 export default function Calls() {
@@ -19,7 +19,8 @@ export default function Calls() {
   const { chats } = useContext(ChatsContext);
   const [calls, setCalls] = useState([]);
   const navigation = useRouter();
-
+  const insets = useSafeAreaInsets();
+  
   useEffect(() => {
     if (!calls.length) {
       setCalls((current) => [
@@ -41,8 +42,7 @@ export default function Calls() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ThemedView style={styles.container}>
+    <ThemedView style={{...styles.container, marginTop: insets.top}}>
       <TouchableOpacity style={styles.newCall} onPress={() => {}}>
         <View style={styles.newCallButton}>
           <MaterialIcons name="add-ic-call" size={27} color="white" />
@@ -65,7 +65,6 @@ export default function Calls() {
         style={{ marginHorizontal: 10 }}
       />
     </ThemedView>
-    </SafeAreaView>
   );
 }
 

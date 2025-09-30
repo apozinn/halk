@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text } from "../components/ui/Themed";
+import { Text } from "@/components/ui/Themed";
 import { View, StyleSheet, Pressable } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Updates from "expo-updates";
@@ -20,15 +20,15 @@ interface ErrorBoundaryState {
 export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = {
     hasError: false,
-    errorMessage: "Houve um erro, por favor reinicie o aplicativo."
+    errorMessage: "There was an error, please restart the application."
   };
 
   static getDerivedStateFromError(_: Error): ErrorBoundaryState {
-    return { hasError: true, errorMessage: "Houve um erro, por favor reinicie o aplicativo." };
+    return { hasError: true, errorMessage: "There was an error, please restart the application." };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("ErrorBoundary capturou um erro: ", error, errorInfo);
+    console.error("ErrorBoundary caught an error: ", error, errorInfo);
   }
 
   render() {
@@ -45,7 +45,7 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
             onPress={async () => await Updates.reloadAsync()}
           >
             <Text style={{ fontSize: 16, color: "white", fontWeight: "bold" }}>
-              Tentar novamente
+              Try again
             </Text>
           </Pressable>
         </View>

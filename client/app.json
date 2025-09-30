@@ -1,18 +1,13 @@
 {
   "expo": {
     "name": "Halk",
-    "slug": "halk-message-app",
+    "slug": "halk-realtime-messages",
     "version": "0.1.0",
-    "owner": "apozinxr",
+    "owner": "apozinn",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/halk.png",
     "scheme": "halk",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -34,13 +29,27 @@
       ]
     },
     "web": {
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/halk.png"
     },
     "plugins": [
       [
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to get your icon."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/halk.png",
+          "ios": {
+            "resizeMode": "cover"
+          },
+          "android": {
+            "imageWidth": 200, 
+            "imageHeight": 200 
+          }
         }
       ]
     ],

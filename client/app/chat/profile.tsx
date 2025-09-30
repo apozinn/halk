@@ -6,7 +6,6 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
-import { RootStackScreenProps } from "@/types";
 import { searchUser } from "../../middleware/api";
 import { getColors } from "../../constants/Colors";
 import {

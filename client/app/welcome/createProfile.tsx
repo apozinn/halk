@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from "react";
 import { Image, Pressable, StatusBar, StyleSheet, View } from "react-native";
-import { RootStackScreenProps } from "@/types";
 import { Text, TextInput } from "../../components/ui/Themed";
 import * as ImagePicker from "expo-image-picker";
 import { createProfile, verifyUsername, uploadImage } from "../../middleware/api";

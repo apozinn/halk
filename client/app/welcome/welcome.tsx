@@ -18,7 +18,7 @@ export default function Welcome() {
         </ThemedText>
 
         <Image
-          source={require("../../assets/images/halk_icon.png")}
+          source={require("../../assets/images/halk.png")}
           style={styles.logo}
           resizeMode="contain"
         />

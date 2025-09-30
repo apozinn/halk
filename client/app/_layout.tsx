@@ -5,7 +5,7 @@ import { UserProvider } from "@/contexts/user";
 import { ChatsProvider } from "@/contexts/chats";
 import { SocketProvider } from "@/contexts/socket";
 import { BufferProvider } from "@/contexts/buffer";
-import ErrorBoundary from "@/app/errorBoundary";
+import ErrorBoundary from "@/app/errors/errorBoundary";
 import { getColors } from "@/constants/Colors";
 import { MenuProvider } from "react-native-popup-menu";
 import { SettingsProvider } from "@/contexts/settings";

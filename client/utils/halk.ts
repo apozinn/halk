@@ -4,7 +4,7 @@ export default class HalkController extends Tools {
 	halkUser = {};
 	constructor() {
 		super();
-			this.halkUser = {
+		this.halkUser = {
 			id: this.generateRandomId(),
 			phone: "+1 01010101010",
 			profile: {

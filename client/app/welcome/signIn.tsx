@@ -39,7 +39,7 @@ export default function SignInScreen() {
                 <TouchableOpacity onPress={() => router.back()}>
                     <Ionicons name="chevron-back" size={28} color={colors.icon} />
                 </TouchableOpacity>
-                <Image source={require("../../assets/images/halk_icon.png")} style={styles.logo} />
+                <Image source={require("../../assets/images/halk.png")} style={styles.logo} />
             </View>
             <View style={styles.mainContainert}>
                 <View style={styles.titleContainer}>

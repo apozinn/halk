@@ -7,6 +7,8 @@ import * as argon2 from "argon2";
 export class AuthController {
     @Post('/signIn')
     async login(@Req() req) {
+        console.log("1");
+        
         try {
             const username: string = req.body.username;
             const password: string = req.body.password;

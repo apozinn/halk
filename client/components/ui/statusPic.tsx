@@ -12,12 +12,12 @@ export default function StatusAvatar({ author, stories }) {
   const navigation = useRouter();
 
   function myArc(cx, cy, radius, max) {
-    var d = " M " + (cx + radius) + " " + cy;
+    const d = " M " + (cx + radius) + " " + cy;
     let ang = 0;
     while (ang <= max) {
-      var radians = ang * (Math.PI / 180);
-      var x = cx + Math.cos(radians) * radius;
-      var y = cy + Math.sin(radians) * radius;
+      const radians = ang * (Math.PI / 180);
+      const x = cx + Math.cos(radians) * radius;
+      const y = cy + Math.sin(radians) * radius;
       d += " L " + x + " " + y;
       ang++;
     }

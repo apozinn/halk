@@ -14,6 +14,7 @@ import { ChatsContext } from "@/contexts/chats";
 import { Avatar } from '@kolking/react-native-avatar';
 import Modal from "react-native-modal";
 import { useRouter } from "expo-router";
+import EvilIcons from '@expo/vector-icons/EvilIcons';
 
 export default function SearchChat() {
   const { user } = useContext(UserContext);
@@ -157,7 +158,7 @@ export default function SearchChat() {
           marginRight: 10,
         }}
       >
-        <AntDesign name="search1" size={22} color={colors.tint} />
+        <EvilIcons name="search" size={28} color={colors.tint} />
       </TouchableOpacity>
       {SearchModal()}
     </View>

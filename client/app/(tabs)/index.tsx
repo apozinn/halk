@@ -7,15 +7,17 @@ import { getColors } from "../../constants/Colors";
 import { SocketController } from "../../utils/socket";
 import NewChatButton from "../../components/ui/newChatButton";
 import ChatContainer from "../../components/ui/chatContainer";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedView } from "@/components/ThemedView";
-import { router } from "expo-router";
+import HalkController from "@/utils/halk";
 
 export default function Chats() {
   const { user, logged, updateUser } = useContext(UserContext);
   const { chats, updateChats } = useContext(ChatsContext);
   const { socket } = useContext(SocketContext);
   const colors = getColors();
+
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (user && chats && socket) {
@@ -26,37 +28,40 @@ export default function Chats() {
         updateChats,
         socket,
       });
+
+      if (!chats.length) {
+      chats.push(new HalkController().halkChat());
+      updateChats({ chats });
+    }
     }
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ThemedView style={{ flex: 1}}>
-        {!logged ? (
-          <></>
-        ) : (<>
-          <ScrollView
-            style={{ flex: 1, padding: 5 }}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-          >
-            {chats.map((chat, index) => (
-              <ChatContainer
-                {...{
-                  user,
-                  chats,
-                  updateChats,
-                  chat,
-                  socket,
-                  colors,
-                }}
-                key={index}
-              />
-            ))}
-          </ScrollView>
-          <NewChatButton />
-        </>)}
-      </ThemedView>
-    </SafeAreaView>
+    <ThemedView style={{ flex: 1 }}>
+      {!logged ? (
+        <></>
+      ) : (<>
+        <ScrollView
+          style={{ flex: 1, padding: 5 }}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+        >
+          {chats.map((chat, index) => (
+            <ChatContainer
+              {...{
+                user,
+                chats,
+                updateChats,
+                chat,
+                socket,
+                colors,
+              }}
+              key={index}
+            />
+          ))}
+        </ScrollView>
+        <NewChatButton />
+      </>)}
+    </ThemedView>
   );
 }

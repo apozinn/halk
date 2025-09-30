@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet, TouchableOpacity, StatusBar } from "react-native";;
+import { View, Image, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
 import { Text } from "../../components/ui/Themed";
 import { Ionicons } from '@expo/vector-icons';
 import { TextInput } from "react-native-paper";
@@ -6,7 +6,7 @@ import { getColors } from "../../constants/Colors";
 import { useState, useContext } from "react";
 import { SignUp } from "../../middleware/api";
 import { UserContext } from "@/contexts/user";
-import { useRouter } from "expo-router";
+import { useRouter } from "expo-router";;
 
 export default function SignUpScreen() {
     const { updateUser } = useContext(UserContext);
@@ -37,7 +37,7 @@ export default function SignUpScreen() {
                 <TouchableOpacity onPress={() => navigation.back()}>
                     <Ionicons name="chevron-back" size={28} color={colors.icon} />
                 </TouchableOpacity>
-                <Image source={require("../../assets/images/halk_icon.png")} style={styles.logo} />
+                <Image source={require("../../assets/images/halk.png")} style={styles.logo} />
             </View>
             <View style={styles.mainContainert}>
                 <View style={styles.titleContainer}>

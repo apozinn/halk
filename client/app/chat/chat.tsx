@@ -15,7 +15,6 @@ import {
   Feather,
   FontAwesome,
 } from "@expo/vector-icons";
-import { RootStackScreenProps } from "@/types";
 import { TextInput, Text } from "../../components/ui/Themed";
 import { UserContext } from "@/contexts/user";
 import { ChatsContext } from "@/contexts/chats";
@@ -25,8 +24,7 @@ import { getColors } from "../../constants/Colors";
 import { Avatar } from '@kolking/react-native-avatar';
 import MessagesContainer from "../../components/ui/messagesContainer";
 import BottomContent from "../../components/ui/bottomContent";
-import { useRouter } from "expo-router";
-import { useLocalSearchParams } from 'expo-router';
+import { useRouter , useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedView } from "@/components/ThemedView";
 
@@ -60,11 +58,13 @@ export default function Chat({ route }) {
 
     const chatId = id;
     if (chatId) {
-      var thisChat = chats.filter((c) => c.id === chatId)[0];
+      const thisChat = chats.filter((c) => c.id === chatId)[0];
       if (thisChat) {
         setChat(thisChat);
       } else navigation.goBack();
     } else navigation.goBack();
+
+    
   }, []);
 
   useEffect(() => {
