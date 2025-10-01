@@ -30,9 +30,9 @@ export default function Chats() {
       });
 
       if (!chats.length) {
-      chats.push(new HalkController().halkChat());
-      updateChats({ chats });
-    }
+        chats.push(new HalkController().halkChat());
+        updateChats({ chats });
+      }
     }
   }, []);
 

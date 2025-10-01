@@ -68,7 +68,7 @@ export default function BottomContent({ chat }) {
 			]}
 		>
 			<View style={styles.buttonContentLeft}>
-				<TouchableOpacity style={styles.blueButton} onPress={() => {}}>
+				<TouchableOpacity style={{...styles.blueButton, backgroundColor: colors.tint}} onPress={() => {}}>
 					<Fontisto name="camera" size={20} color="white" />
 				</TouchableOpacity>
 				<TextInput
@@ -83,9 +83,8 @@ export default function BottomContent({ chat }) {
 			</View>
 			{text ? (
 				<TouchableOpacity
-					style={styles.blueButton}
-					onPress={() => sendMessage()}
-				>
+					style={{...styles.blueButton, backgroundColor: colors.tint}}
+					onPress={() => sendMessage()}>
 					<FontAwesome name="send" size={24} color="white" />
 				</TouchableOpacity>
 			) : (
@@ -117,15 +116,9 @@ const styles = StyleSheet.create({
 	bottomContainer: {
 		flexDirection: "row",
 		alignItems: "center",
-		position: "absolute",
 		backgroundColor: "rgb(18, 18, 18)",
 		justifyContent: "space-between",
-		borderRadius: 50,
-		bottom: 0,
-		left: 0,
-		right: 0,
-		padding: 5,
-		margin: 5,
+		padding: 5
 	},
 	button: {
 		padding: 5,
@@ -137,9 +130,8 @@ const styles = StyleSheet.create({
 		width: "80%",
 	},
 	blueButton: {
-		backgroundColor: "#2f95dc",
-		padding: 8,
-		borderRadius: 100,
+		padding: 10,
+		borderRadius: 50,
 	},
 	othersMedias: {
 		flexDirection: "row",

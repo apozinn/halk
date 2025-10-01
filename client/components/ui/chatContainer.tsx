@@ -174,7 +174,7 @@ export default function ChatContainer(props) {
         <Avatar
           size={55}
           name={chat.user.profile.username || chat.user.profile.name}
-          source={{ uri: chat.user.profile.avatar || undefined }}
+          source={chat.user.profile.username == "Halk team" ? require("@/assets/images/halk.png") : require("@/assets/images/userIcon.png")}
           colorize={true}
           radius={50}
           style={{ marginRight: 10 }}

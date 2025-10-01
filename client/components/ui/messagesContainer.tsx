@@ -89,9 +89,6 @@ class MessagesContainer extends Component {
                 <Avatar
                   size={40}
                   name={this.state.messageModal.author.profile.name}
-                  source={{
-                    uri: this.state.messageModal.author.profile.avatar,
-                  }}
                   colorize={true}
                   radius={50}
                   style={{ marginRight: 10 }}
@@ -169,7 +166,7 @@ class MessagesContainer extends Component {
         showsHorizontalScrollIndicator={false}
       >
         {this.ModalMessage()}
-        {this.chat.messages.map((message, index) => {
+        {this?.chat?.messages?.map((message, index) => {
           const itsMyMessage =
             message.author.id === this.user.id ? true : false;
           const messageTime = new Date(message.createdAt).toLocaleTimeString();
@@ -282,15 +279,14 @@ const styles = StyleSheet.create({
   messageContainer: {
     flex: 1,
     marginHorizontal: 10,
-    flexDirection: "column-reverse",
-    marginBottom: 55,
+    flexDirection: "column-reverse"
   },
   myMessage: {
     justifyContent: "flex-end",
-    flexDirection: "revert",
+    flexDirection: "row",
   },
   otherMessage: {
-    width: "fit-content",
+    alignSelf: "flex-start",
     maxWidth: "75%",
   },
   message: {
