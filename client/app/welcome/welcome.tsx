@@ -1,108 +1,73 @@
-import { Image, StyleSheet, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
-import { ThemedText } from "@/components/ThemedText";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { getColors } from "@/constants/Colors";
+import { ThemedSafeAreaView } from "@/components/themedSafeAreaView";
 import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/ThemedText";
+import { Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
-export default function Welcome() {
-  const router = useRouter();
-  const colors = getColors();
-
+export default function WelcomePage() {
+  const { t } = useTranslation();
   return (
-    <SafeAreaView style={styles.container}>
-
-      <ThemedView style={styles.contentArea}>
-        <ThemedText style={styles.title}>
-          Your Conversations Elevated.
-        </ThemedText>
-
+    <ThemedSafeAreaView style={styles.mainContainer}>
+      
+      <ThemedView style={styles.appLogoContainer}>
         <Image
           source={require("../../assets/images/halk.png")}
-          style={styles.logo}
           resizeMode="contain"
+          style={styles.logo}
         />
+      </ThemedView>
 
-        <ThemedText style={styles.description}>
-          Lightweight, blazing fast, and designed for flow. Halk keeps your chats seamless, simple, and always within reach.
+      <ThemedView style={styles.welcomeTextsContainer}>
+        <ThemedText style={styles.welcomeTitle}>
+          {t('welcomeTitle')}
+        </ThemedText>
+        <ThemedText style={styles.welcomeDescription}>
+          {t('welcomeDescription')}
         </ThemedText>
       </ThemedView>
 
-      <ThemedView style={styles.buttonsContainer}>
-        <TouchableOpacity
-          onPress={() => router.navigate("welcome/signIn")}
-          style={{...styles.primaryButton, backgroundColor: colors.tint }}
-        >
-          <ThemedText style={{ ...styles.primaryButtonText, color: colors.background }}>Sign In</ThemedText>
+      <ThemedView>
+        <TouchableOpacity onPress={() => { }}>
+          <ThemedText>
+            {t('welcomeButtonSignIn')}
+          </ThemedText>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => router.navigate("welcome/signUp")}
-          style={{ ...styles.secondaryButton, borderColor: colors.tint }}
-        >
-          <ThemedText style={{ ...styles.secondaryButtonText, color: colors.tint }}>Sign Up</ThemedText>
+        <TouchableOpacity onPress={() => { }}>
+          <ThemedText>
+            {t('welcomeButtonSignUp')}
+          </ThemedText>
         </TouchableOpacity>
       </ThemedView>
 
-    </SafeAreaView>
+    </ThemedSafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  contentArea: {
-    flex: 1,
+  mainContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 10
   },
-
-  title: {
-    fontWeight: 'bold',
-    fontSize: 30,
-    marginBottom: 30,
-    textAlign: 'center',
+  appLogoContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-
   logo: {
     width: 200,
-    height: 200,
-    marginVertical: 30,
+    height: 200
   },
-
-  description: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginHorizontal: 10,
-  },
-
-  buttonsContainer: {
-    paddingHorizontal: 10,
-  },
-
-  primaryButton: {
-    paddingVertical: 15,
+  welcomeTextsContainer: {
+    justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 12,
-    marginBottom: 15,
   },
-  primaryButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
+  welcomeTitle: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginTop: 20
   },
-
-  secondaryButton: {
-    backgroundColor: 'transparent',
-    paddingVertical: 15,
-    alignItems: 'center',
-    borderRadius: 12,
-    borderWidth: 2,
-  },
-  secondaryButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
+  welcomeDescription: {
+    fontSize: 14,
+    marginTop: 10,
+    textAlign: 'center'
+  }
 });

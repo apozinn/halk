@@ -14,6 +14,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import 'react-native-reanimated';
+import { useEffect, useState } from "react";
+import { initI18n } from "@/i18n";
+import { ActivityIndicator } from "react-native";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -21,6 +24,14 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    initI18n().then(() => setReady(true));
+  }, []);
+
+  if (!ready) return <ActivityIndicator size="large" />;
 
   if (!loaded) {
     return null;
