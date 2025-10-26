@@ -45,7 +45,7 @@ export default function SettingsScreen() {
         },
       },
     });
-    navigation.replace("Welcome");
+    navigation.replace("/welcome/welcome");
   }
 
   return (

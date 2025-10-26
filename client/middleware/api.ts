@@ -66,15 +66,10 @@ export const verifyUsername = async (username: string) => {
     .then((res) => res);
 };
 
-export const createProfile = async (user: { id?: string; phone?: string; profile: any; }) => {
-  if(user.profile.avatar) {
-    const uploadAvatar = await uploadImage(user.profile.avatar);
-    user.profile.avatar = uploadAvatar;
-  };
-
-  return fetch(`${public_api_url}/register/createUser`, {
+export const createProfile = async (profile: any) => {
+  return fetch(`${public_api_url}/auth/createProfile`, {
     ...POST_PARAMS,
-    body: JSON.stringify({ user: user }),
+    body: JSON.stringify({ ...profile }),
   })
     .then((res) => res.json())
     .then((res) => res);

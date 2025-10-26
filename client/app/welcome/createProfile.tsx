@@ -1,21 +1,76 @@
-import { useState, useContext, useEffect } from "react";
-import { Image, Pressable, StatusBar, StyleSheet, View } from "react-native";
+import { useState, useContext, useCallback } from "react";
+import { Image, Pressable, StatusBar, StyleSheet, View, Alert } from "react-native";
 import { Text, TextInput } from "../../components/ui/Themed";
 import * as ImagePicker from "expo-image-picker";
-import { createProfile, verifyUsername, uploadImage } from "../../middleware/api";
+import { createProfile } from "../../middleware/api";
 import { UserContext } from "@/contexts/user";
 import { useRouter } from "expo-router";
+import { t } from "i18next";
+import { ThemedSafeAreaView } from "@/components/themedSafeAreaView";
+import { ThemedView } from "@/components/ThemedView";
 
 export default function CreateProfile() {
-  const navigation = useRouter();
+  const router = useRouter();
+  const { user, updateUser } = useContext(UserContext);
+
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [avatar, setAvatar] = useState("");
   const [bio, setBio] = useState("");
-  const [existsUsername, setExistsUsername] = useState(false);
-  const { user, logged, updateUser } = useContext(UserContext);
+  const [isUploading, setIsUploading] = useState(false);
 
-  function Create() {
+  const pickAndUploadImage = useCallback(async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+      });
+
+      if (result.canceled) return;
+
+      const { uri } = result.assets[0];
+      setAvatar(uri);
+      setIsUploading(true);
+
+      const formData = new FormData();
+      formData.append("file", {
+        uri,
+        type: "image/jpeg",
+        name: "avatar.jpg",
+      } as any);
+
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/upload`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setAvatar(data.url);
+      } else {
+        Alert.alert(t("errorUploadingImage"));
+        setAvatar("");
+      }
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      Alert.alert(t("errorUploadingImage"));
+    } finally {
+      setIsUploading(false);
+    }
+  }, []);
+
+  const handleCreateProfile = useCallback(async () => {
+    if (isUploading) {
+      return Alert.alert(t("waitAvatarUpload"));
+    }
+
+    if (!name.trim() || !username.trim()) {
+      return Alert.alert(t("fillRequiredFields"));
+    }
+
     const newUser = {
       id: user.id,
       phone: user.phone,
@@ -27,110 +82,82 @@ export default function CreateProfile() {
       },
     };
 
-    updateUser({
-      logged: true,
-      user: newUser,
-    });
-    navigation.navigate("Root");
-    return;
+    try {
+      const data = await createProfile(newUser);
 
-    createProfile(newUser).then((data) => {
-      if (data.err)
-        return alert("houve um erro ao criar o seu perfil, tente novamente");
-
-      if (data.created) {
-        updateUser({
-          logged: true,
-          user: newUser,
-        });
-        navigation.navigate("Root");
+      if (!data.created) {
+        return Alert.alert(t(data.reason));
       }
-    });
-  }
 
-  useEffect(() => {
-    if (username)
-      verifyUsername(username).then((data) => setExistsUsername(data.exists));
-  }, [username]);
+      updateUser({
+        logged: true,
+        user: newUser,
+      });
 
-  async function SelectIcon() {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (result.canceled) {
-      return;
+      router.navigate("/");
+    } catch (error) {
+      console.error("Create profile failed:", error);
+      Alert.alert(t("unexpectedError"));
     }
-
-
-    // ImagePicker saves the taken photo to disk and returns a local URI to it
-    let localUri = result.assets[0].uri
-    let filename = localUri.split('/').pop();
-  
-    // Infer the type of the image
-    let match = /\.(\w+)$/.exec(filename);
-    let type = match ? `image/${match[1]}` : `image`;
-  
-    // Upload the image using the fetch and FormData APIs
-    let formData = new FormData();
-    // Assume "photo" is the name of the form field the server expects
-    formData.append('photo', localUri);
-
-    setAvatar(localUri);
-    uploadImage(formData);
-  }
+  }, [name, username, avatar, bio, isUploading, user]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create your profile</Text>
-      <View style={styles.primaryDiv}>
-        <Pressable style={styles.iconContainer} onPress={() => SelectIcon()}>
-          <Image
-            source={
-              avatar ? avatar : {uri: "https://imgur.com/4yEDQPW.png"}
-            }
-            style={styles.userIcon}
-          />
-          <Text style={{ fontSize: 10 }}>Choose a icon</Text>
-        </Pressable>
-        <View style={styles.inputsContainer}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputTitle}>Name</Text>
-            <TextInput
-              style={styles.nameInput}
-              onChangeText={(value) => setName(value)}
+    <ThemedSafeAreaView style={styles.container}>
+      <ThemedView style={styles.content}>
+        <Text style={styles.title}>{t("createProfileTitle")}</Text>
+
+        <View style={styles.primaryDiv}>
+          <Pressable style={styles.iconContainer} onPress={pickAndUploadImage}>
+            <Image
+              source={avatar ? { uri: avatar } : require("@/assets/images/userIcon.png")}
+              style={styles.userIcon}
             />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputTitle}>Username</Text>
-            <TextInput
-              style={styles.nameInput}
-              onChangeText={(value) => setUsername(value)}
-            />
-            {existsUsername ? (
-              <Text style={styles.existsUsername}>
-                Este username já esta sendo usado
-              </Text>
-            ) : (
-              <></>
-            )}
+            <Text style={styles.avatarHint}>
+              {isUploading ? t("uploading") : t("chooseAvatar")}
+            </Text>
+          </Pressable>
+
+          <View style={styles.inputsContainer}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputTitle}>{t("name")}</Text>
+              <TextInput
+                style={styles.textInput}
+                value={name}
+                onChangeText={setName}
+                placeholder={t("enterName")}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputTitle}>{t("username")}</Text>
+              <TextInput
+                style={styles.textInput}
+                value={username}
+                onChangeText={setUsername}
+                placeholder={t("enterUsername")}
+              />
+            </View>
           </View>
         </View>
-      </View>
-      <View style={styles.secondaryDiv}>
-        <Text style={styles.inputTitle}>Bio</Text>
-        <TextInput
-          style={styles.bioInput}
-          onChangeText={(value) => setBio(value)}
-        />
-      </View>
-      <Pressable style={styles.nextButton} onPress={() => Create()}>
-        <Text style={{ color: "white" }}>Continue</Text>
-      </Pressable>
-    </View>
+
+        <View style={styles.secondaryDiv}>
+          <Text style={styles.inputTitle}>{t("bio")}</Text>
+          <TextInput
+            style={styles.bioInput}
+            value={bio}
+            onChangeText={setBio}
+            placeholder={t("writeBio")}
+            multiline
+          />
+        </View>
+      </ThemedView>
+
+      <ThemedView style={styles.footer}>
+        <Pressable style={styles.nextButton} onPress={handleCreateProfile}>
+          <Text style={styles.nextButtonText}>{t("continue")}</Text>
+        </Pressable>
+      </ThemedView>
+    </ThemedSafeAreaView>
   );
 }
 
@@ -139,14 +166,19 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight,
   },
+  content: {
+    flex: 1,
+  },
   title: {
     fontWeight: "bold",
     textAlign: "center",
-    margin: 10,
+    marginVertical: 10,
+    fontSize: 18,
   },
   primaryDiv: {
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 10,
   },
   secondaryDiv: {
     margin: 10,
@@ -161,16 +193,25 @@ const styles = StyleSheet.create({
     margin: 10,
     alignItems: "center",
   },
-  inputsContainer: {},
-  inputContainer: {},
-  inputTitle: {
+  avatarHint: {
     fontSize: 10,
+    opacity: 0.7,
   },
-  nameInput: {
+  inputsContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
+  },
+  inputGroup: {
+    marginBottom: 10,
+  },
+  inputTitle: {
+    fontSize: 12,
+    marginBottom: 3,
+  },
+  textInput: {
     borderBottomColor: "#222",
     borderBottomWidth: 1,
     paddingVertical: 3,
-    marginBottom: 10,
   },
   bioInput: {
     borderWidth: 1,
@@ -178,18 +219,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 5,
     height: 70,
+    padding: 8,
+    textAlignVertical: "top",
+  },
+  footer: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingBottom: 10,
   },
   nextButton: {
     backgroundColor: "#2f95dc",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 50,
-    position: "absolute",
-    bottom: 10,
-    left: "40%",
   },
-  existsUsername: {
-    fontSize: 11,
-    color: "red",
+  nextButtonText: {
+    color: "#fff",
+    fontWeight: "600",
   },
 });

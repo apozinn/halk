@@ -46,7 +46,7 @@ export class AuthController {
     }
 
     @Post('/signUp')
-    async createAccount(@Req() req) {
+    async signUp(@Req() req) {
         try {
             const username: string = req.body.username;
             const password: string = req.body.password;
@@ -95,4 +95,47 @@ export class AuthController {
             }
         }
     }
+
+    @Post("/createProfile")
+    async createProfile(@Req() req) {
+        try {
+            const userId: string = req.body.id;
+            const name: string = req.body.profile.name;
+            const bio: string = req.body.profile.bio;
+            const avatar: string = req.body.profile.avatar;
+
+            const user = await User.findOne({ 'id': userId });
+            console.log(user);
+            
+            if (user) {
+                user.profile.name = name;
+                user.profile.bio = bio;
+                user.profile.avatar = avatar;
+
+                await user.save();
+
+                const userObject = {
+                    id: user.id,
+                    following: user.following,
+                    profile: user.profile,
+                };
+
+                return {
+                    created: true,
+                    user: userObject,
+                };
+            } else {
+                return {
+                    created: false,
+                    reason: "Could not find a user with this username.",
+                };
+            }
+        } catch (err) {
+            return {
+                created: false,
+                reason: "There was an error executing the createProfile process."
+            }
+        }
+    }
+
 }

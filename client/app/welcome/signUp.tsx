@@ -23,7 +23,7 @@ export default function SignUpPage() {
                 logged: true,
                 user: result.user
             });
-            navigation.navigate("/");
+            navigation.navigate("/welcome/createProfile");
         } else {
             setErrorReason(result.reason);
             setUsername("");
@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
         alignSelf: "flex-start",
         flexDirection: "column",
         gap: 5
-
     },
     titleLine: {
         height: 5,
