@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -15,23 +15,17 @@ import {
 } from "@expo/vector-icons";
 import { Text } from "@/components/ui/Themed";
 import { UserContext } from "@/contexts/user";
-import { Avatar } from '@kolking/react-native-avatar';
-import { getColors } from "@//constants/Colors";
+import { Avatar } from "@kolking/react-native-avatar";
+import { getColors } from "@/constants/Colors";
 import { useRouter } from "expo-router";
-
-
-const badgeProps = {
-  size: 50,
-  borderRadius: 50,
-  animate: true,
-};
+import { t } from "i18next";
 
 export default function SettingsScreen() {
   const { user, updateUser } = useContext(UserContext);
   const colors = getColors();
   const navigation = useRouter();
 
-  function exit(): void {
+  const exit = useCallback(() => {
     updateUser({
       logged: false,
       user: {
@@ -46,196 +40,164 @@ export default function SettingsScreen() {
       },
     });
     navigation.replace("/welcome/welcome");
-  }
+  }, [updateUser, navigation]);
+
+  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+    <View
+      style={[
+        styles.section,
+        { borderTopWidth: 1, borderTopColor: colors.defaultColors.border },
+      ]}
+    >
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {children}
+    </View>
+  );
+
+  const Link = ({ icon, title, onPress }: { icon: React.ReactNode; title: string; onPress?: () => void }) => (
+    <TouchableOpacity style={styles.link} onPress={onPress}>
+      {icon}
+      <Text style={styles.linkTitle}>{title}</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
       <View
         style={[
           styles.topContainer,
-          {
-            borderBottomWidth: 1,
-            borderBottomColor: colors.defaultColors.border,
-          },
+          { borderBottomWidth: 1, borderBottomColor: colors.defaultColors.border },
         ]}
       >
-        <TouchableOpacity style={styles.profileContainer} onPress={() => { }}>
-          {user.profile.avatar.length ? (
+        <TouchableOpacity style={styles.profileContainer} onPress={() => {}}>
+          {user.profile.avatar ? (
             <Avatar
               size={60}
               name={user.profile.username}
               source={{ uri: user.profile.avatar }}
-              colorize={true}
-              badge={true}
-              badgeColor={"#919191"}
-              badgeProps={badgeProps}
+              colorize
               style={{ marginRight: 10 }}
             />
           ) : (
             <Avatar
               size={60}
-              name={user.profile.avatar}
-              colorize={true}
-              badge={true}
-              badgeColor={"#919191"}
-              badgeProps={badgeProps}
+              name={user.profile.username}
+              colorize
               style={{ marginRight: 10 }}
             />
           )}
-          <View>
-            <Text style={{ fontWeight: "bold", fontSize: 17 }}>{user.profile.name}</Text>
-            <Text style={{ fontSize: 14 }}>{user.profile.username}</Text>
-          </View>
-        </TouchableOpacity>
 
-        <TouchableOpacity style={styles.swapAccount}>
-          <AntDesign name="swap" size={25} color={colors.tint} />
+          <View>
+            <Text style={styles.profileName}>{user.profile.name}</Text>
+            <Text style={styles.profileBio}>{user.profile.bio}</Text>
+          </View>
         </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.linksContainer}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Geral</Text>
+        <Section title={t("settings_general")}>
+          <Link
+            icon={<MaterialCommunityIcons name="account-reactivate" size={25} color={colors.tint} />}
+            title={t("settings_setStatus")}
+          />
+          <Link
+            icon={<MaterialIcons name="account-box" size={25} color={colors.tint} />}
+            title={t("settings_profile")}
+          />
+          <Link
+            icon={<MaterialCommunityIcons name="pencil" size={25} color={colors.tint} />}
+            title={t("settings_editProfile")}
+          />
+          <Link
+            icon={<MaterialIcons name="security" size={25} color={colors.tint} />}
+            title={t("settings_privacySecurity")}
+          />
+        </Section>
 
-          <TouchableOpacity style={styles.link}>
-            <MaterialCommunityIcons
-              name="account-reactivate"
-              size={25}
-              color={colors.tint}
-            />
-            <Text style={styles.linkTitle}>Definir status</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <MaterialIcons name="account-box" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Conta</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <MaterialCommunityIcons
-              name="pencil"
-              size={25}
-              color={colors.tint}
-            />
-            <Text style={styles.linkTitle}>Editar perfil</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <MaterialIcons name="security" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Privacidade e segurança</Text>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={[
-            styles.section,
-            { borderTopWidth: 1, borderTopColor: colors.defaultColors.border },
-          ]}
-        >
-          <Text style={styles.sectionTitle}>Aplicativo</Text>
+        <Section title={t("settings_app")}>
+          <Link
+            icon={<MaterialIcons name="mark-chat-unread" size={25} color={colors.tint} />}
+            title={t("settings_chats")}
+          />
+          <Link
+            icon={<MaterialIcons name="translate" size={25} color={colors.tint} />}
+            title={t("settings_language")}
+          />
+          <Link
+            icon={<MaterialIcons name="storage" size={25} color={colors.tint} />}
+            title={t("settings_storage")}
+          />
+          <Link
+            icon={<MaterialIcons name="notifications" size={25} color={colors.tint} />}
+            title={t("settings_notifications")}
+          />
+          <Link
+            icon={<FontAwesome5 name="palette" size={25} color={colors.tint} />}
+            title={t("settings_appearance")}
+          />
+        </Section>
 
-          <TouchableOpacity style={styles.link}>
-            <MaterialIcons
-              name="mark-chat-unread"
-              size={25}
-              color={colors.tint}
-            />
-            <Text style={styles.linkTitle}>Conversas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <MaterialIcons name="translate" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Idioma</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <MaterialIcons name="storage" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Armazenamento</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <MaterialIcons name="notifications" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Notificação</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <FontAwesome5 name="palette" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Aparência</Text>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={[
-            styles.section,
-            { borderTopWidth: 1, borderTopColor: colors.defaultColors.border },
-          ]}
-        >
-          <Text style={styles.sectionTitle}>Suporte</Text>
+        <Section title={t("settings_support")}>
+          <Link
+            icon={<MaterialIcons name="help" size={25} color={colors.tint} />}
+            title={t("settings_supportHelp")}
+          />
+          <Link
+            icon={<MaterialIcons name="report" size={25} color={colors.tint} />}
+            title={t("settings_report")}
+          />
+          <Link
+            icon={<Ionicons name="star" size={25} color={colors.tint} />}
+            title={t("settings_acknowledgements")}
+          />
+        </Section>
 
-          <TouchableOpacity style={styles.link}>
-            <MaterialIcons name="help" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Suporte</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <MaterialIcons name="report" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>reportar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <Ionicons name="star" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Reconhecimentos</Text>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={[
-            styles.section,
-            { borderTopWidth: 1, borderTopColor: colors.defaultColors.border },
-          ]}
-        >
-          <Text style={styles.sectionTitle}>Conta</Text>
-          <TouchableOpacity style={styles.link} onPress={() => exit()}>
-            <MaterialIcons name="exit-to-app" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Sair</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <AntDesign name="swap" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Mudar de conta</Text>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={[
-            styles.section,
-            { borderTopWidth: 1, borderTopColor: colors.defaultColors.border },
-          ]}
-        >
-          <Text style={styles.sectionTitle}>Updates</Text>
-          <TouchableOpacity style={styles.link}>
-            <MaterialIcons name="update" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Novidades</Text>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={[
-            styles.section,
-            { borderTopWidth: 1, borderTopColor: colors.defaultColors.border },
-          ]}
-        >
-          <Text style={styles.sectionTitle}>Developer</Text>
-          <TouchableOpacity style={styles.link}>
-            <FontAwesome5 name="dev" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Código fonte</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <FontAwesome5 name="dev" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Licenças</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <FontAwesome5 name="dev" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>debug logs</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <FontAwesome5 name="dev" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Client-info</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.link}>
-            <FontAwesome5 name="dev" size={25} color={colors.tint} />
-            <Text style={styles.linkTitle}>Api-info</Text>
-          </TouchableOpacity>
-        </View>
+        <Section title={t("settings_account")}>
+          <Link
+            icon={<MaterialIcons name="exit-to-app" size={25} color={colors.tint} />}
+            title={t("settings_logout")}
+            onPress={exit}
+          />
+          <Link
+            icon={<AntDesign name="swap" size={25} color={colors.tint} />}
+            title={t("settings_switchAccount")}
+          />
+        </Section>
+
+        <Section title={t("settings_updates")}>
+          <Link
+            icon={<MaterialIcons name="update" size={25} color={colors.tint} />}
+            title={t("settings_whatsNew")}
+          />
+        </Section>
+
+        <Section title={t("settings_developer")}>
+          <Link
+            icon={<FontAwesome5 name="code" size={22} color={colors.tint} />}
+            title={t("settings_sourceCode")}
+          />
+          <Link
+            icon={<FontAwesome5 name="file-alt" size={22} color={colors.tint} />}
+            title={t("settings_licenses")}
+          />
+          <Link
+            icon={<FontAwesome5 name="bug" size={22} color={colors.tint} />}
+            title={t("settings_debugLogs")}
+          />
+          <Link
+            icon={<FontAwesome5 name="info-circle" size={22} color={colors.tint} />}
+            title={t("settings_clientInfo")}
+          />
+          <Link
+            icon={<FontAwesome5 name="server" size={22} color={colors.tint} />}
+            title={t("settings_apiInfo")}
+          />
+        </Section>
       </ScrollView>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -253,6 +215,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 5,
   },
+  profileName: {
+    fontWeight: "bold",
+    fontSize: 17,
+    marginLeft: 10,
+  },
+  profileBio: {
+    fontSize: 12,
+    marginLeft: 10,
+    opacity: 0.8,
+  },
   linksContainer: {
     marginTop: 5,
   },
@@ -264,16 +236,13 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     marginBottom: 5,
   },
-  linkTitle: {
-    marginLeft: 10,
-  },
   link: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 5,
     marginBottom: 5,
   },
-  swapAccount: {
-    padding: 5,
+  linkTitle: {
+    marginLeft: 10,
   },
 });
