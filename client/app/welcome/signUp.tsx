@@ -6,9 +6,9 @@ import { getColors } from "../../constants/Colors";
 import { useState, useContext } from "react";
 import { SignUp } from "../../middleware/api";
 import { UserContext } from "@/contexts/user";
-import { useRouter } from "expo-router";;
+import { useRouter } from "expo-router"; import { t } from "i18next";
 
-export default function SignUpScreen() {
+export default function SignUpPage() {
     const { updateUser } = useContext(UserContext);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -40,14 +40,15 @@ export default function SignUpScreen() {
                 <Image source={require("../../assets/images/halk.png")} style={styles.logo} />
             </View>
             <View style={styles.mainContainert}>
-                <View style={styles.titleContainer}>
-                    <Text style={{ fontSize: 40, fontWeight: "bold" }}>Sign Up</Text>
-                    <View style={{ ...styles.titleLine, ...{ backgroundColor: colors.tint } }}></View>
+                <View style={{ ...styles.titleContainer }}>
+                    <View style={styles.titleContainer}>
+                        <Text style={{ fontSize: 40, fontWeight: "bold" }}>{t("signUpTitle")}</Text>
+                        <View style={{ ...styles.titleLine, ...{ backgroundColor: colors.tint } }}></View>
+                    </View>
                 </View>
                 <TextInput
-                    label="Username"
+                    label={t("username")}
                     mode="outlined"
-                    placeholder="Username"
                     value={username}
                     activeOutlineColor={colors.tint}
                     outlineColor={colors.secondary}
@@ -61,10 +62,9 @@ export default function SignUpScreen() {
                     }}
                 />
                 <TextInput
-                    label="Password"
+                    label={t("password")}
                     mode="outlined"
                     value={password}
-                    placeholder="Password"
                     activeOutlineColor={colors.tint}
                     outlineColor={colors.secondary}
                     placeholderTextColor={colors.text}
@@ -79,7 +79,7 @@ export default function SignUpScreen() {
                 />
             </View>
             <TouchableOpacity style={{ ...styles.registerButton, ...{ backgroundColor: colors.tint } }} onPress={() => SignUpRequest()}>
-                <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>Continue</Text>
+                <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>{t("continue")}</Text>
             </TouchableOpacity>
             <Text style={styles.errorReason}>{errorReason}</Text>
         </View>
@@ -114,9 +114,12 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     titleContainer: {
+        alignSelf: "flex-start",
+        flexDirection: "column",
+        gap: 5
+
     },
     titleLine: {
-        width: 140,
         height: 5,
         borderRadius: 100
     },

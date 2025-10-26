@@ -1,7 +1,12 @@
 {
-  "welcomeTitle": "Bem-vindo ao aplicativo!",
-  "welcomeDescription": "Leve, extremamente rápido e projetado para ser fluido, o Halk mantém seus bate-papos fluidos, simples e sempre acessíveis.",
+  "welcomeTitle": "Bem-vindo ao Halk!",
+  "welcomeDescription": "Leve, rápido e seguro, o Halk mantém seus bate-papos fluidos, simples e sempre acessíveis.",
   "welcomeButtonSignIn": "Entrar",
   "welcomeButtonSignUp": "Cadastrar",
-  "language_changed": "Idioma alterado para português"
+  "language_changed": "Idioma alterado para português",
+  "signUpTitle": "Cadastre-se",
+  "signInTitle": "Entrar",
+  "continue": "Continuar",
+  "username": "Usuário",
+  "password": "Senha"
 }

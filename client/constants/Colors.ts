@@ -14,7 +14,8 @@ const colors = {
     scale1: "#fff1",
     secondary: "#E0E0E0",
     appColor: "#00B0FF",
-    icon: "rgba(139, 139, 139, 1)"
+    icon: "rgba(139, 139, 139, 1)",
+    border: "#727272ff",
   },
   dark: {
     text: "#fff",
@@ -25,7 +26,8 @@ const colors = {
     scale1: "#222",
     secondary: "#E0E0E0",
     appColor: "#00B0FF",
-    icon: "rgba(158, 158, 158, 0.07)"
+    icon: "rgba(158, 158, 158, 0.07)",
+    border: "#E0E0E0",
   },
 };
 

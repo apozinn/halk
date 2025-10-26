@@ -7,6 +7,7 @@ import { useState, useContext } from "react";
 import { SignIn } from "../../middleware/api";
 import { UserContext } from "@/contexts/user";
 import { useRouter } from "expo-router";
+import { t } from "i18next";
 
 export default function SignInScreen() {
     const { updateUser } = useContext(UserContext);
@@ -43,13 +44,12 @@ export default function SignInScreen() {
             </View>
             <View style={styles.mainContainert}>
                 <View style={styles.titleContainer}>
-                    <Text style={{ fontSize: 40, fontWeight: "bold" }}>Sign In</Text>
+                    <Text style={{ fontSize: 40, fontWeight: "bold" }}>{t("signInTitle")}</Text>
                     <View style={{ ...styles.titleLine, ...{ backgroundColor: colors.tint } }}></View>
                 </View>
                 <TextInput
-                    label="Username"
+                    label={t("username")}
                     mode="outlined"
-                    placeholder="Username"
                     value={username}
                     activeOutlineColor={colors.tint}
                     outlineColor={colors.secondary}
@@ -63,10 +63,9 @@ export default function SignInScreen() {
                     }}
                 />
                 <TextInput
-                    label="Password"
+                    label={t("password")}
                     mode="outlined"
                     value={password}
-                    placeholder="Password"
                     activeOutlineColor={colors.tint}
                     outlineColor={colors.secondary}
                     placeholderTextColor={colors.text}
@@ -81,7 +80,7 @@ export default function SignInScreen() {
                 />
             </View>
             <TouchableOpacity style={{ ...styles.registerButton, ...{ backgroundColor: colors.tint } }} onPress={() => SignInRequest()}>
-                <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>Continue</Text>
+                <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>{t("continue")}</Text>
             </TouchableOpacity>
             <Text style={styles.errorReason}>{errorReason}</Text>
         </View>
@@ -116,9 +115,12 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     titleContainer: {
+        alignSelf: "flex-start",
+        flexDirection: "column",
+        gap: 5
+
     },
     titleLine: {
-        width: 130,
         height: 5,
         borderRadius: 100
     },
