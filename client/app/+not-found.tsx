@@ -1,14 +1,17 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Text, View } from '@/components/ui/Themed';
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View } from "@/components/themed/Themed";
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 export default function NotFoundScreen() {
-  const navigation = useRouter();
+  const router = useRouter();
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{`This screen doesn't exist.`}</Text>
-      <TouchableOpacity onPress={() => navigation.replace("/")} style={styles.link}>
-        <Text style={styles.linkText}>Go to home screen!</Text>
+      <Text style={styles.title}>{t("notFound.title")}</Text>
+      <TouchableOpacity onPress={() => router.replace("/")} style={styles.link}>
+        <Text style={styles.linkText}>{t("notFound.goHome")}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -17,13 +20,13 @@ export default function NotFoundScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   link: {
     marginTop: 15,
@@ -31,6 +34,6 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 14,
-    color: '#2e78b7',
+    color: "#2e78b7",
   },
 });

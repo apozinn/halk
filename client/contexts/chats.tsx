@@ -1,51 +1,46 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Chat } from "@/types";
 
 interface ChatsInterface {
-  chats: Array<{}>;
-  updateChats: Function;
+  chats: Chat[];
+  updateChats: (newChats: Chat[]) => void;
 }
 
 export const ChatsContext = createContext<ChatsInterface>({} as ChatsInterface);
 
-export const ChatsProvider = ({ children }: any) => {
-  const [loads, setLoads] = useState(0);
+export const ChatsProvider = ({ children }: { children: ReactNode }) => {
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
-  const updateChats = (newChats: any) => {
-    setChats({
-      chats: newChats.chats,
-      updateChats: updateChats,
-    });
+  const updateChats = async (newChats: Chat[]) => {
+    try {
+      setChats(newChats);
+      await AsyncStorage.setItem("chats", JSON.stringify(newChats));
+    } catch (err) {
+      console.error("Erro ao salvar chats:", err);
+    }
   };
-
-  const initialValue: ChatsInterface = {
-    chats: [],
-    updateChats: updateChats,
-  };
-
-  const [chats, setChats] = useState<ChatsInterface>(initialValue);
 
   useEffect(() => {
-    AsyncStorage.getItem("chats").then((data: any) => {
-      const dt = JSON.parse(data);
-
-      if (dt) {
-        updateChats(dt);
-      } else updateChats(initialValue);
-    });
+    (async () => {
+      try {
+        const stored = await AsyncStorage.getItem("chats");
+        if (stored) {
+          setChats(JSON.parse(stored));
+        }
+      } catch (err) {
+        console.error("Erro ao carregar chats:", err);
+      } finally {
+        setLoaded(true);
+      }
+    })();
   }, []);
 
-  useEffect(() => {
-    if (chats !== initialValue) {
-      AsyncStorage.setItem("chats", JSON.stringify(chats));
-    }
-    setLoads(loads + 1);
-  }, [chats]);
-
-  if (loads === 0) return null;
+  if (!loaded) return null;
 
   return (
-    <ChatsContext.Provider value={chats}>
+    <ChatsContext.Provider value={{ chats, updateChats }}>
       {children}
     </ChatsContext.Provider>
   );

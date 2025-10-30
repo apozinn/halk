@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { View, Modal, Pressable, StyleSheet } from "react-native";
-import { Text } from "./Themed";
+import { Text } from "../themed/Themed";
 import { isPossiblePhoneNumber, isValidPhoneNumber } from "libphonenumber-js";
 import { sendSms } from "../../middleware/api";
 import { UserContext } from "@/contexts/user";

@@ -6,28 +6,28 @@ const tintColorDark = "#19dcdc";
 
 const colors = {
   light: {
-    text: "#000",
-    background: "#fff",
+    text: "#1C1C1E",
+    background: "#FFFFFF",
     tint: tintColorLight,
-    tabIconDefault: "#ccc",
+    tabIconDefault: "#8E8E93",
     tabIconSelected: tintColorLight,
-    scale1: "#fff1",
-    secondary: "#E0E0E0",
-    appColor: "#00B0FF",
-    icon: "rgba(139, 139, 139, 1)",
-    border: "#727272ff",
+    scale1: "#F2F2F7",
+    secondary: "#E5E5EA",
+    appColor: "#007AFF",
+    icon: "#6C6C70",
+    border: "#C7C7CC",
   },
   dark: {
-    text: "#fff",
-    background: "#000",
+    text: "#FFFFFF",
+    background: "#000000",
     tint: tintColorDark,
-    tabIconDefault: "#ccc",
+    tabIconDefault: "#8E8E93",
     tabIconSelected: tintColorDark,
-    scale1: "#222",
-    secondary: "#E0E0E0",
-    appColor: "#00B0FF",
-    icon: "rgba(158, 158, 158, 0.07)",
-    border: "#E0E0E0",
+    scale1: "#1C1C1E",
+    secondary: "#2C2C2E",
+    appColor: "#0A84FF",
+    icon: "#EBEBF5",
+    border: "#38383A",
   },
 };
 
@@ -36,7 +36,7 @@ export function getColors() {
 
   return {
     ...colors[colorScheme],
-    mainColor: colorScheme === "dark" ? "#000" : "#fff",
+    mainColor: colorScheme === "dark" ? "#000000" : "#FFFFFF",
     secondaryColor: "#2f95dc",
     theme: colorScheme,
     defaultColors:

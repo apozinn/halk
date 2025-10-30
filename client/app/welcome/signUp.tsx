@@ -1,12 +1,13 @@
 import { View, Image, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
-import { Text } from "../../components/ui/Themed";
+import { Text } from "../../components/themed/Themed";
 import { Ionicons } from '@expo/vector-icons';
 import { TextInput } from "react-native-paper";
 import { getColors } from "../../constants/Colors";
 import { useState, useContext } from "react";
-import { SignUp } from "../../middleware/api";
+import { signUp } from "../../middleware/api";
 import { UserContext } from "@/contexts/user";
 import { useRouter } from "expo-router"; import { t } from "i18next";
+import { ThemedSafeAreaView } from "@/components/themed/themedSafeAreaView";
 
 export default function SignUpPage() {
     const { updateUser } = useContext(UserContext);
@@ -17,7 +18,7 @@ export default function SignUpPage() {
     const navigation = useRouter();
 
     async function SignUpRequest() {
-        const result = await SignUp(username, password);
+        const result = await signUp(username, password);
         if (result.created) {
             updateUser({
                 logged: true,
@@ -32,7 +33,7 @@ export default function SignUpPage() {
     }
 
     return (
-        <View style={styles.container}>
+        <ThemedSafeAreaView>
             <View style={styles.topContainer}>
                 <TouchableOpacity onPress={() => navigation.back()}>
                     <Ionicons name="chevron-back" size={28} color={colors.icon} />
@@ -47,42 +48,36 @@ export default function SignUpPage() {
                     </View>
                 </View>
                 <TextInput
-                    label={t("username")}
+                    label={t("commom.username")}
                     mode="outlined"
                     value={username}
                     activeOutlineColor={colors.tint}
                     outlineColor={colors.secondary}
                     onChangeText={(newUsername) => setUsername(newUsername)}
-                    theme={{
-                        colors: {
-                            text: colors.text,
-                            placeholder: colors.text,
-                            background: colors.background,
-                        }
+                    style={{
+                        backgroundColor: colors.background,
                     }}
+                    textColor={colors.text}
                 />
                 <TextInput
-                    label={t("password")}
+                    label={t("commom.password")}
                     mode="outlined"
                     value={password}
                     activeOutlineColor={colors.tint}
                     outlineColor={colors.secondary}
                     placeholderTextColor={colors.text}
                     onChangeText={(newPassword) => setPassword(newPassword)}
-                    theme={{
-                        colors: {
-                            text: colors.text,
-                            placeholder: colors.text,
-                            background: colors.background,
-                        }
+                    style={{
+                        backgroundColor: colors.background,
                     }}
+                    textColor={colors.text}
                 />
             </View>
             <TouchableOpacity style={{ ...styles.registerButton, ...{ backgroundColor: colors.tint } }} onPress={() => SignUpRequest()}>
-                <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>{t("continue")}</Text>
+                <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>{t("commom.continue")}</Text>
             </TouchableOpacity>
             <Text style={styles.errorReason}>{errorReason}</Text>
-        </View>
+        </ThemedSafeAreaView>
     );
 }
 

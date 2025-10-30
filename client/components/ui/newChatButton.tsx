@@ -10,7 +10,7 @@ export default function NewChatButton() {
   return (
     <Pressable
       style={{ ...styles.container }}
-      onPress={() => navigation.navigate("newChat")}
+      onPress={() => navigation.navigate("/chat/newChat")}
     >
       <Entypo name="chat" size={30} color="white" />
     </Pressable>

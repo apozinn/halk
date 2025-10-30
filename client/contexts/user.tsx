@@ -1,82 +1,52 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { User } from "@/types";
 
 interface UserInterface {
   logged: boolean;
-  user: {
-    id: string;
-    phone: string;
-    profile: {
-      name: string;
-      username: string;
-      avatar: string;
-      bio: string;
-    };
-  };
-  updateUser: Function;
+  user: User | null;
+  updateUser: (u: Partial<UserInterface>) => void;
 }
 
 export const UserContext = createContext<UserInterface>({} as UserInterface);
 
-export const UserProvider = ({ children }: any) => {
-  const [loads, setLoads] = useState(0);
+export const UserProvider = ({ children }: { children: ReactNode }) => {
+  const [userState, setUserState] = useState<UserInterface>({
+    logged: false,
+    user: null,
+    updateUser: () => {},
+  });
+  const [loaded, setLoaded] = useState(false);
 
-  const updateUser = (newUser: any) => {
-    AsyncStorage.getItem("user").then((data: any) => {
-      var dt = JSON.parse(data);
-      setUser({
-        logged: newUser.logged ? newUser.logged : dt.logged,
-        user: {
-          id: newUser.user.id ?? dt.user,
-          phone: "",
-          profile: {
-            name: newUser.user.profile.name ?? dt.user.profile.name,
-            username: newUser.user.profile.username ?? dt.user.profile.username,
-            avatar: newUser.user.profile.avatar ?? dt.user.profile.avatar,
-            bio: newUser.user.profile.bio ?? dt.user.profile.bio,
-          }
-        },
-        updateUser,
-      })
+  const updateUser = async (newData: Partial<UserInterface>) => {
+    setUserState((prev) => {
+      const updated = { ...prev, ...newData };
+      AsyncStorage.setItem("user", JSON.stringify(updated)).catch(console.error);
+      return updated;
     });
   };
-
-  const initialValue: UserInterface = {
-    logged: false,
-    user: {
-      id: "",
-      phone: "",
-      profile: {
-        name: "",
-        username: "",
-        avatar: "",
-        bio: "",
-      },
-    },
-    updateUser: updateUser,
-  };
-
-  const [user, setUser] = useState<UserInterface>(initialValue);
 
   useEffect(() => {
-    AsyncStorage.getItem("user").then((data: any) => {
-      const dt = JSON.parse(data);
-
-      if (dt) {
-        updateUser(dt);
-      } else updateUser(initialValue);
-    });
+    (async () => {
+      try {
+        const stored = await AsyncStorage.getItem("user");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setUserState({ ...parsed, updateUser });
+        }
+      } catch (err) {
+        console.error("error in user context:", err);
+      } finally {
+        setLoaded(true);
+      }
+    })();
   }, []);
 
-  useEffect(() => {
-    if (user !== initialValue) {
-      AsyncStorage.setItem("user", JSON.stringify(user));
-    }
+  if (!loaded) return null;
 
-    setLoads(loads + 1);
-  }, [user]);
-
-  if (loads === 0) return null;
-
-  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ ...userState, updateUser }}>
+      {children}
+    </UserContext.Provider>
+  );
 };

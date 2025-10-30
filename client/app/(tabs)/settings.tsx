@@ -13,19 +13,22 @@ import {
   AntDesign,
   Ionicons,
 } from "@expo/vector-icons";
-import { Text } from "@/components/ui/Themed";
+import { Text } from "@/components/themed/Themed";
 import { UserContext } from "@/contexts/user";
+import { ChatsContext } from "@/contexts/chats";
 import { Avatar } from "@kolking/react-native-avatar";
 import { getColors } from "@/constants/Colors";
 import { useRouter } from "expo-router";
 import { t } from "i18next";
+import { ThemedSafeAreaView } from "@/components/themed/themedSafeAreaView";
 
 export default function SettingsScreen() {
   const { user, updateUser } = useContext(UserContext);
+  const { chats, updateChats } = useContext(ChatsContext);
   const colors = getColors();
   const navigation = useRouter();
 
-  const exit = useCallback(() => {
+  const exit = () => {
     updateUser({
       logged: false,
       user: {
@@ -39,8 +42,9 @@ export default function SettingsScreen() {
         },
       },
     });
+    updateChats({ chats: [] });
     navigation.replace("/welcome/welcome");
-  }, [updateUser, navigation]);
+  }
 
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <View
@@ -62,14 +66,13 @@ export default function SettingsScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <ThemedSafeAreaView style={{ marginHorizontal: 10}}>
       <View
         style={[
           styles.topContainer,
-          { borderBottomWidth: 1, borderBottomColor: colors.defaultColors.border },
         ]}
       >
-        <TouchableOpacity style={styles.profileContainer} onPress={() => {}}>
+        <TouchableOpacity style={styles.profileContainer} onPress={() => { }}>
           {user.profile.avatar ? (
             <Avatar
               size={60}
@@ -194,16 +197,11 @@ export default function SettingsScreen() {
           />
         </Section>
       </ScrollView>
-    </View>
+    </ThemedSafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight,
-    marginHorizontal: 10,
-  },
   topContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -246,3 +244,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
+function updateChats(arg0: never[]) {
+  throw new Error("Function not implemented.");
+}
+

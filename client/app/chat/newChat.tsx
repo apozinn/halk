@@ -1,57 +1,62 @@
 import { useState, useContext, useEffect } from "react";
-import { View, StyleSheet, ScrollView, Pressable, Image, StatusBar } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  StatusBar,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { Avatar } from "@kolking/react-native-avatar";
+import uuid from "react-native-uuid";
+import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
+
 import { ChatsContext } from "@/contexts/chats";
 import { UserContext } from "@/contexts/user";
-import { TextInput, Text } from "@/components/ui/Themed";
-import { AntDesign } from "@expo/vector-icons";
+import { Text, TextInput } from "@/components/themed/Themed";
 import { getColors } from "@/constants/Colors";
 import { searchUser } from "@/middleware/api";
-import uuid from 'react-native-uuid';
-import { Avatar } from '@kolking/react-native-avatar';
-import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ThemedSafeAreaView } from "@/components/themed/themedSafeAreaView";
 
 export default function NewChat() {
   const [search, setSearch] = useState("");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<any[]>([]);
   const { chats, updateChats } = useContext(ChatsContext);
   const { user } = useContext(UserContext);
   const colors = getColors();
   const navigation = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
-    if (search) {
-      searchUser(search).then((data) => {
-        if (data) {
-          setResults(data);
-        }
+    if (search.trim()) {
+      searchUser(user.id, search).then((data) => {
+        setResults(data || []);
       });
+    } else {
+      setResults([]);
     }
   }, [search]);
 
   function generateKey() {
-    const parts = [];
-    for (let i = 0; i < 5; i++) {
-      const numberSequence = Math.floor(
-        Math.random() * (999999 - 100000 + 1) + 100000
-      );
-      parts.push(numberSequence);
-    }
-
+    const parts = Array.from({ length: 5 }, () =>
+      Math.floor(Math.random() * (999999 - 100000 + 1) + 100000)
+    );
     return parts.join(" ");
   }
 
-  async function goToChat(userChat) {
-    const existsChat = chats.filter((c) => c.user.id === userChat.id)[0];
+  async function goToChat(userChat: any) {
+    if(chats === undefined) {
+      updateChats({ chats: [] });
+      return;
+    }
+
+    const existsChat = chats.find((c) => c.user.id === userChat.id);
     if (existsChat) {
       return navigation.navigate({
         pathname: "chat/chat",
         params: { id: existsChat.id },
       });
-    }
-
-    if (userChat.id === user.id) {
-      return navigation.navigate("Root");
     }
 
     const newChat = {
@@ -62,16 +67,15 @@ export default function NewChat() {
       newChat: true,
     };
 
-    chats.push(newChat);
-    updateChats({ chats });
+    updateChats({ chats: [...chats, newChat] });
 
-    navigation.navigate("Chat", {
+    navigation.navigate("/chat/chat", {
       id: newChat.id,
     });
   }
 
   return (
-    <View style={styles.container}>
+    <ThemedSafeAreaView>
       <View
         style={[
           styles.inputContainer,
@@ -83,69 +87,70 @@ export default function NewChat() {
       >
         <Pressable
           style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}
-          onPress={() => navigation.navigate("Root")}
+          onPress={() => navigation.navigate("/")}
         >
           <AntDesign name="arrow-left" size={25} color={colors.tint} />
         </Pressable>
         <TextInput
           style={[styles.input, { backgroundColor: colors.defaultColors.card }]}
-          placeholder="Pesquisar"
+          placeholder={t("newChat_searchPlaceholder")}
+          placeholderTextColor={colors.defaultColors.textSecondary}
           onChangeText={(value) => setSearch(value)}
           value={search}
         />
       </View>
+
       <ScrollView style={styles.results}>
-        {!search ? (
-          <View style={{ alignItems: "center", justifyContent: "center" }}>
-            <Text style={{ fontSize: 12 }}>
-              Search for a user by name, username or ID
+        {!search.trim() ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              {t("newChat_emptyMessage")}
+            </Text>
+          </View>
+        ) : results.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              {t("newChat_noResults")}
             </Text>
           </View>
         ) : (
-          <>
-            {results.map((user, index) => (
-              <Pressable
-                style={({ pressed }) => [
-                  styles.userContainer,
-                  {
-                    backgroundColor: pressed
-                      ? colors.defaultColors.card
-                      : "transparent",
-                  },
-                ]}
-                key={index}
-                onPress={() => goToChat(user)}
-              >
-                <View style={styles.leftContent}>
-                  {user.profile.avatar.length ? (
-                    <Avatar
-                      size={60}
-                      name={user.profile.username}
-                      source={{ uri: user.profile.avatar }}
-                      colorize={true}
-                      radius={50}
-                      style={{ marginRight: 10 }}
-                    />
-                  ) : (
-                    <Avatar
-                      size={60}
-                      radius={50}
-                      name={user.profile.avatar}
-                      colorize={true}
-                      style={{ marginRight: 10 }}
-                    />
-                  )}
-                  <View style={{ justifyContent: "center" }}>
-                    <Text style={styles.username}>{user.profile.username}</Text>
-                    <Text style={styles.name}>{user.profile.name}</Text>
-                  </View>
+          results.map((userItem, index) => (
+            <Pressable
+              key={index}
+              style={({ pressed }) => [
+                styles.userContainer,
+                {
+                  backgroundColor: pressed
+                    ? colors.defaultColors.card
+                    : "transparent",
+                },
+              ]}
+              onPress={() => goToChat(userItem)}
+            >
+              <View style={styles.leftContent}>
+                <Avatar
+                  size={60}
+                  radius={50}
+                  name={userItem.profile.username}
+                  colorize
+                  source={
+                    userItem.profile.avatar?.length
+                      ? { uri: userItem.profile.avatar }
+                      : undefined
+                  }
+                />
+                <View style={{ justifyContent: "center", marginLeft: 10 }}>
+                  <Text style={styles.username}>
+                    {userItem.profile.username}
+                  </Text>
+                  <Text style={styles.name}>{userItem.profile.name}</Text>
                 </View>
-              </Pressable>
-            ))}
-          </>
+              </View>
+            </Pressable>
+          ))
         )}
       </ScrollView>
-    </View>
+    </ThemedSafeAreaView>
   );
 }
 
@@ -179,16 +184,21 @@ const styles = StyleSheet.create({
   leftContent: {
     flexDirection: "row",
   },
-  userIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 100,
-    marginRight: 10,
-  },
   username: {
     fontWeight: "bold",
   },
   name: {
     fontSize: 14,
+  },
+  emptyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 40,
+  },
+  emptyText: {
+    fontSize: 13,
+    opacity: 0.8,
+    textAlign: "center",
+    marginHorizontal: 20,
   },
 });

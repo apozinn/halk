@@ -2,9 +2,11 @@ client/node_modules
 client/.expo
 client/package-lock.json
 client/.env
+client/*.vscode
 
 server/.env
 server/node_modules
 server/package-lock.json
 server/dist
+server/*.vscode
 concept

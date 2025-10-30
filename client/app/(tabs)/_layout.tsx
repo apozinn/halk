@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import React, { useContext } from 'react';
 import { Platform, Pressable, View } from 'react-native';
-import { HapticTab } from '@/components/HapticTab';
+import { HapticTab } from '@/components/ui/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import Colors, { getColors } from '@/constants/Colors';
 import useColorScheme from '@/hooks/useColorScheme';
@@ -30,9 +30,12 @@ export default function TabLayout() {
     },
   };
 
-  const unreadChats = chats.filter((chat) =>
-    chat.messages.some((m) => m.read === false)
-  ).length;
+  let unreadChats = 0;
+  if (chats) {
+    unreadChats = chats.filter((chat) =>
+      chat?.messages?.some((m) => m?.read === false)
+    ).length;
+  }
 
   return (
     <Tabs
@@ -55,7 +58,7 @@ export default function TabLayout() {
         name="index"
         options={({ navigation }) => ({
           title: "Chats",
-          tabBarBadge: 10,
+          tabBarBadge: unreadChats,
           headerTitleStyle: {
             fontSize: 15,
             fontWeight: "bold",
@@ -65,13 +68,9 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Ionicons name="chatbox-ellipses" size={24} color={color} />
           ),
-          headerStyle: {
-            height:
-              Platform.OS === "android" || Platform.OS === "ios" ? 60 : 40,
-          },
           headerLeft: () => (
             <Pressable
-              onPress={() => navigation.navigate("Camera")}
+              onPress={() => navigation.navigate("/camera/camera")}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
                 marginLeft: 5,
@@ -91,7 +90,7 @@ export default function TabLayout() {
             >
               <SearchChat navigation={navigation} />
               <Pressable
-                onPress={() => {}}
+                onPress={() => { }}
                 style={({ pressed }) => ({
                   opacity: pressed ? 0.5 : 1,
                 })}

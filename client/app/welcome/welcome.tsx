@@ -1,6 +1,6 @@
-import { ThemedSafeAreaView } from "@/components/themedSafeAreaView";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedSafeAreaView } from "@/components/themed/themedSafeAreaView";
+import { ThemedView } from "@/components/themed/ThemedView";
+import { ThemedText } from "@/components/themed/ThemedText";
 import { StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { getColors } from "@/constants/Colors";
@@ -24,10 +24,10 @@ export default function WelcomePage() {
 
         <ThemedView style={styles.welcomeTextsContainer}>
           <ThemedText style={styles.welcomeTitle}>
-            {t('welcomeTitle')}
+            {t('welcome.title')}
           </ThemedText>
           <ThemedText style={styles.welcomeDescription}>
-            {t('welcomeDescription')}
+            {t('welcome.description')}
           </ThemedText>
         </ThemedView>
       </ThemedView>
@@ -36,13 +36,13 @@ export default function WelcomePage() {
 
         <TouchableOpacity style={{ ...styles.signUpButton, ...{ backgroundColor: colors.tint, borderColor: colors.border } }} onPress={() => {router.navigate("/welcome/signUp")}}>
           <ThemedText style={{ color: "white", fontWeight: "bold" }}>
-            {t('welcomeButtonSignUp')}
+            {t('welcome.button.signUp')}
           </ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity style={{ ...styles.signInButton, ...{ borderColor: colors.border } }} onPress={() => {router.navigate("/welcome/signIn")}}>
           <ThemedText style={{ fontWeight: "bold" }}>
-            {t('welcomeButtonSignIn')}
+            {t('welcome.button.signIn')}
           </ThemedText>
         </TouchableOpacity>
 
@@ -72,12 +72,15 @@ const styles = StyleSheet.create({
   welcomeTitle: {
     fontSize: 30,
     fontWeight: 'bold',
-    marginTop: 20
+    marginTop: 20,
+    padding: 5
   },
   welcomeDescription: {
     fontSize: 14,
     marginTop: 10,
-    textAlign: 'center'
+    textAlign: 'center',
+    padding: 5
+
   },
   welcomeButtonsContainer: {
     flexDirection: 'row',

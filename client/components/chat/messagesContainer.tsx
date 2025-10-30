@@ -16,7 +16,7 @@ import {
   Fontisto,
   Entypo,
 } from "@expo/vector-icons";
-import { Text } from "./Themed";
+import { Text } from "../themed/Themed";
 import Modal from "react-native-modal";
 import { Avatar } from '@kolking/react-native-avatar';
 
@@ -167,14 +167,18 @@ class MessagesContainer extends Component {
       >
         {this.ModalMessage()}
         {this?.chat?.messages?.map((message, index) => {
+          if(!message?.author?.id) {
+            return null;
+          }
+
           const itsMyMessage =
             message.author.id === this.user.id ? true : false;
           const messageTime = new Date(message.createdAt).toLocaleTimeString();
 
           let previousMessageIsMy =
-            this.chat.messages[index - 1]?.author.id === message.author.id;
-          let nextMessageIsMy =
-            this.chat.messages[index + 1]?.author.id === message.author.id;
+            this.chat.messages[index - 1]?.author?.id === message.author.id;
+          let nextMessageIsMy = 
+            this.chat.messages[index + 1]?.author?.id === message.author.id;
 
           let borders = {};
 

@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useContext } from "react";
 import { StyleSheet, TouchableOpacity, View, ScrollView } from "react-native";
-import { Text } from "./Themed";
+import { Text } from "../themed/Themed";
 import { Avatar } from '@kolking/react-native-avatar';
 import {
   Ionicons,
@@ -11,25 +11,26 @@ import {
 } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import { useRouter } from "expo-router";
+import { ChatsContext } from "@/contexts/chats";
+import { UserContext } from "@/contexts/user";
 
 export default function ChatContainer(props) {
-  const { user, chats, updateChats, chat, socket, colors } = props;
+  const { user, updateUser } = useContext(UserContext);
+  const { chats, updateChats } = useContext(ChatsContext);
+
+  const { chat, socket, colors } = props;
+
   const navigation = useRouter();
 
   const [visible, setVisible] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
   const [scrollOffset, setScrollOffset] = useState(null);
 
-  const lastMessage = useMemo(() => chat.messages[chat.messages.length - 1], [chat.messages]);
+  const lastMessage = chat.messages.at(-1);
+  const unredMessages = chat.messages.filter((m) => m.read === false && m?.author.id !== user.id).length;
 
-  const unredMessages = useMemo(() => 
-    chat.messages.filter((m) => m.read === false && m.author.id !== user.id)
-  , [chat.messages, user.id]);
+  const messageTime = new Date(lastMessage?.createdAt).toLocaleTimeString();
 
-  if (!lastMessage) return null;
-
-  const messageTime = new Date(lastMessage.createdAt).toLocaleTimeString();
-  
   const open = () => setVisible(true);
   const close = () => setVisible(false);
 
@@ -37,18 +38,20 @@ export default function ChatContainer(props) {
     setScrollOffset(event.nativeEvent.contentOffset.y);
   };
 
-  const handleScrollTo = (p) => {};
+  const handleScrollTo = (p) => { };
 
   const executeAction = (key, actionChat) => {
     try {
       if (key === "removeChat") {
         const updatedChats = chats.filter((c) => c.id !== actionChat.id);
         if (updatedChats) {
-          updateChats({ chats: updatedChats }); 
+          updateChats({ chats: updatedChats });
           close();
         }
       }
-    } catch (err) { }
+    } catch (err) {
+      alert(err);
+    }
   };
 
   if (socket?.emit) {
@@ -75,8 +78,8 @@ export default function ChatContainer(props) {
         onBackdropPress={close}
       >
         <View style={styles.scrollableModal}>
-          <ScrollView 
-            onScroll={handleOnScroll} 
+          <ScrollView
+            onScroll={handleOnScroll}
             scrollEventThrottle={16}
           >
             <View style={styles.modalBarContainer}>
@@ -97,7 +100,7 @@ export default function ChatContainer(props) {
               <View
                 style={[
                   styles.modalTopProfile,
-                  { backgroundColor: colors.background },
+                  { backgroundColor: colors.background, gap: 10 },
                 ]}
               >
                 <Avatar
@@ -106,7 +109,6 @@ export default function ChatContainer(props) {
                   source={{ uri: chat.user.profile.avatar || undefined }}
                   colorize={true}
                   radius={50}
-                  style={{ marginRight: 10 }}
                 />
                 <Text style={{ fontWeight: "bold", fontSize: 15 }}>
                   {chat.user.profile.name}
@@ -130,13 +132,7 @@ export default function ChatContainer(props) {
                   <MaterialIcons name="notification-important" size={26} color={colors.tint} />
                   <Text style={styles.modalLinkText}>Config. de notificação</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.modalLink}
-                  onPress={() => executeAction("removeChat", chat)}
-                >
-                  <MaterialIcons name="delete" size={26} color={colors.tint} />
-                  <Text style={styles.modalLinkText}>Excluir conversa</Text>
-                </TouchableOpacity>
+
                 <TouchableOpacity style={styles.modalLink}>
                   <Entypo name="block" size={26} color={colors.tint} />
                   <Text style={styles.modalLinkText}>Bloquear usuário</Text>
@@ -148,6 +144,13 @@ export default function ChatContainer(props) {
                 <TouchableOpacity style={styles.modalLink}>
                   <Ionicons name="copy" size={26} color={colors.tint} />
                   <Text style={styles.modalLinkText}>Copiar ID</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalLink}
+                  onPress={() => executeAction("removeChat", chat)}
+                >
+                  <MaterialIcons name="delete" size={26} color={"red"} />
+                  <Text style={styles.modalLinkText}>Excluir conversa</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -170,40 +173,50 @@ export default function ChatContainer(props) {
     >
       {ModalChat()}
 
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", gap: 10 }}>
         <Avatar
           size={55}
           name={chat.user.profile.username || chat.user.profile.name}
-          source={chat.user.profile.username == "Halk team" ? require("@/assets/images/halk.png") : require("@/assets/images/userIcon.png")}
+          source={chat.user.profile.avatar ? { uri: chat.user.profile.avatar } : undefined}
           colorize={true}
           radius={50}
-          style={{ marginRight: 10 }}
         />
         <View style={{ justifyContent: "center" }}>
           <Text style={{ fontWeight: "bold", fontSize: 17 }}>
             {chat.user.profile.name}
           </Text>
-          {lastMessage.author.id === user.id ? (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Ionicons
-                name="checkmark-done"
-                size={20}
-                color={lastMessage.read ? "#2f95dc" : "gray"}
-                style={{ marginRight: 2 }}
-              />
-              <Text style={styles.messageContent}>
-                {lastMessage.content.length > 28 ? `${lastMessage.content.slice(0, 28)}...` : lastMessage.content}
-              </Text>
-            </View>
-          ) : (
-            <Text style={styles.messageContent}>
-              {lastMessage.content.length > 30 ? `${lastMessage.content.slice(0, 30)}...` : lastMessage.content}
-            </Text>
-          )}
+
+          {
+            lastMessage?.author?.id ? (
+              <>
+                {lastMessage?.author?.id === user.id ? (
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Ionicons
+                      name="checkmark-done"
+                      size={20}
+                      color={lastMessage.read ? "#2f95dc" : "gray"}
+                      style={{ marginRight: 2 }}
+                    />
+                    <Text style={styles.messageContent}>
+                      {lastMessage.content.length > 28 ? `${lastMessage.content.slice(0, 28)}...` : lastMessage.content}
+                    </Text>
+                  </View>
+                ) : (
+                  <Text style={styles.messageContent}>
+                    {lastMessage.content.length > 30 ? `${lastMessage.content.slice(0, 30)}...` : lastMessage.content}
+                  </Text>
+                )}</>
+            ) : null
+          }
+
+
+
+
+
         </View>
       </View>
       <View style={{ alignItems: "center" }}>
-        <Text style={styles.messageDate}>{messageTime.slice(0, 5)}</Text> 
+        <Text style={styles.messageDate}>{messageTime.slice(0, 5)}</Text>
         {unredMessages.length > 0 && (
           <Text style={styles.unread}>{unredMessages.length}</Text>
         )}

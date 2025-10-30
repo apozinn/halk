@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger } from "@nestjs/common";
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -6,139 +6,132 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import * as uuid from 'uuid';
+} from "@nestjs/websockets";
+import { Server, Socket } from "socket.io";
+
+interface MessagePayload {
+  room: string;
+  toUser: string;
+  message: any;
+  newChat?: boolean;
+  key?: string;
+}
 
 @WebSocketGateway()
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer() server: Server;
-  private logger: Logger = new Logger('ChatGateway');
-  private connectedUsers: { socketId: string; userId: string }[] = [];
-  private activeRooms: { room: string; id: string }[] = [];
-  private bufferMessages = [];
+  private logger = new Logger("ChatGateway");
 
-  private async sendEvent(event, user) {}
+  private connectedUsers = new Map<string, string>(); // userId -> socketId
+  private bufferMessages: MessagePayload[] = [];
 
-  @SubscribeMessage('joinRoom')
-  joinRoom(client: Socket, payload: any) {
-    client.join(payload.room);
-
-    const otherUser = this.connectedUsers?.filter(
-      (u) => u.userId === payload.otherUser,
-    )[0];
-    if (otherUser)
-      this.server
-        .to(otherUser.socketId)
-        .emit('readMessage', { chat: payload.room, readUser: payload.userId });
+  afterInit() {
+    this.logger.log("✅ WebSocket Gateway initialized");
   }
 
-  @SubscribeMessage('sendMessage')
-  handleMessage(client: Socket, payload: any): void {
-    const userId = payload.toUser;
-    const userReceive = this.connectedUsers?.filter(
-      (u) => u.userId === userId,
-    )[0];
+  private getUserSocket(userId: string): string | undefined {
+    return this.connectedUsers.get(userId);
+  }
 
-    if (userReceive) {
-      this.server
-        .to(userReceive.socketId)
-        .emit('receiveMessage', payload.message);
+  private emitToUser(userId: string, event: string, data: any) {
+    const socketId = this.getUserSocket(userId);
+    if (socketId) this.server.to(socketId).emit(event, data);
+  }
+
+  @SubscribeMessage("joinRoom")
+  joinRoom(client: Socket, payload: { room: string; userId: string; otherUser: string }) {
+    client.join(payload.room);
+    const otherSocket = this.getUserSocket(payload.otherUser);
+    if (otherSocket) {
+      this.server.to(otherSocket).emit("readMessage", {
+        chat: payload.room,
+        readUser: payload.userId,
+      });
+    }
+  }
+
+  @SubscribeMessage("sendMessage")
+  handleMessage(client: Socket, payload: MessagePayload): void {
+    const { toUser, room, message, newChat, key } = payload;
+    const receiverSocket = this.getUserSocket(toUser);
+
+    if (receiverSocket) {
+      this.server.to(receiverSocket).emit("receiveMessage", message);
     } else {
-      this.server.to(payload.room).emit('receiveMessage', payload.message);
+      this.server.to(room).emit("receiveMessage", message);
+      this.bufferMessages.push(payload);
     }
 
-    if (this.connectedUsers?.some((u) => u.userId === userId)) {
-      this.bufferMessages?.push(payload);
-    }
-
-    if (payload.newChat) {
-      const newChat = {
-        id: payload.room,
-        user: payload.message.author,
-        messages: [],
-        key: payload.key,
+    if (newChat) {
+      const newChatObj = {
+        id: room,
+        user: message.author,
+        messages: [message],
+        key,
       };
-
-      newChat.messages.push(payload.message);
-
-      if (this.connectedUsers?.some((u) => u.userId === userId)) {
-        this.server.to(userReceive.socketId).emit('newChat', { newChat });
+      if (receiverSocket) {
+        this.server.to(receiverSocket).emit("newChat", { newChat: newChatObj });
       } else {
-        this.bufferMessages?.push(newChat);
+        this.bufferMessages.push({ ...payload, message: newChatObj });
       }
     }
   }
 
-  @SubscribeMessage('newChat')
-  newChat(client: Socket, payload: any) {
-    const chat = payload.chat;
-    this.server.emit('roomCreated', chat);
+  @SubscribeMessage("newChat")
+  newChat(client: Socket, payload: { chat: any }) {
+    this.server.emit("roomCreated", payload.chat);
   }
 
-  @SubscribeMessage('verifyIfUserIsOnline')
-  getOnlineUsers(client: Socket, payload: any) {
-    const isOnline = this.connectedUsers?.filter(
-      (u) => u.userId === payload.userId,
-    )[0]
-      ? true
-      : false;
-
-    client.emit('receiveIfUserIsOnline', isOnline);
+  @SubscribeMessage("verifyIfUserIsOnline")
+  verifyIfUserIsOnline(client: Socket, payload: { userId: string }) {
+    const isOnline = this.connectedUsers.has(payload.userId);
+    client.emit("receiveIfUserIsOnline", isOnline);
   }
 
-  @SubscribeMessage('userTyping')
+  @SubscribeMessage("userTyping")
   userTyping(client: Socket, payload: any) {
-    this.server.to(payload.room).emit('userTyping', payload);
+    this.server.to(payload.room).emit("userTyping", payload);
   }
 
-  @SubscribeMessage('readMessage')
-  readMessage(client: Socket, payload: any) {
+  @SubscribeMessage("readMessage")
+  readMessage(client: Socket, payload: { chat: string; otherUser: string }) {
     if (!payload.otherUser) return;
-    this.server
-      .to(payload.otherUser)
-      .emit('readMessage', { chat: payload.chat, user: payload.otherUser });
-  }
-
-  afterInit(server: Server) {
-    this.logger.log('Init');
+    this.emitToUser(payload.otherUser, "readMessage", {
+      chat: payload.chat,
+      user: payload.otherUser,
+    });
   }
 
   handleConnection(client: Socket) {
-    const userId = client.handshake.auth.userId;
-    const { id } = client;
-
-    const exitisUserConnection = this.connectedUsers?.filter(
-      (u) => u.userId === userId,
-    )[0];
-
-    if (exitisUserConnection) {
-      exitisUserConnection.socketId = id;
-    } else {
-      this.connectedUsers?.push({
-        socketId: id,
-        userId: userId,
-      });
+    const userId = client.handshake.auth?.token;
+    if (!userId) {
+      client.disconnect();
+      return;
     }
 
-    if (this.bufferMessages?.some((m) => m.toUser === userId)) {
-      this.bufferMessages
-        ?.filter((m) => m.toUser === userId)
-        .map((m) => {
-          if (m.key) {
-            this.server.to(id).emit('newChat', { newChat: m });
-          } else {
-            this.server.to(id).emit('receiveMessage', m);
-          }
-        });
+    this.connectedUsers.set(userId, client.id);
+
+    const pending = this.bufferMessages.filter((m) => m.toUser === userId);
+    if (pending.length > 0) {
+      for (const msg of pending) {
+        if (msg.newChat) {
+          this.server.to(client.id).emit("newChat", { newChat: msg });
+        } else {
+          this.server.to(client.id).emit("receiveMessage", msg.message);
+        }
+      }
+      this.bufferMessages = this.bufferMessages.filter((m) => m.toUser !== userId);
     }
   }
 
   handleDisconnect(client: Socket) {
-    this.connectedUsers = this.connectedUsers?.filter(
-      (u) => u.socketId !== client.id,
-    );
+    for (const [userId, socketId] of this.connectedUsers.entries()) {
+      if (socketId === client.id) {
+        this.connectedUsers.delete(userId);
+        break;
+      }
+    }
   }
 }

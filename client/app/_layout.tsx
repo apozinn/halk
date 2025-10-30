@@ -1,64 +1,62 @@
+import React, { useEffect, useState } from "react";
 import { Stack } from "expo-router";
-import { StatusBar } from 'expo-status-bar';
-import useColorScheme from "@/hooks/useColorScheme";
+import { StatusBar } from "expo-status-bar";
+import { ActivityIndicator } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { ThemeProvider, DarkTheme, DefaultTheme } from "@react-navigation/native";
+import { MenuProvider } from "react-native-popup-menu";
+import { useFonts } from "expo-font";
+
 import { UserProvider } from "@/contexts/user";
 import { ChatsProvider } from "@/contexts/chats";
-import { SocketProvider } from "@/contexts/socket";
-import { BufferProvider } from "@/contexts/buffer";
-import ErrorBoundary from "@/app/errors/errorBoundary";
-import { getColors } from "@/constants/Colors";
-import { MenuProvider } from "react-native-popup-menu";
 import { SettingsProvider } from "@/contexts/settings";
-import VerifyIfUserIsLogged from "@/components/verifyIsUserIsLogged";
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import 'react-native-reanimated';
-import { useEffect, useState } from "react";
+import VerifyIfUserIsLogged from "@/components/verifiers/verifyIsUserIsLogged";
+import SocketListener from "@/socket/socketListener";
+import ErrorBoundary from "@/app/errors/errorBoundary";
+import useColorScheme from "@/hooks/useColorScheme";
+import { getColors } from "@/constants/Colors";
 import { initI18n } from "@/i18n";
-import { ActivityIndicator } from "react-native";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const colors = getColors();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  const [i18nReady, setI18nReady] = useState(false);
+
+  const [fontsLoaded] = useFonts({
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  const [ready, setReady] = useState(false);
-
   useEffect(() => {
-    initI18n().then(() => setReady(true));
+    initI18n().then(() => setI18nReady(true));
   }, []);
 
-  if (!ready) return <ActivityIndicator size="large" />;
-
-  if (!loaded) {
-    return null;
+  if (!i18nReady || !fontsLoaded) {
+    return (
+      <SafeAreaProvider>
+        <ActivityIndicator size="large" style={{ flex: 1, justifyContent: "center" }} />
+      </SafeAreaProvider>
+    );
   }
 
   return (
     <ErrorBoundary {...{ colors }}>
-      <UserProvider>
-        <ChatsProvider>
-          <BufferProvider>
-            <SettingsProvider>
-              <SocketProvider>
-                <MenuProvider>
-                  <SafeAreaProvider>
-                    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                      <VerifyIfUserIsLogged>
-                        <Stack screenOptions={{ headerShown: false }} />
-                        <StatusBar style="auto" />
-                      </VerifyIfUserIsLogged>
-                    </ThemeProvider>
-                  </SafeAreaProvider>
-                </MenuProvider>
-              </SocketProvider>
-            </SettingsProvider>
-          </BufferProvider>
-        </ChatsProvider>
-      </UserProvider>
+      <SafeAreaProvider>
+        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+          <MenuProvider>
+            <UserProvider>
+              <ChatsProvider>
+                <SettingsProvider>
+                  <VerifyIfUserIsLogged>
+                    <SocketListener />
+                    <Stack screenOptions={{ headerShown: false }} />
+                    <StatusBar style="auto" />
+                  </VerifyIfUserIsLogged>
+                </SettingsProvider>
+              </ChatsProvider>
+            </UserProvider>
+          </MenuProvider>
+        </ThemeProvider>
+      </SafeAreaProvider>
     </ErrorBoundary>
   );
 }

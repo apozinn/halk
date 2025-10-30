@@ -1,141 +1,98 @@
-import { Controller, Post, Req } from '@nestjs/common';
+import { Controller, Post, Req, Body, BadRequestException } from '@nestjs/common';
 import User from '../../middleware/database/schemas/user';
 import { v4 as uuidv4 } from 'uuid';
-import * as argon2 from "argon2";
+import * as argon2 from 'argon2';
 
 @Controller('auth')
 export class AuthController {
-    @Post('/signIn')
-    async login(@Req() req) {
-        try {
-            const username: string = req.body.username;
-            const password: string = req.body.password;
 
-            const user = await User.findOne({ 'profile.username': username });
+  @Post('/signIn')
+  async signIn(@Body() body: any) {
+    const { username, password } = body;
 
-            if (user) {
-                const fetchedUserObject = {
-                    id: user.id,
-                    following: user.following,
-                    profile: user.profile,
-                };
-
-                if (await argon2.verify(user.password, password)) {
-                    return {
-                        logged: true,
-                        user: fetchedUserObject,
-                    };
-                } else {
-                    return {
-                        logged: false,
-                        reason: "Invalid password.",
-                    };
-                }
-            } else {
-                return {
-                    logged: false,
-                    reason: "Could not find a user with this username.",
-                };
-            }
-        } catch (err) {
-            return {
-                logged: false,
-                reason: "There was an error executing the signIn process."
-            }
-        }
+    if (!username || !password) {
+      throw new BadRequestException('Username and password are required.');
     }
 
-    @Post('/signUp')
-    async signUp(@Req() req) {
-        try {
-            const username: string = req.body.username;
-            const password: string = req.body.password;
+    const user = await User.findOne({ 'profile.username': username });
 
-            const userAlreadyExists = await User.findOne({ 'profile.username': username });
-
-            if (userAlreadyExists) {
-                return {
-                    created: false,
-                    reason: "There is already a user with this username.",
-                }
-            } else {
-                const password_hash = await argon2.hash(password, { raw: false });
-
-                const newUserObject = {
-                    id: uuidv4(),
-                    password: password_hash,
-                    profile: {
-                        username
-                    },
-                };
-
-                const user = await User.create(newUserObject);
-
-                if (user) {
-                    const userObject = {
-                        id: user.id,
-                        following: user.following,
-                        profile: user.profile,
-                    };
-                    return {
-                        created: true,
-                        user: userObject,
-                    };
-                } else {
-                    return {
-                        created: false,
-                        reason: "An error occurred while creating the account"
-                    };
-                }
-            }
-        } catch (err) {
-            return {
-                created: false,
-                reason: "There was an error executing the signUp process."
-            }
-        }
+    if (!user) {
+      return { logged: false, reason: 'Could not find a user with this username.' };
     }
 
-    @Post("/createProfile")
-    async createProfile(@Req() req) {
-        try {
-            const userId: string = req.body.id;
-            const name: string = req.body.profile.name;
-            const bio: string = req.body.profile.bio;
-            const avatar: string = req.body.profile.avatar;
-
-            const user = await User.findOne({ 'id': userId });
-            console.log(user);
-            
-            if (user) {
-                user.profile.name = name;
-                user.profile.bio = bio;
-                user.profile.avatar = avatar;
-
-                await user.save();
-
-                const userObject = {
-                    id: user.id,
-                    following: user.following,
-                    profile: user.profile,
-                };
-
-                return {
-                    created: true,
-                    user: userObject,
-                };
-            } else {
-                return {
-                    created: false,
-                    reason: "Could not find a user with this username.",
-                };
-            }
-        } catch (err) {
-            return {
-                created: false,
-                reason: "There was an error executing the createProfile process."
-            }
-        }
+    const isPasswordValid = await argon2.verify(user.password, password);
+    if (!isPasswordValid) {
+      return { logged: false, reason: 'Invalid password.' };
     }
 
+    return {
+      logged: true,
+      user: {
+        id: user.id,
+        following: user.following,
+        profile: user.profile,
+      },
+    };
+  }
+
+  @Post('/signUp')
+  async signUp(@Body() body: any) {
+    const { username, password } = body;
+
+    if (!username || !password) {
+      throw new BadRequestException('Username and password are required.');
+    }
+
+    const userExists = await User.findOne({ 'profile.username': username });
+    if (userExists) {
+      return { created: false, reason: 'There is already a user with this username.' };
+    }
+
+    const passwordHash = await argon2.hash(password);
+    const newUser = await User.create({
+      id: uuidv4(),
+      password: passwordHash,
+      profile: { username },
+    });
+
+    return {
+      created: true,
+      user: {
+        id: newUser.id,
+        following: newUser.following,
+        profile: newUser.profile,
+      },
+    };
+  }
+
+  @Post('/createProfile')
+  async createProfile(@Body() body: any) {
+    const { id, profile } = body;
+    if (!id || !profile) {
+      throw new BadRequestException('User ID and profile data are required.');
+    }
+
+    const user = await User.findOne({ id });
+    if (!user) {
+      return { created: false, reason: 'User not found.' };
+    }
+
+    user.profile = {
+      ...user.profile,
+      name: profile.name ?? user.profile.name,
+      bio: profile.bio ?? user.profile.bio,
+      avatar: profile.avatar ?? user.profile.avatar,
+    };
+
+    await user.save();
+
+    return {
+      created: true,
+      user: {
+        id: user.id,
+        following: user.following,
+        profile: user.profile,
+      },
+    };
+  }
 }

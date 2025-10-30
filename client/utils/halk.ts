@@ -10,7 +10,7 @@ export default class HalkController extends Tools {
 			profile: {
 				name: "Halk",
 				username: "Halk team",
-				avatar: "@/assets/images/halk.png",
+				avatar: "https://i.imgur.com/AaIl958.png",
 				bio: "Official account of the team Halk",
 			},
 		};

@@ -6,63 +6,65 @@ import {
   SectionList,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Text, TextInput } from "../../components/ui/Themed";
+import { Text } from "@/components/themed/Themed";
 import { UserContext } from "@/contexts/user";
 import { ChatsContext } from "@/contexts/chats";
-import { getColors } from "../../constants/Colors";
 import { useRouter } from "expo-router";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { ThemedView } from "@/components/ThemedView";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ThemedView } from "@/components/themed/ThemedView";
+import { useTranslation } from "react-i18next";
+
+interface CallSection {
+  title: string;
+  data: { props: any | null }[];
+}
 
 export default function Calls() {
   const { user } = useContext(UserContext);
   const { chats } = useContext(ChatsContext);
-  const [calls, setCalls] = useState([]);
+  const [calls, setCalls] = useState<CallSection[]>([]);
   const navigation = useRouter();
   const insets = useSafeAreaInsets();
-  
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (!calls.length) {
-      setCalls((current) => [
-        ...current,
+      setCalls([
         {
-          title: "Chamadas recentes",
+          title: t("calls_recent"),
           data: [{ props: null }],
         },
       ]);
     }
-  }, []);
+  }, [calls.length, t]);
 
-  function CallContainer({ call }) {
-    if (call.props === null) {
-      return <></>
-    } else {
-      return <></>;
-    }
+  function CallContainer({ call }: { call: { props: any | null } }) {
+    if (!call?.props) return null;
+    return null;
   }
 
   return (
-    <ThemedView style={{...styles.container, marginTop: insets.top}}>
+    <ThemedView style={[styles.container, { marginTop: insets.top }]}>
       <TouchableOpacity style={styles.newCall} onPress={() => {}}>
         <View style={styles.newCallButton}>
           <MaterialIcons name="add-ic-call" size={27} color="white" />
         </View>
         <View style={{ marginLeft: 10 }}>
-          <Text style={{ fontWeight: "bold" }}>Inicie uma nova chamada</Text>
-          <Text style={{ fontSize: 12 }}>
-            Toque para iniciar uma chamada com outro usuário
+          <Text style={styles.newCallTitle}>{t("calls_newCall")}</Text>
+          <Text style={styles.newCallDescription}>
+            {t("calls_newCallDescription")}
           </Text>
         </View>
       </TouchableOpacity>
 
       <SectionList
         sections={calls}
-        keyExtractor={(item, index) => item + index}
+        keyExtractor={(_, index) => String(index)}
         renderItem={({ item }) => <CallContainer call={item} />}
         renderSectionHeader={({ section: { title } }) => (
           <Text style={styles.sectionTitle}>{title}</Text>
         )}
-        style={{ marginHorizontal: 10 }}
+        contentContainerStyle={{ paddingHorizontal: 10 }}
       />
     </ThemedView>
   );
@@ -86,8 +88,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 5,
   },
+  newCallTitle: {
+    fontWeight: "bold",
+    fontSize: 15,
+  },
+  newCallDescription: {
+    fontSize: 12,
+    opacity: 0.8,
+  },
   sectionTitle: {
     fontSize: 13,
     opacity: 0.8,
+    marginTop: 5,
   },
 });

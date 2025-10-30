@@ -1,62 +1,43 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
-import { Button, StyleSheet, View, TouchableOpacity } from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import {
-	AntDesign,
 	Ionicons,
-	Feather,
 	FontAwesome,
 	MaterialIcons,
 	Fontisto,
 } from "@expo/vector-icons";
-import { TextInput, Text } from "@/components/ui/Themed";
+import { TextInput } from "@/components/themed/Themed";
 import { getColors } from "../../constants/Colors";
 import { UserContext } from "@/contexts/user";
-import { ChatsContext } from "@/contexts/chats";
-import { SocketContext } from "@/contexts/socket";
-import { SocketController } from "../../utils/socket";
+import { SocketController } from "@/socket/socketController";
+import { Chat } from "@/types";
 
-export default function BottomContent({ chat }) {
+export default function BottomContent({ chat }: { chat: Chat }) {
 	const { user } = useContext(UserContext);
-	const { chats, updateChats } = useContext(ChatsContext);
-	const {socket} = useContext(SocketContext);
-
 	const [text, setText] = useState("");
-	const [userTyping, setUserTyping] = useState(false);
-
 	const colors = getColors();
 
 	useEffect(() => {
-		if (!socket || !chat) return;
-		if (text.length === 0) {
-			socket.emit("userTyping", {
-				room: chat.id,
-				typing: false,
-				userId: user.id,
-			});
-		} else {
-			socket.emit("userTyping", {
-				room: chat.id,
-				typing: true,
-				userId: user.id,
-			});
-		}
+		if (!chat) return;
+		const socketController = SocketController.getInstance({
+			url: process.env.EXPO_PUBLIC_API_URL,
+			token: user.id
+		});
 
-		socket.on("userTyping", (t) => {
-			if (t.userId === user.id) return;
-			setUserTyping(t.typing);
+		socketController.emit("userTyping", {
+			room: chat.id,
+			typing: text.length === 0 ? false : true,
+			userId: user.id,
 		});
 	}, [text]);
 
 	function sendMessage() {
 		if (!text) return;
-		new SocketController.sendMessage({
-			user,
-			chats,
-			updateChats,
-			chat,
-			socket,
-			text,
+		const socketController = SocketController.getInstance({
+			url: process.env.EXPO_PUBLIC_API_URL,
+			token: user.id
 		});
+		socketController.sendMessage(chat, text);
 		setText("");
 	}
 
@@ -68,7 +49,7 @@ export default function BottomContent({ chat }) {
 			]}
 		>
 			<View style={styles.buttonContentLeft}>
-				<TouchableOpacity style={{...styles.blueButton, backgroundColor: colors.tint}} onPress={() => {}}>
+				<TouchableOpacity style={{ ...styles.blueButton, backgroundColor: colors.tint }} onPress={() => { }}>
 					<Fontisto name="camera" size={20} color="white" />
 				</TouchableOpacity>
 				<TextInput
@@ -83,13 +64,13 @@ export default function BottomContent({ chat }) {
 			</View>
 			{text ? (
 				<TouchableOpacity
-					style={{...styles.blueButton, backgroundColor: colors.tint}}
+					style={{ ...styles.blueButton, backgroundColor: colors.tint }}
 					onPress={() => sendMessage()}>
 					<FontAwesome name="send" size={24} color="white" />
 				</TouchableOpacity>
 			) : (
 				<View style={styles.othersMedias}>
-					<TouchableOpacity onPress={() => {}}>
+					<TouchableOpacity onPress={() => { }}>
 						<Ionicons
 							name="add-circle-outline"
 							size={26}
@@ -98,7 +79,7 @@ export default function BottomContent({ chat }) {
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={{ marginLeft: 8 }}
-						onPress={() => {}}
+						onPress={() => { }}
 					>
 						<MaterialIcons
 							name="keyboard-voice"

@@ -6,7 +6,7 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
-import { TextInput, Text } from "./Themed";
+import { TextInput, Text } from "../themed/Themed";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { getColors } from "../../constants/Colors";
 import { UserContext } from "@/contexts/user";
@@ -73,19 +73,27 @@ export default function SearchChat() {
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
               >
-                {chats.map(
-                  (chat, index) => (
-                    <TouchableOpacity style={styles.chatPw} key={index}>
-                      <Avatar
-                        size={50}
-                        name={chat.user.profile.name}
-                        source={{ uri: chat.user.profile.avatar }}
-                        colorize={true}
-                        radius={50}
-                      />
-                    </TouchableOpacity>
-                  )
-                )}
+                {
+                  chats ? chats
+                    .filter((chat) => chat.user.id !== user.id)
+                    .map((chat, index) => (
+                      <TouchableOpacity
+                        style={styles.chatContent}
+                        onPress={() =>
+                          navigation.navigate("Chat", { id: chat.id })
+                        }
+                        key={index}
+                      >
+                        <Avatar
+                          size={50}
+                          name={chat.user.profile.name}
+                          source={{ uri: chat.user.profile.avatar }}
+                          colorize={true}
+                          radius={50}
+                        />
+                      </TouchableOpacity>
+                    )) : <></>
+                }
               </ScrollView>
               <View
                 style={[

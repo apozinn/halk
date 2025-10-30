@@ -1,22 +1,23 @@
 export default class Tools {
-	constructor() {}
+  constructor() {}
 
-	 public generateRandomColor(filter = null) {
-		let color;
-		if (filter) {
-		} else {
-			color = Math.floor(Math.random() * 16777215)
-				.toString(16)
-				.padStart(6, "0");
-		}
+  public generateRandomColor(filter?: (color: string) => boolean): string {
+    let color = "";
 
-		return `#${color}`;
-	}
+    do {
+      color = `#${Math.floor(Math.random() * 0xffffff)
+        .toString(16)
+        .padStart(6, "0")}`;
+    } while (filter && !filter(color));
 
-	 public generateRandomId() {
-		const timeNow = new Date().getTime();
-		return `${timeNow}${Math.floor(
-			Math.random() * (100000000 - 1000000 + 1) + 1000000
-		)}`;
-	}
+    return color;
+  }
+
+  public generateRandomId(prefix = ""): string {
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1_000_000_000)
+      .toString()
+      .padStart(9, "0");
+    return `${prefix}${timestamp}${random}`;
+  }
 }

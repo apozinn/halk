@@ -1,18 +1,21 @@
 import { useContext, useEffect } from "react";
+import { useRouter, useSegments } from "expo-router";
 import { UserContext } from "@/contexts/user";
-import { useRouter, Stack } from "expo-router";
 
 export default function VerifyIfUserIsLogged({ children }: { children: React.ReactNode }) {
   const { logged } = useContext(UserContext);
   const router = useRouter();
+  const segments = useSegments();
 
   useEffect(() => {
-    if (logged) {
-      router.replace("/");
-    } else {
-      router.replace("/welcome/welcome");
-    }
-  }, [logged]);
+    const inAuthGroup = segments[0] === "welcome";
 
-  return children
+    if (!logged && !inAuthGroup) {
+      router.replace("/welcome/welcome");
+    } else if (logged && inAuthGroup) {
+      router.replace("/");
+    }
+  }, [logged, segments]);
+
+  return children;
 }
