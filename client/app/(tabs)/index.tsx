@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import { UserContext } from "@/contexts/user";
 import { ChatsContext } from "@/contexts/chats";
@@ -6,11 +6,18 @@ import { getColors } from "../../constants/Colors";
 import NewChatButton from "../../components/ui/newChatButton";
 import ChatContainer from "../../components/chat/chatContainer";
 import { ThemedView } from "@/components/themed/ThemedView";
+import { Chat } from "@/types";
 
 export default function Chats() {
   const { user, logged } = useContext(UserContext);
   const { chats } = useContext(ChatsContext);
-  const colors = getColors();
+  const [chatsTobeListed, setChatsTobeListed] = useState<Chat[]>([]);
+
+  useEffect(() => {
+    if(chats) {
+      setChatsTobeListed(chats);
+    }
+  }, [chats]);
 
   return (
     <ThemedView style={{ flex: 1 }}>
@@ -22,18 +29,9 @@ export default function Chats() {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         >
-          {chats ? (
-            chats.map((chat) => (
-              <ChatContainer
-                key={chat.id}
-                chat={chat}
-                user={user}
-                colors={colors}
-              />
-            ))
-          ) : (
-            <></>
-          )}
+          {<>{chatsTobeListed.map((chat) => {
+            return <ChatContainer key={chat.id} chat={chat} />
+          })}</>}
         </ScrollView>
         <NewChatButton />
       </>)}

@@ -49,5 +49,28 @@
   "notFound": {
     "title": "Esta tela não existe.",
     "goHome": "Ir para a tela inicial!"
+  },
+  "chat": {
+    "typing": "Digitando...",
+    "sendAMessageInputPlaceHolder": "Digite uma mensagem..."
+  },
+  "message": {
+    "reply": "Responder",
+    "delete_message": "Apagar mensagem",
+    "pin_message": "Fixar mensagem",
+    "share": "Compartilhar",
+    "react": "Reagir à mensagem",
+    "copy": "Copiar conteúdo",
+    "report": "Denunciar"
+  },
+  "newChat": {
+    "searchPlaceholder": "Buscar usuário...",
+    "emptyMessage": "Pesquise por um usuário para iniciar uma conversa.",
+    "noResults": "Nenhum usuário encontrado com esse nome."
+  },
+  "errorBoundary": {
+    "title": "Ocorreu um erro",
+    "message": "Algo inesperado aconteceu. Por favor, tente novamente.",
+    "tryAgain": "Tentar novamente"
   }
 }

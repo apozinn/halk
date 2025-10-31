@@ -16,6 +16,8 @@ const colors = {
     appColor: "#007AFF",
     icon: "#6C6C70",
     border: "#C7C7CC",
+    messagesContainer: "#f3f3f3ff",
+    otherUserMessageCard: "#dedede"
   },
   dark: {
     text: "#FFFFFF",
@@ -28,6 +30,8 @@ const colors = {
     appColor: "#0A84FF",
     icon: "#EBEBF5",
     border: "#38383A",
+    messagesContainer: "#000000",
+    otherUserMessageCard: "#404040"
   },
 };
 

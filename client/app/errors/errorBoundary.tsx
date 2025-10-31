@@ -22,14 +22,14 @@ interface ErrorBoundaryState {
 export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = {
     hasError: false,
-    errorMessage: "errorBoundary_message",
+    errorMessage: "errorBoundary.message",
     reloading: false,
   };
 
   static getDerivedStateFromError(_: Error): ErrorBoundaryState {
     return {
       hasError: true,
-      errorMessage: "errorBoundary_message",
+      errorMessage: "errorBoundary.message",
       reloading: false,
     };
   }
@@ -55,7 +55,7 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <MaterialIcons name="error" size={100} color={colors.tint} />
-        <Text style={styles.title}>{t("errorBoundary_title")}</Text>
+        <Text style={styles.title}>{t("errorBoundary.title")}</Text>
         <Text style={styles.message}>{t(errorMessage)}</Text>
 
         <Pressable
@@ -66,7 +66,7 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
           {reloading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>{t("errorBoundary_tryAgain")}</Text>
+            <Text style={styles.buttonText}>{t("errorBoundary.tryAgain")}</Text>
           )}
         </Pressable>
       </View>

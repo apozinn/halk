@@ -7,20 +7,22 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
+import User from "middleware/database/schemas/user";
 import { Server, Socket } from "socket.io";
+import { Message } from "types";
 
 interface MessagePayload {
   room: string;
   toUser: string;
-  message: any;
-  newChat?: boolean;
-  key?: string;
+  message: Message;
+  newChat: boolean;
+  key: string;
+  newChatObj?: any;
 }
 
 @WebSocketGateway()
 export class ChatGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private logger = new Logger("ChatGateway");
 
@@ -53,28 +55,31 @@ export class ChatGateway
   }
 
   @SubscribeMessage("sendMessage")
-  handleMessage(client: Socket, payload: MessagePayload): void {
+  async handleMessage(client: Socket, payload: MessagePayload): Promise<void> {
     const { toUser, room, message, newChat, key } = payload;
     const receiverSocket = this.getUserSocket(toUser);
 
-    if (receiverSocket) {
-      this.server.to(receiverSocket).emit("receiveMessage", message);
-    } else {
-      this.server.to(room).emit("receiveMessage", message);
-      this.bufferMessages.push(payload);
-    }
-
     if (newChat) {
+      const userProps = await User.findOne({ id: message.authorId });
+      if(!userProps) return;
+
       const newChatObj = {
         id: room,
-        user: message.author,
-        messages: [message],
-        key,
+        user: { id: userProps.id, profile: userProps.profile },
+        messages: [message]
       };
+
       if (receiverSocket) {
         this.server.to(receiverSocket).emit("newChat", { newChat: newChatObj });
       } else {
-        this.bufferMessages.push({ ...payload, message: newChatObj });
+        payload.newChatObj = newChatObj;
+        this.bufferMessages.push({ ...payload });
+      }
+    } else {
+      if (receiverSocket) {
+        this.server.to(receiverSocket).emit("receiveMessage", message);
+      } else {
+        this.bufferMessages.push({ ...payload });
       }
     }
   }
@@ -115,11 +120,11 @@ export class ChatGateway
 
     const pending = this.bufferMessages.filter((m) => m.toUser === userId);
     if (pending.length > 0) {
-      for (const msg of pending) {
-        if (msg.newChat) {
-          this.server.to(client.id).emit("newChat", { newChat: msg });
+      for (const payload of pending) {
+        if (payload.newChat) {
+          this.server.to(client.id).emit("newChat", { newChat: payload.newChatObj });
         } else {
-          this.server.to(client.id).emit("receiveMessage", msg.message);
+          this.server.to(client.id).emit("receiveMessage", payload.message);
         }
       }
       this.bufferMessages = this.bufferMessages.filter((m) => m.toUser !== userId);

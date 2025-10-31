@@ -15,7 +15,8 @@ export const ChatsProvider = ({ children }: { children: ReactNode }) => {
 
   const updateChats = async (newChats: Chat[]) => {
     try {
-      setChats(newChats);
+      let newInstance = [...newChats];
+      setChats(newInstance);
       await AsyncStorage.setItem("chats", JSON.stringify(newChats));
     } catch (err) {
       console.error("Erro ao salvar chats:", err);

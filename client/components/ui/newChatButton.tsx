@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function NewChatButton() {
   const navigation = useRouter();

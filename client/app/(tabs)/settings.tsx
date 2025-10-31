@@ -1,8 +1,7 @@
-import { useContext, useCallback } from "react";
+import { useContext } from "react";
 import {
   View,
   StyleSheet,
-  StatusBar,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
@@ -42,7 +41,7 @@ export default function SettingsScreen() {
         },
       },
     });
-    updateChats({ chats: [] });
+    updateChats([]);
     navigation.replace("/welcome/welcome");
   }
 
@@ -65,7 +64,7 @@ export default function SettingsScreen() {
     </TouchableOpacity>
   );
 
-  return (
+  return user ? (
     <ThemedSafeAreaView style={{ marginHorizontal: 10}}>
       <View
         style={[
@@ -92,7 +91,7 @@ export default function SettingsScreen() {
 
           <View>
             <Text style={styles.profileName}>{user.profile.name}</Text>
-            <Text style={styles.profileBio}>{user.profile.bio}</Text>
+            <Text style={styles.profileBio}>{user.profile.username}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -198,7 +197,7 @@ export default function SettingsScreen() {
         </Section>
       </ScrollView>
     </ThemedSafeAreaView>
-  );
+  ) : null;
 }
 
 const styles = StyleSheet.create({
@@ -244,7 +243,3 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
-function updateChats(arg0: never[]) {
-  throw new Error("Function not implemented.");
-}
-

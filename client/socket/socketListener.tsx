@@ -9,7 +9,8 @@ export default function SocketListener() {
     const { chats, updateChats } = useContext(ChatsContext);
 
     useEffect(() => {
-        if(!user.id) return;
+        if (!user?.id) return;
+
         const socketController = SocketController.getInstance({
             url: process.env.EXPO_PUBLIC_API_URL,
             token: user.id
@@ -20,15 +21,6 @@ export default function SocketListener() {
             updateUser,
             getChats: () => chats,
             updateChats,
-        });
-    }, [user, chats]);
-
-    useEffect(() => {
-        if(!user.id) return;
-
-        const socketController = SocketController.getInstance({
-            url: process.env.EXPO_PUBLIC_API_URL,
-            token: user.id
         });
 
         if (!socketController.isConnected()) {
@@ -73,7 +65,7 @@ export default function SocketListener() {
         return () => {
             socketController.disconnect();
         };
-    }, []);
+    }, [user?.id, chats?.length]);
 
     return null;
 }

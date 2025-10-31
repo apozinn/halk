@@ -27,14 +27,9 @@ import { ThemedView } from "@/components/themed/ThemedView";
 import { ThemedText } from "@/components/themed/ThemedText";
 import { Chat } from "@/types";
 import { SocketController } from "@/socket/socketController";
+import { t } from "i18next";
 
-const badgeProps = {
-  size: 25,
-  borderRadius: 50,
-  animate: true,
-};
-
-export default function Chat() {
+export default function ChatScreen() {
   const { user } = useContext(UserContext);
   const { chats, updateChats } = useContext(ChatsContext);
 
@@ -48,7 +43,7 @@ export default function Chat() {
   const [chatId, setChatId] = useState(id);
 
   useEffect(() => {
-    if (!user.id || !chat) return;
+    if (!user || !chat) return;
     const socketController = SocketController.getInstance({
       url: process.env.EXPO_PUBLIC_API_URL,
       token: user.id,
@@ -71,7 +66,7 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    if (!user.id) return;
+    if (!user) return;
 
     if (id) setChatId(id);
 
@@ -87,7 +82,7 @@ export default function Chat() {
     navigation.back();
   }, [chats]);
 
-  return chat ? (
+  return chat && user ? (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.defaultColors.card }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -118,36 +113,21 @@ export default function Chat() {
                   }
                   style={styles.userProfile}
                 >
-                  {user.profile.avatar.length ? (
-                    <Avatar
-                      size={45}
-                      name={user.profile.username}
-                      source={{ uri: chat?.user?.profile?.avatar }}
-                      colorize={true}
-                      radius={50}
-                      badge={true}
-                      badgeColor={"#919191"}
-                      badgeProps={badgeProps}
-                      style={{ marginRight: 10 }}
-                    />
-                  ) : (
-                    <Avatar
+                  <Avatar
                       size={45}
                       name={chat.user.profile.avatar}
+                      source={{ uri: chat.user.profile.avatar}}
                       colorize={true}
                       radius={50}
-                      style={{ marginRight: 10 }}
                     />
-                  )}
                   <View style={{ display: "flex", flexDirection: "row", paddingLeft: 10 }}>
                     <ThemedText style={{ fontWeight: "bold", fontSize: 18 }}>
-                      {chat?.user?.profile?.name}
+                      {chat.user.profile.name}
                     </ThemedText>
-                    {userIsTyping ? (
-                      <ThemedText style={styles.isOnline}>{""}</ThemedText>
-                    ) : (
-                      <ThemedText style={styles.isOnline}>{userIsOnline ? "Online" : ""}</ThemedText>
-                    )}
+
+                    <ThemedText style={styles.isOnline}>
+                      {userIsTyping || userIsOnline ? `${userIsTyping ? t("chat.typing") : "online"}` : ""}
+                    </ThemedText>
                   </View>
                 </TouchableOpacity>
               </View>

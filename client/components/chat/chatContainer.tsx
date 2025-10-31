@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View, ScrollView } from "react-native";
 import { Text } from "../themed/Themed";
 import { Avatar } from '@kolking/react-native-avatar';
@@ -13,54 +13,40 @@ import Modal from "react-native-modal";
 import { useRouter } from "expo-router";
 import { ChatsContext } from "@/contexts/chats";
 import { UserContext } from "@/contexts/user";
+import { Chat, Message } from "@/types";
+import { getColors } from "@/constants/Colors";
 
-export default function ChatContainer(props) {
-  const { user, updateUser } = useContext(UserContext);
+export default function ChatContainer({ chat }: { chat: Chat }) {
+  const { user } = useContext(UserContext);
   const { chats, updateChats } = useContext(ChatsContext);
 
-  const { chat, socket, colors } = props;
+  const lastMessage : Message = chat?.messages?.at(-1) as Message
+  const unreadMessagesCount = chat.messages.filter((m) => m.read === false && m?.authorId !== user?.id).length;
 
+  const colors = getColors();
   const navigation = useRouter();
 
   const [visible, setVisible] = useState(false);
-  const [isOnline, setIsOnline] = useState(false);
-  const [scrollOffset, setScrollOffset] = useState(null);
-
-  const lastMessage = chat.messages.at(-1);
-  const unredMessages = chat.messages.filter((m) => m.read === false && m?.author.id !== user.id).length;
-
-  const messageTime = new Date(lastMessage?.createdAt).toLocaleTimeString();
+  const [scrollOffset, setScrollOffset] = useState();
 
   const open = () => setVisible(true);
   const close = () => setVisible(false);
 
-  const handleOnScroll = (event) => {
+  const handleOnScroll = (event: any) => {
     setScrollOffset(event.nativeEvent.contentOffset.y);
   };
 
-  const handleScrollTo = (p) => { };
-
-  const executeAction = (key, actionChat) => {
+  const executeAction = (key: string, actionChat: Chat) => {
     try {
       if (key === "removeChat") {
         const updatedChats = chats.filter((c) => c.id !== actionChat.id);
-        if (updatedChats) {
-          updateChats({ chats: updatedChats });
-          close();
-        }
+        updateChats(updatedChats);
+        close();
       }
     } catch (err) {
       alert(err);
     }
   };
-
-  if (socket?.emit) {
-    socket.emit("verifyIfUserIsOnline", { userId: chat.user.id });
-    socket.on(
-      "receiveIfUserIsOnline",
-      (callback) => setIsOnline(callback)
-    );
-  }
 
   const ModalChat = () => {
     return (
@@ -69,7 +55,6 @@ export default function ChatContainer(props) {
         isVisible={visible}
         onSwipeComplete={close}
         swipeDirection={["down"]}
-        scrollTo={handleScrollTo}
         scrollOffset={scrollOffset}
         scrollOffsetMax={100}
         propagateSwipe={true}
@@ -160,7 +145,7 @@ export default function ChatContainer(props) {
     );
   };
 
-  return (
+  return user && (
     <TouchableOpacity
       style={styles.chatContainer}
       onPress={() => {
@@ -185,44 +170,39 @@ export default function ChatContainer(props) {
           <Text style={{ fontWeight: "bold", fontSize: 17 }}>
             {chat.user.profile.name}
           </Text>
-
           {
-            lastMessage?.author?.id ? (
-              <>
-                {lastMessage?.author?.id === user.id ? (
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Ionicons
-                      name="checkmark-done"
-                      size={20}
-                      color={lastMessage.read ? "#2f95dc" : "gray"}
-                      style={{ marginRight: 2 }}
-                    />
-                    <Text style={styles.messageContent}>
-                      {lastMessage.content.length > 28 ? `${lastMessage.content.slice(0, 28)}...` : lastMessage.content}
-                    </Text>
-                  </View>
-                ) : (
+            lastMessage?.id && (<>
+              {lastMessage.authorId !== user.id ? (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Ionicons
+                    name="checkmark-done"
+                    size={20}
+                    color={lastMessage.read ? "#2f95dc" : "gray"}
+                    style={{ marginRight: 2 }}
+                  />
                   <Text style={styles.messageContent}>
-                    {lastMessage.content.length > 30 ? `${lastMessage.content.slice(0, 30)}...` : lastMessage.content}
+                    {lastMessage.content.length > 28 ? `${lastMessage.content.slice(0, 28)}...` : lastMessage.content}
                   </Text>
-                )}</>
-            ) : null
+                </View>
+              ) : (
+                <Text style={styles.messageContent}>
+                  {lastMessage.content.length > 30 ? `${lastMessage.content.slice(0, 30)}...` : lastMessage.content}
+                </Text>
+              )}
+            </>)
           }
-
-
-
-
-
         </View>
       </View>
       <View style={{ alignItems: "center" }}>
-        <Text style={styles.messageDate}>{messageTime.slice(0, 5)}</Text>
-        {unredMessages.length > 0 && (
-          <Text style={styles.unread}>{unredMessages.length}</Text>
+        <Text style={styles.messageDate}>
+          {lastMessage ? new Date(lastMessage.createdAt).toDateString().slice(0, 5) : ""}
+        </Text>
+        {unreadMessagesCount > 0 && (
+          <Text style={styles.unread}>{unreadMessagesCount}</Text>
         )}
       </View>
     </TouchableOpacity>
-  );
+  )
 };
 
 const styles = StyleSheet.create({

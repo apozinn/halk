@@ -19,114 +19,105 @@ import { Text } from "../../components/themed/Themed";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { ThemedView } from "@/components/themed/ThemedView";
+import { User } from "@/types";
+import { ThemedSafeAreaView } from "@/components/themed/themedSafeAreaView";
 
 export default function Profile() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { id } = useLocalSearchParams(); 
+  const [user, setUser] = useState<User>({} as User);
+  const { id } = useLocalSearchParams();
   const colors = getColors();
   const navigation = useRouter();
   const { t } = useTranslation();
 
   useEffect(() => {
-    async function fetchUser() {
-      if (!id) {
-        navigation.back();
-        return;
-      }
-
+    (async () => {
+      if (!id) return;
       try {
         const data = await searchUser("", id.toString());
         if (data && data.length > 0) setUser(data[0]);
         else navigation.back();
       } catch (error) {
+        alert(error);
         navigation.back();
-      } finally {
-        setLoading(false);
       }
-    }
-
-    fetchUser();
+    })();
   }, [id]);
 
-  if (loading) {
-    return (
-      <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </ThemedView>
-    );
-  }
+  return user ? (
+    <ThemedSafeAreaView>
+      <ScrollView style={styles.container}>
+        <ImageBackground
+          source={
+            user.profile.avatar
+              ? { uri: user.profile.avatar }
+              : require("../../assets/images/userIcon.png")
+          }
+          resizeMode="cover"
+          style={styles.topContainer}
+        >
+          <View style={styles.topContainerIcons}>
+            <TouchableOpacity onPress={() => navigation.back()}>
+              <AntDesign name="arrow-left" size={26} color={colors.icon} />
+            </TouchableOpacity>
+            <View style={styles.iconGroup}>
+              <TouchableOpacity>
+                <Ionicons name="call" size={26} color={colors.icon} />
+              </TouchableOpacity>
+              <TouchableOpacity style={{ marginHorizontal: 10 }}>
+                <FontAwesome name="video-camera" size={26} color={colors.icon} />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Feather name="more-vertical" size={26} color={colors.icon} />
+              </TouchableOpacity>
+            </View>
+          </View>
 
-  if (!user) return <></>;
+          <View style={styles.topContainerInfo}>
+            <Text style={styles.userName}>{user.profile.name}</Text>
+            <Text style={styles.userUsername}>@{user.profile.username}</Text>
+          </View>
+        </ImageBackground>
 
-  return (
-    <ScrollView style={styles.container}>
-      <ImageBackground
-        source={
-          user.profile.avatar
-            ? { uri: user.profile.avatar }
-            : require("../../assets/images/userIcon.png")
-        }
-        resizeMode="cover"
-        style={styles.topContainer}
-      >
-        <View style={styles.topContainerIcons}>
-          <TouchableOpacity onPress={() => navigation.back()}>
-            <AntDesign name="arrowleft" size={26} color="white" />
-          </TouchableOpacity>
-          <View style={styles.iconGroup}>
-            <TouchableOpacity>
-              <Ionicons name="call" size={26} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity style={{ marginHorizontal: 10 }}>
-              <FontAwesome name="video-camera" size={26} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Feather name="more-vertical" size={26} color="white" />
-            </TouchableOpacity>
+        <View style={styles.userInfoContainer}>
+          <Text style={styles.containerTitle}>{t("profile.info")}</Text>
+
+          <View style={styles.userInfoContainerSection}>
+            <Text style={styles.userInfoContainerUpper}>
+              {user.profile.bio || t("profile.noBio")}
+            </Text>
+            <Text style={styles.userInfoContainerLower}>{t("profile.bio")}</Text>
+          </View>
+
+          <View style={styles.userInfoContainerSection}>
+            <Text style={styles.userInfoContainerUpper}>
+              @{user.profile.username}
+            </Text>
+            <Text style={styles.userInfoContainerLower}>
+              {t("profile.username")}
+            </Text>
+          </View>
+
+          <View style={styles.userInfoContainerSection}>
+            <Text style={styles.userInfoContainerUpper}>
+              {t("profile.notificationsEnabled")}
+            </Text>
+            <Text style={styles.userInfoContainerLower}>
+              {t("profile.notifications")}
+            </Text>
           </View>
         </View>
 
-        <View style={styles.topContainerInfo}>
-          <Text style={styles.userName}>{user.profile.name}</Text>
-          <Text style={styles.userUsername}>@{user.profile.username}</Text>
+        <View style={styles.mediaContainer}>
+          <Text style={styles.containerTitle}>{t("profile.sharedMedia")}</Text>
         </View>
-      </ImageBackground>
-
-      <View style={styles.userInfoContainer}>
-        <Text style={styles.containerTitle}>{t("profile.info")}</Text>
-
-        <View style={styles.userInfoContainerSection}>
-          <Text style={styles.userInfoContainerUpper}>
-            {user.profile.bio || t("profile.noBio")}
-          </Text>
-          <Text style={styles.userInfoContainerLower}>{t("profile.bio")}</Text>
-        </View>
-
-        <View style={styles.userInfoContainerSection}>
-          <Text style={styles.userInfoContainerUpper}>
-            @{user.profile.username}
-          </Text>
-          <Text style={styles.userInfoContainerLower}>
-            {t("profile.username")}
-          </Text>
-        </View>
-
-        <View style={styles.userInfoContainerSection}>
-          <Text style={styles.userInfoContainerUpper}>
-            {t("profile.notificationsEnabled")}
-          </Text>
-          <Text style={styles.userInfoContainerLower}>
-            {t("profile.notifications")}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.mediaContainer}>
-        <Text style={styles.containerTitle}>{t("profile.sharedMedia")}</Text>
-      </View>
-    </ScrollView>
-  );
+      </ScrollView>
+    </ThemedSafeAreaView>
+  ) : (
+    <ThemedSafeAreaView>
+      <ThemedView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.tint} />
+      </ThemedView>
+    </ThemedSafeAreaView>);
 }
 
 const styles = StyleSheet.create({

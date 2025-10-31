@@ -48,7 +48,7 @@ export default function SignUpPage() {
                     </View>
                 </View>
                 <TextInput
-                    label={t("commom.username")}
+                    label={t("common.username")}
                     mode="outlined"
                     value={username}
                     activeOutlineColor={colors.tint}
@@ -60,7 +60,7 @@ export default function SignUpPage() {
                     textColor={colors.text}
                 />
                 <TextInput
-                    label={t("commom.password")}
+                    label={t("common.password")}
                     mode="outlined"
                     value={password}
                     activeOutlineColor={colors.tint}
@@ -74,7 +74,7 @@ export default function SignUpPage() {
                 />
             </View>
             <TouchableOpacity style={{ ...styles.registerButton, ...{ backgroundColor: colors.tint } }} onPress={() => SignUpRequest()}>
-                <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>{t("commom.continue")}</Text>
+                <Text style={{ fontSize: 17, fontWeight: "bold", color: "white" }}>{t("common.continue")}</Text>
             </TouchableOpacity>
             <Text style={styles.errorReason}>{errorReason}</Text>
         </ThemedSafeAreaView>

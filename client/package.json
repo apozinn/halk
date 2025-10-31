@@ -44,6 +44,7 @@
     "libphonenumber-js": "^1.12.15",
     "moment": "^2.30.1",
     "moment-duration-format": "^2.3.2",
+    "nanoid": "^5.1.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-i18next": "^16.2.0",

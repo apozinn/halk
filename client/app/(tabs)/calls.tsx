@@ -20,10 +20,7 @@ interface CallSection {
 }
 
 export default function Calls() {
-  const { user } = useContext(UserContext);
-  const { chats } = useContext(ChatsContext);
   const [calls, setCalls] = useState<CallSection[]>([]);
-  const navigation = useRouter();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 

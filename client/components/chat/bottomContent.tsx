@@ -11,6 +11,7 @@ import { getColors } from "../../constants/Colors";
 import { UserContext } from "@/contexts/user";
 import { SocketController } from "@/socket/socketController";
 import { Chat } from "@/types";
+import { t } from "i18next";
 
 export default function BottomContent({ chat }: { chat: Chat }) {
 	const { user } = useContext(UserContext);
@@ -18,7 +19,7 @@ export default function BottomContent({ chat }: { chat: Chat }) {
 	const colors = getColors();
 
 	useEffect(() => {
-		if (!chat) return;
+		if (!chat || !user) return;
 		const socketController = SocketController.getInstance({
 			url: process.env.EXPO_PUBLIC_API_URL,
 			token: user.id
@@ -32,6 +33,7 @@ export default function BottomContent({ chat }: { chat: Chat }) {
 	}, [text]);
 
 	function sendMessage() {
+		if (!chat || !user) return;
 		if (!text) return;
 		const socketController = SocketController.getInstance({
 			url: process.env.EXPO_PUBLIC_API_URL,
@@ -54,7 +56,7 @@ export default function BottomContent({ chat }: { chat: Chat }) {
 				</TouchableOpacity>
 				<TextInput
 					style={styles.inputMessage}
-					placeholder="Mensagem..."
+					placeholder={t("chat.sendAMessageInputPlaceHolder")}
 					value={text}
 					onChangeText={(value) => setText(value)}
 					onSubmitEditing={() => sendMessage()}

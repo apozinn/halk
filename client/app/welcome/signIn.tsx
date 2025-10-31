@@ -49,7 +49,7 @@ export default function SignInScreen() {
                     <View style={{ ...styles.titleLine, ...{ backgroundColor: colors.tint } }}></View>
                 </View>
                 <TextInput
-                    label={t("commom.username")}
+                    label={t("common.username")}
                     mode="outlined"
                     value={username}
                     activeOutlineColor={colors.tint}
@@ -61,7 +61,7 @@ export default function SignInScreen() {
                     textColor={colors.text}
                 />
                 <TextInput
-                    label={t("commom.password")}
+                    label={t("common.password")}
                     mode="outlined"
                     value={password}
                     activeOutlineColor={colors.tint}

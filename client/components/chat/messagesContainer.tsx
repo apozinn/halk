@@ -1,72 +1,73 @@
-import { Component, createRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   ScrollView,
   View,
   StyleSheet,
-  StatusBar,
   Pressable,
   TouchableOpacity,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from "react-native";
-import {
-  AntDesign,
-  Ionicons,
-  Feather,
-  FontAwesome,
-  MaterialIcons,
-  Fontisto,
-  Entypo,
-} from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Entypo } from "@expo/vector-icons";
 import { Text } from "../themed/Themed";
 import Modal from "react-native-modal";
-import { Avatar } from '@kolking/react-native-avatar';
+import { Avatar } from "@kolking/react-native-avatar";
+import { Chat, Message, User } from "@/types";
+import { useTranslation } from "react-i18next";
 
-class MessagesContainer extends Component {
-  private scrollViewRef = null;
+interface MessagesContainerProps {
+  user: User;
+  chat: Chat;
+  colors: any;
+}
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: false,
-      scrollOffset: null,
-      messageModal: null,
-      messageModalContent: "",
-    };
+export default function MessagesContainer({
+  user,
+  chat,
+  colors,
+}: MessagesContainerProps) {
+  const { t } = useTranslation("messages");
+  const scrollViewRef = useRef<ScrollView>(null);
 
-    this.user = props.user;
-    this.chats = props.chats;
-    this.updateChats = props.updateChats;
-    this.chat = props.chat;
-    this.colors = props.colors;
-  }
+  const [visible, setVisible] = useState(false);
+  const [scrollOffset, setScrollOffset] = useState<number | null>(null);
+  const [messageModal, setMessageModal] = useState<any>(null);
+  const [messageModalContent, setMessageModalContent] = useState<string>("");
 
-  handleOnScroll(event) {
-    this.setState({ scrollOffset: event.nativeEvent.contentOffset.y });
-  }
+  const open = useCallback(() => setVisible(true), []);
+  const close = useCallback(() => setVisible(false), []);
+  const isVisible = useCallback(() => visible, [visible]);
 
-  handleScrollTo(p) {}
+  const handleOnScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      setScrollOffset(event.nativeEvent.contentOffset.y);
+    },
+    []
+  );
 
-  open = () => this.setState({ visible: true } as any);
-  close = () => this.setState({ visible: false } as any);
-  isVisible = () => this.state.visible;
+  const handleScrollTo = useCallback((p: any) => {
+    scrollViewRef.current?.scrollTo(p);
+  }, []);
 
-  ModalMessage() {
-    if (!this.state.messageModal) return;
+  const renderModalMessage = useCallback(() => {
+    if (!messageModal) return null;
+
     return (
       <Modal
-        testID={"ModalMessage"}
-        isVisible={this.isVisible()}
-        onSwipeComplete={() => this.close()}
+        testID="ModalMessage"
+        isVisible={isVisible()}
+        onSwipeComplete={close}
         swipeDirection={["down"]}
-        scrollTo={this.handleScrollTo}
-        scrollOffset={this.state.scrollOffset}
+        scrollTo={handleScrollTo}
+        scrollOffset={scrollOffset || 0}
         scrollOffsetMax={100}
         propagateSwipe={true}
         style={styles.modal}
       >
         <View style={styles.scrollableModal}>
-          <ScrollView onScroll={this.handleOnScroll} scrollEventThrottle={16}>
+          <ScrollView onScroll={handleOnScroll} scrollEventThrottle={16}>
             <View style={styles.modalBarContainer}>
-              <View style={styles.modalBar}></View>
+              <View style={styles.modalBar} />
             </View>
 
             <View
@@ -74,80 +75,73 @@ class MessagesContainer extends Component {
                 styles.modalContent,
                 {
                   backgroundColor:
-                    this.colors.theme === "dark"
-                      ? this.colors.defaultColors.card
-                      : this.colors.defaultColors.background,
+                    colors.theme === "dark"
+                      ? colors.defaultColors.card
+                      : colors.defaultColors.background,
                 },
               ]}
             >
               <View
                 style={[
                   styles.modalTopProfile,
-                  { backgroundColor: this.colors.background },
+                  { backgroundColor: colors.background },
                 ]}
               >
                 <Avatar
                   size={40}
-                  name={this.state.messageModal.author.profile.name}
-                  colorize={true}
+                  name={messageModal.author.profile.name}
+                  colorize
                   radius={50}
                   style={{ marginRight: 10 }}
                 />
                 <Text style={{ fontWeight: "bold" }}>
-                  {this.state.messageModalContent}
+                  {messageModalContent}
                 </Text>
               </View>
+
               <View style={styles.modalLinks}>
                 <TouchableOpacity style={styles.modalLink}>
-                  <Entypo name="reply" size={26} color={this.colors.tint} />
-                  <Text style={styles.modalLinkText}>Responder</Text>
+                  <Entypo name="reply" size={26} color={colors.tint} />
+                  <Text style={styles.modalLinkText}>{t("reply")}</Text>
                 </TouchableOpacity>
-                {this.state.messageModal.author.id !== this.user.id ? (
-                  <></>
-                ) : (
+
+                {messageModal.author.id === user.id && (
                   <TouchableOpacity style={styles.modalLink}>
-                    <MaterialIcons
-                      name="delete"
-                      size={26}
-                      color={this.colors.tint}
-                    />
-                    <Text style={styles.modalLinkText}>Apagar mensagem</Text>
+                    <MaterialIcons name="delete" size={26} color={colors.tint} />
+                    <Text style={styles.modalLinkText}>
+                      {t("delete_message")}
+                    </Text>
                   </TouchableOpacity>
                 )}
+
                 <TouchableOpacity style={styles.modalLink}>
-                  <MaterialIcons
-                    name="push-pin"
-                    size={26}
-                    color={this.colors.tint}
-                  />
-                  <Text style={styles.modalLinkText}>Fixar mensagem</Text>
+                  <MaterialIcons name="push-pin" size={26} color={colors.tint} />
+                  <Text style={styles.modalLinkText}>{t("pin_message")}</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.modalLink}>
-                  <Entypo name="link" size={26} color={this.colors.tint} />
-                  <Text style={styles.modalLinkText}>Compartilhar</Text>
+                  <Entypo name="link" size={26} color={colors.tint} />
+                  <Text style={styles.modalLinkText}>{t("share")}</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.modalLink}>
                   <MaterialIcons
                     name="emoji-emotions"
                     size={26}
-                    color={this.colors.tint}
+                    color={colors.tint}
                   />
-                  <Text style={styles.modalLinkText}>Reagir a mensagem</Text>
+                  <Text style={styles.modalLinkText}>{t("react")}</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.modalLink}>
-                  <Ionicons name="copy" size={26} color={this.colors.tint} />
-                  <Text style={styles.modalLinkText}>Copiar conteúdo</Text>
+                  <Ionicons name="copy" size={26} color={colors.tint} />
+                  <Text style={styles.modalLinkText}>{t("copy")}</Text>
                 </TouchableOpacity>
-                {this.state.messageModal.author.id === this.user.id ? (
-                  <></>
-                ) : (
+
+                {messageModal.author.id !== user.id && (
                   <TouchableOpacity style={styles.modalLink}>
-                    <MaterialIcons
-                      name="report"
-                      size={26}
-                      color={this.colors.tint}
-                    />
-                    <Text style={styles.modalLinkText}>Denúnciar</Text>
+                    <MaterialIcons name="report" size={26} color={colors.tint} />
+                    <Text style={styles.modalLinkText}>{t("report")}</Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -156,134 +150,135 @@ class MessagesContainer extends Component {
         </View>
       </Modal>
     );
-  }
+  }, [
+    messageModal,
+    messageModalContent,
+    colors,
+    user,
+    scrollOffset,
+    handleOnScroll,
+    handleScrollTo,
+    close,
+    isVisible,
+    t,
+  ]);
 
-  render() {
-    return (
-      <ScrollView
-        style={styles.messageContainer}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-      >
-        {this.ModalMessage()}
-        {this?.chat?.messages?.map((message, index) => {
-          if(!message?.author?.id) {
-            return null;
+  return (
+    <ScrollView
+      ref={scrollViewRef}
+      style={[styles.messageContainer, { backgroundColor: colors.messagesContainer }]}
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
+    >
+      {renderModalMessage()}
+      {chat?.messages?.map((message: Message, index: number) => {
+        if (!message?.authorId) return null;
+
+        const itsMyMessage = message.authorId === user.id;
+        const messageTime = new Date(message.createdAt).toLocaleTimeString();
+
+        const prevMsg = chat.messages[index - 1];
+        const nextMsg = chat.messages[index + 1];
+
+        const previousMessageIsMy = prevMsg?.authorId === message.authorId;
+        const nextMessageIsMy = nextMsg?.authorId === message.authorId;
+
+        const borders: any = {};
+
+        if (itsMyMessage) {
+          borders.borderTopRightRadius =
+            previousMessageIsMy && !nextMessageIsMy ? 5 : 15;
+          borders.borderBottomRightRadius =
+            !previousMessageIsMy && nextMessageIsMy ? 5 : 15;
+          if (previousMessageIsMy && nextMessageIsMy) {
+            borders.borderTopRightRadius = 5;
+            borders.borderBottomRightRadius = 5;
           }
-
-          const itsMyMessage =
-            message.author.id === this.user.id ? true : false;
-          const messageTime = new Date(message.createdAt).toLocaleTimeString();
-
-          let previousMessageIsMy =
-            this.chat.messages[index - 1]?.author?.id === message.author.id;
-          let nextMessageIsMy = 
-            this.chat.messages[index + 1]?.author?.id === message.author.id;
-
-          let borders = {};
-
-          if (itsMyMessage) {
-            borders.borderTopRightRadius =
-              previousMessageIsMy && !nextMessageIsMy ? 5 : 20;
-            borders.borderBottomRightRadius =
-              !previousMessageIsMy && nextMessageIsMy ? 5 : 20;
-
-            if (previousMessageIsMy && nextMessageIsMy) {
-              borders.borderTopRightRadius = 5;
-              borders.borderBottomRightRadius = 5;
-            }
-          } else {
-            borders.borderTopLeftRadius =
-              previousMessageIsMy && !nextMessageIsMy ? 5 : 20;
-            borders.borderBottomLeftRadius =
-              !previousMessageIsMy && nextMessageIsMy ? 5 : 20;
-
-            if (previousMessageIsMy && nextMessageIsMy) {
-              borders.borderTopLeftRadius = 10;
-              borders.borderBottomLeftRadius = 10;
-            }
+        } else {
+          borders.borderTopLeftRadius =
+            previousMessageIsMy && !nextMessageIsMy ? 5 : 15;
+          borders.borderBottomLeftRadius =
+            !previousMessageIsMy && nextMessageIsMy ? 5 : 15;
+          if (previousMessageIsMy && nextMessageIsMy) {
+            borders.borderTopLeftRadius = 5;
+            borders.borderBottomLeftRadius = 5;
           }
+        }
 
-          return (
-            <View
-              style={[
-                itsMyMessage ? styles.myMessage : styles.otherMessage,
-                index === 0 ? { margintop: 10 } : {},
-              ]}
-              key={index}
-            >
-              <View style={itsMyMessage ? { maxWidth: "75%" } : {}}>
-                <Pressable
-                  style={[
-                    styles.message,
-                    borders,
-                    {
-                      backgroundColor: itsMyMessage
-                        ? "#2f95dc"
-                        : this.colors.defaultColors.card,
-                    },
-                  ]}
-                  onLongPress={() => {
-                    this.setState({
-                      messageModal: message,
-                      messageModalContent: message.content,
-                    });
-                    this.open();
+        return (
+          <View
+            key={index}
+            style={[
+              itsMyMessage ? styles.myMessage : styles.otherMessage,
+              index === 0 ? { marginTop: 10 } : {},
+            ]}
+          >
+            <View style={itsMyMessage ? { maxWidth: "75%" } : {}}>
+              <Pressable
+                style={[
+                  styles.message,
+                  borders,
+                  {
+                    backgroundColor: itsMyMessage
+                      ? "#2f95dc"
+                      : colors.otherUserMessageCard,
+                  },
+                ]}
+                onLongPress={() => {
+                  setMessageModal(message);
+                  setMessageModalContent(message.content);
+                  open();
+                }}
+              >
+                <Text
+                  style={{
+                    maxWidth: "100%",
+                    color: itsMyMessage
+                      ? "white"
+                      : colors.defaultColors.text,
                   }}
                 >
-                  <Text
-                    style={{
-                      maxWidth: "100%",
-                      color: itsMyMessage
-                        ? "white"
-                        : this.colors.defaultColors.text,
-                    }}
-                  >
-                    {message.content}
-                  </Text>
-                </Pressable>
-                <View
-                  style={[
-                    styles.messageProps,
-                    {
-                      justifyContent: itsMyMessage ? "flex-end" : "flex-start",
-                    },
-                  ]}
-                >
-                  {nextMessageIsMy ? (
-                    <></>
-                  ) : (
-                    <>
-                      <Text style={styles.messageCreatedAt}>
-                        {messageTime.slice(0, 5)}
-                      </Text>
-                      {itsMyMessage ? (
-                        <Ionicons
-                          name="checkmark-done"
-                          size={20}
-                          color={message.read ? "#04f500" : "gray"}
-                          style={{ marginRight: 2 }}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                    </>
-                  )}
-                </View>
+                  {message.content}
+                </Text>
+              </Pressable>
+              <View
+                style={[
+                  styles.messageProps,
+                  {
+                    justifyContent: itsMyMessage ? "flex-end" : "flex-start",
+                  },
+                ]}
+              >
+                {!nextMessageIsMy && (
+                  <>
+                    <Text style={styles.messageCreatedAt}>
+                      {messageTime.slice(0, 5)}
+                    </Text>
+                    {itsMyMessage && (
+                      <Ionicons
+                        name="checkmark-done"
+                        size={20}
+                        color={message.read ? "#04f500" : "gray"}
+                        style={{ marginRight: 2 }}
+                      />
+                    )}
+                  </>
+                )}
               </View>
             </View>
-          );
-        })}
-      </ScrollView>
-    );
-  }
+          </View>
+        );
+      })}
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
   messageContainer: {
     flex: 1,
-    marginHorizontal: 10,
-    flexDirection: "column-reverse"
+    paddingHorizontal: 5,
+    flexDirection: "column-reverse",
+    paddingBottom: 15,
   },
   myMessage: {
     justifyContent: "flex-end",
@@ -351,5 +346,3 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-
-export default MessagesContainer;

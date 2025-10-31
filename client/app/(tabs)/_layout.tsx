@@ -1,8 +1,7 @@
 import { Tabs } from 'expo-router';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import { HapticTab } from '@/components/ui/HapticTab';
-import TabBarBackground from '@/components/ui/TabBarBackground';
 import Colors, { getColors } from '@/constants/Colors';
 import useColorScheme from '@/hooks/useColorScheme';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -14,7 +13,8 @@ import { ChatsContext } from '@/contexts/chats';
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const colors = getColors();
-  const { chats } = useContext(ChatsContext);
+  const { chats, updateChats } = useContext(ChatsContext);
+  const [unreadChats, setUnreadChats] = React.useState(0);
 
   const optionsStyles = {
     optionsContainer: {
@@ -30,12 +30,12 @@ export default function TabLayout() {
     },
   };
 
-  let unreadChats = 0;
-  if (chats) {
-    unreadChats = chats.filter((chat) =>
+  useEffect(() => {
+    if (!chats) return;
+    setUnreadChats(chats.filter((chat) =>
       chat?.messages?.some((m) => m?.read === false)
-    ).length;
-  }
+    ).length);
+  }, [chats]);
 
   return (
     <Tabs
@@ -44,7 +44,6 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: true,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
       }}>
       <Tabs.Screen
         name="calls"
@@ -58,11 +57,14 @@ export default function TabLayout() {
         name="index"
         options={({ navigation }) => ({
           title: "Chats",
-          tabBarBadge: unreadChats,
+          tabBarBadge: unreadChats > 0 ? unreadChats : undefined,
           headerTitleStyle: {
             fontSize: 15,
             fontWeight: "bold",
             color: colors.tint,
+          },
+          headerStyle: {
+            height: Platform.OS === "android" ? 70 : undefined,
           },
           headerTitleAlign: "center",
           tabBarIcon: ({ color }) => (
@@ -88,7 +90,7 @@ export default function TabLayout() {
                 marginRight: 5,
               }}
             >
-              <SearchChat navigation={navigation} />
+              <SearchChat />
               <Pressable
                 onPress={() => { }}
                 style={({ pressed }) => ({

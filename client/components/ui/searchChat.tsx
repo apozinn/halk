@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, createRef } from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -7,7 +7,6 @@ import {
   ScrollView,
 } from "react-native";
 import { TextInput, Text } from "../themed/Themed";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { getColors } from "../../constants/Colors";
 import { UserContext } from "@/contexts/user";
 import { ChatsContext } from "@/contexts/chats";
@@ -18,31 +17,29 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 
 export default function SearchChat() {
   const { user } = useContext(UserContext);
-  const { chats } = useContext(ChatsContext);
+  const { chats, updateChats } = useContext(ChatsContext);
   const [visible, setVisible] = useState(false);
   const [scrollOffset, setScrollOfSet] = useState();
   const [search, setSearch] = useState("");
   const colors = getColors();
   const navigation = useRouter();
-  const scrollViewRef = createRef();
 
-  const handleOnScroll = (event) => {
+  const handleOnScroll = (event: any) => {
     setScrollOfSet(event.nativeEvent.contentOffset.y);
   };
-  const handleScrollTo = (p) => { };
 
   const close = () => setVisible(false);
   const open = () => setVisible(true);
   const isVisible = () => visible;
+  return null;
 
   function SearchModal() {
-    return (
+    return user && chats ? (
       <Modal
         testID={"ModalSearch"}
         isVisible={isVisible()}
         onSwipeComplete={() => close()}
         swipeDirection={["down"]}
-        scrollTo={handleScrollTo}
         scrollOffset={scrollOffset}
         scrollOffsetMax={100}
         propagateSwipe={true}
@@ -80,7 +77,13 @@ export default function SearchChat() {
                       <TouchableOpacity
                         style={styles.chatContent}
                         onPress={() =>
-                          navigation.navigate("Chat", { id: chat.id })
+                          navigation.navigate(
+                            {
+                              pathname: "/chat/chat",
+                              params: {
+                                id: chat.id,
+                              },
+                            })
                         }
                         key={index}
                       >
@@ -128,7 +131,13 @@ export default function SearchChat() {
                     <TouchableOpacity
                       style={styles.chatContent}
                       onPress={() =>
-                        navigation.navigate("Chat", { id: chat.id })
+                        navigation.navigate(
+                          {
+                            pathname: "/chat/chat",
+                            params: {
+                              id: chat.id,
+                            },
+                          })
                       }
                       key={index}
                     >
@@ -137,8 +146,7 @@ export default function SearchChat() {
                         name={chat.user.profile.name}
                         source={{ uri: chat.user.profile.avatar }}
                         colorize={true}
-                                                radius={50}
-
+                        radius={50}
                       />
                       <View style={{ marginLeft: 10 }}>
                         <Text style={{ fontWeight: "bold", fontSize: 15 }}>
@@ -155,7 +163,7 @@ export default function SearchChat() {
           </ScrollView>
         </View>
       </Modal>
-    );
+    ) : null;
   }
 
   return (
@@ -239,7 +247,6 @@ const styles = StyleSheet.create({
   searchContainer: {
     borderBottomWidth: 1,
     padding: 10,
-    margintop: 10,
   },
   searchInput: {
     borderRadius: 10,

@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { nanoid } from "nanoid";
+import { nanoid } from "nanoid/non-secure";
 import { User, Chat, Message } from "@/types";
 import { t } from "i18next";
 
@@ -23,7 +23,7 @@ interface SocketOptions {
 
 interface StateAccessors {
   getUser: () => User;
-  updateUser: (u: User) => void;
+  updateUser: (u: Partial<User>) => Promise<void>
   getChats: () => Chat[];
   updateChats: (chats: Chat[]) => void;
 }
@@ -61,9 +61,6 @@ export class SocketController {
       transports: ["websocket"],
       auth: { token: this.token },
     });
-
-    this.on("connect", () => console.log(t("socket.log.connected")));
-    this.on("disconnect", (reason: string) => console.warn(t("socket.log.disconnected", { reason })));
   }
 
   public setToken(token: string): void {

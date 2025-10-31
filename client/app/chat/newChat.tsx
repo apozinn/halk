@@ -18,6 +18,7 @@ import { Text, TextInput } from "@/components/themed/Themed";
 import { getColors } from "@/constants/Colors";
 import { searchUser } from "@/middleware/api";
 import { ThemedSafeAreaView } from "@/components/themed/themedSafeAreaView";
+import { Chat } from "@/types";
 
 export default function NewChat() {
   const [search, setSearch] = useState("");
@@ -29,6 +30,7 @@ export default function NewChat() {
   const { t } = useTranslation();
 
   useEffect(() => {
+    if(!user) return;
     if (search.trim()) {
       searchUser(user.id, search).then((data) => {
         setResults(data || []);
@@ -38,19 +40,7 @@ export default function NewChat() {
     }
   }, [search]);
 
-  function generateKey() {
-    const parts = Array.from({ length: 5 }, () =>
-      Math.floor(Math.random() * (999999 - 100000 + 1) + 100000)
-    );
-    return parts.join(" ");
-  }
-
   async function goToChat(userChat: any) {
-    if(chats === undefined) {
-      updateChats({ chats: [] });
-      return;
-    }
-
     const existsChat = chats.find((c) => c.user.id === userChat.id);
     if (existsChat) {
       return navigation.navigate({
@@ -59,18 +49,21 @@ export default function NewChat() {
       });
     }
 
-    const newChat = {
+    const newChat: Chat = {
       id: uuid.v4(),
       user: userChat,
-      key: generateKey(),
       messages: [],
       newChat: true,
     };
 
-    updateChats({ chats: [...chats, newChat] });
+    chats.push(newChat);
+    updateChats(chats);
 
-    navigation.navigate("/chat/chat", {
-      id: newChat.id,
+    navigation.navigate({
+      pathname: "/chat/chat",
+      params: {
+        id: newChat.id,
+      }
     });
   }
 
@@ -93,8 +86,7 @@ export default function NewChat() {
         </Pressable>
         <TextInput
           style={[styles.input, { backgroundColor: colors.defaultColors.card }]}
-          placeholder={t("newChat_searchPlaceholder")}
-          placeholderTextColor={colors.defaultColors.textSecondary}
+          placeholder={t("newChat.searchPlaceholder")}
           onChangeText={(value) => setSearch(value)}
           value={search}
         />
@@ -104,13 +96,13 @@ export default function NewChat() {
         {!search.trim() ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              {t("newChat_emptyMessage")}
+              {t("newChat.emptyMessage")}
             </Text>
           </View>
         ) : results.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              {t("newChat_noResults")}
+              {t("newChat.noResults")}
             </Text>
           </View>
         ) : (
