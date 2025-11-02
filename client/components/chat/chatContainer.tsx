@@ -24,6 +24,7 @@ import { Chat, Message } from "@/types";
 import { getColors } from "@/constants/Colors";
 import { Text } from "../themed/Themed";
 import { ThemedText } from "../themed/ThemedText";
+import formatMessageTime from "@/utils/fornatMessageTime";
 
 export default function ChatContainer({ chat }: { chat: Chat }) {
   const { user } = useContext(UserContext);
@@ -199,10 +200,7 @@ export default function ChatContainer({ chat }: { chat: Chat }) {
       <View style={styles.chatRight}>
         <Text style={styles.messageDate}>
           {lastMessage
-            ? new Date(lastMessage.createdAt).toLocaleDateString("pt-BR", {
-                day: "2-digit",
-                month: "2-digit",
-              })
+            ? formatMessageTime(lastMessage.createdAt)
             : ""}
         </Text>
         {unreadMessagesCount > 0 && (

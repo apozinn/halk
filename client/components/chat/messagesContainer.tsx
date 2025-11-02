@@ -23,150 +23,15 @@ interface MessagesContainerProps {
   user: User;
   chat: Chat;
   colors: any;
+  setMessageModal: (message: Message) => void
 }
 
 export default function MessagesContainer({
   user,
   chat,
   colors,
+  setMessageModal
 }: MessagesContainerProps) {
-  const { t } = useTranslation("messages");
-  const scrollViewRef = useRef<ScrollView>(null);
-
-  const [visible, setVisible] = useState(false);
-  const [scrollOffset, setScrollOffset] = useState<number | null>(null);
-  const [messageModal, setMessageModal] = useState<any>(null);
-  const [messageModalContent, setMessageModalContent] = useState<string>("");
-
-  const open = useCallback(() => setVisible(true), []);
-  const close = useCallback(() => setVisible(false), []);
-  const isVisible = useCallback(() => visible, [visible]);
-
-  const handleOnScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      setScrollOffset(event.nativeEvent.contentOffset.y);
-    },
-    []
-  );
-
-  const handleScrollTo = useCallback((p: any) => {
-    scrollViewRef.current?.scrollTo(p);
-  }, []);
-
-  const renderModalMessage = useCallback(() => {
-    if (!messageModal) return null;
-
-    return (
-      <Modal
-        testID="ModalMessage"
-        isVisible={isVisible()}
-        onSwipeComplete={close}
-        swipeDirection={["down"]}
-        scrollTo={handleScrollTo}
-        scrollOffset={scrollOffset || 0}
-        scrollOffsetMax={100}
-        propagateSwipe={true}
-        style={styles.modal}
-      >
-        <View style={styles.scrollableModal}>
-          <ScrollView onScroll={handleOnScroll} scrollEventThrottle={16}>
-            <View style={styles.modalBarContainer}>
-              <View style={styles.modalBar} />
-            </View>
-
-            <View
-              style={[
-                styles.modalContent,
-                {
-                  backgroundColor:
-                    colors.theme === "dark"
-                      ? colors.defaultColors.card
-                      : colors.defaultColors.background,
-                },
-              ]}
-            >
-              <View
-                style={[
-                  styles.modalTopProfile,
-                  { backgroundColor: colors.background },
-                ]}
-              >
-                <Avatar
-                  size={40}
-                  name={messageModal.author.profile.name}
-                  colorize
-                  radius={50}
-                  style={{ marginRight: 10 }}
-                />
-                <Text style={{ fontWeight: "bold" }}>
-                  {messageModalContent}
-                </Text>
-              </View>
-
-              <View style={styles.modalLinks}>
-                <TouchableOpacity style={styles.modalLink}>
-                  <Entypo name="reply" size={26} color={colors.tint} />
-                  <Text style={styles.modalLinkText}>{t("reply")}</Text>
-                </TouchableOpacity>
-
-                {messageModal.author.id === user.id && (
-                  <TouchableOpacity style={styles.modalLink}>
-                    <MaterialIcons name="delete" size={26} color={colors.tint} />
-                    <Text style={styles.modalLinkText}>
-                      {t("delete_message")}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-
-                <TouchableOpacity style={styles.modalLink}>
-                  <MaterialIcons name="push-pin" size={26} color={colors.tint} />
-                  <Text style={styles.modalLinkText}>{t("pin_message")}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.modalLink}>
-                  <Entypo name="link" size={26} color={colors.tint} />
-                  <Text style={styles.modalLinkText}>{t("share")}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.modalLink}>
-                  <MaterialIcons
-                    name="emoji-emotions"
-                    size={26}
-                    color={colors.tint}
-                  />
-                  <Text style={styles.modalLinkText}>{t("react")}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.modalLink}>
-                  <Ionicons name="copy" size={26} color={colors.tint} />
-                  <Text style={styles.modalLinkText}>{t("copy")}</Text>
-                </TouchableOpacity>
-
-                {messageModal.author.id !== user.id && (
-                  <TouchableOpacity style={styles.modalLink}>
-                    <MaterialIcons name="report" size={26} color={colors.tint} />
-                    <Text style={styles.modalLinkText}>{t("report")}</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-          </ScrollView>
-        </View>
-      </Modal>
-    );
-  }, [
-    messageModal,
-    messageModalContent,
-    colors,
-    user,
-    scrollOffset,
-    handleOnScroll,
-    handleScrollTo,
-    close,
-    isVisible,
-    t,
-  ]);
-
   const listRef = useRef<FlatList>(null);
 
   function MessageBubble({ message, index }: { message: Message, index: number }) {
@@ -230,8 +95,6 @@ export default function MessagesContainer({
             })}
             onLongPress={() => {
               setMessageModal(message);
-              setMessageModalContent(message.content);
-              open();
             }}
           >
             {message?.image && (
@@ -288,11 +151,11 @@ export default function MessagesContainer({
     }
   }, [chat, chat.messages]);
 
-  return (
+  return chat && (
     <FlatList
       ref={listRef}
       data={chat.messages}
-      renderItem={({ item, index }) => <MessageBubble message={item} index={index}/>}
+      renderItem={({ item, index }) => <MessageBubble message={item} index={index} />}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
