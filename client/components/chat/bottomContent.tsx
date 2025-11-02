@@ -39,7 +39,7 @@ export default function BottomContent({ chat }: { chat: Chat }) {
 			url: process.env.EXPO_PUBLIC_API_URL,
 			token: user.id
 		});
-		socketController.sendMessage(chat, text);
+		socketController.sendMessage({ chat, messageContent: text });
 		setText("");
 	}
 

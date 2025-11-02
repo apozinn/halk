@@ -9,7 +9,7 @@ import {
 } from "@nestjs/websockets";
 import User from "middleware/database/schemas/user";
 import { Server, Socket } from "socket.io";
-import { Message } from "types";
+import { Chat, Message } from "types";
 
 interface MessagePayload {
   room: string;
@@ -18,6 +18,7 @@ interface MessagePayload {
   newChat: boolean;
   key: string;
   newChatObj?: any;
+  image?: string;
 }
 
 @WebSocketGateway()

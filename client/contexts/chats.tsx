@@ -32,6 +32,7 @@ export const ChatsProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (err) {
         console.error("Erro ao carregar chats:", err);
+        updateChats([]);
       } finally {
         setLoaded(true);
       }

@@ -52,7 +52,8 @@
   },
   "chat": {
     "typing": "Digitando...",
-    "sendAMessageInputPlaceHolder": "Digite uma mensagem..."
+    "sendAMessageInputPlaceHolder": "Digite uma mensagem...",
+    "isImageMessage": "Foto"
   },
   "message": {
     "reply": "Responder",
@@ -72,5 +73,23 @@
     "title": "Ocorreu um erro",
     "message": "Algo inesperado aconteceu. Por favor, tente novamente.",
     "tryAgain": "Tentar novamente"
+  },
+  "tabs": {
+    "titles": {
+      "chats": "Conversas",
+      "calls": "Chamadas",
+      "settings": "Configurações"
+    } 
+  },
+  "camera": {
+    "permissionDenied": "Permissão da câmera negada. Você precisa conceder acesso para continuar.",
+    "grantPermission": "Conceder permissão",
+    "photoTaken": "Foto capturada com sucesso!",
+    "takeAnother": "Tirar outra foto",
+    "noImage": "Nenhuma imagem capturada.",
+    "error": "Erro ao capturar imagem. Tente novamente."
+  },
+  "selectChatModal": {
+    "title": "Selecione um chat"
   }
 }

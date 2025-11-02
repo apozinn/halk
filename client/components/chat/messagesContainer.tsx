@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   ScrollView,
   View,
@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Image,
+  FlatList
 } from "react-native";
 import { Ionicons, MaterialIcons, Entypo } from "@expo/vector-icons";
 import { Text } from "../themed/Themed";
@@ -14,6 +16,8 @@ import Modal from "react-native-modal";
 import { Avatar } from "@kolking/react-native-avatar";
 import { Chat, Message, User } from "@/types";
 import { useTranslation } from "react-i18next";
+import { router } from "expo-router";
+import * as FileSystem from "expo-file-system/legacy";
 
 interface MessagesContainerProps {
   user: User;
@@ -163,121 +167,153 @@ export default function MessagesContainer({
     t,
   ]);
 
-  return (
-    <ScrollView
-      ref={scrollViewRef}
-      style={[styles.messageContainer, { backgroundColor: colors.messagesContainer }]}
-      showsVerticalScrollIndicator={false}
-      showsHorizontalScrollIndicator={false}
-    >
-      {renderModalMessage()}
-      {chat?.messages?.map((message: Message, index: number) => {
-        if (!message?.authorId) return null;
+  const listRef = useRef<FlatList>(null);
 
-        const itsMyMessage = message.authorId === user.id;
-        const messageTime = new Date(message.createdAt).toLocaleTimeString();
+  function MessageBubble({ message, index }: { message: Message, index: number }) {
+    if (!message?.authorId) return null;
 
-        const prevMsg = chat.messages[index - 1];
-        const nextMsg = chat.messages[index + 1];
+    const itsMyMessage = message.authorId === user.id;
+    const messageTime = new Date(message.createdAt).toLocaleTimeString();
 
-        const previousMessageIsMy = prevMsg?.authorId === message.authorId;
-        const nextMessageIsMy = nextMsg?.authorId === message.authorId;
+    const prevMsg = chat.messages[index - 1];
+    const nextMsg = chat.messages[index + 1];
 
-        const borders: any = {};
+    const previousMessageIsMy = prevMsg?.authorId === message.authorId;
+    const nextMessageIsMy = nextMsg?.authorId === message.authorId;
 
-        if (itsMyMessage) {
-          borders.borderTopRightRadius =
-            previousMessageIsMy && !nextMessageIsMy ? 5 : 15;
-          borders.borderBottomRightRadius =
-            !previousMessageIsMy && nextMessageIsMy ? 5 : 15;
-          if (previousMessageIsMy && nextMessageIsMy) {
-            borders.borderTopRightRadius = 5;
-            borders.borderBottomRightRadius = 5;
-          }
-        } else {
-          borders.borderTopLeftRadius =
-            previousMessageIsMy && !nextMessageIsMy ? 5 : 15;
-          borders.borderBottomLeftRadius =
-            !previousMessageIsMy && nextMessageIsMy ? 5 : 15;
-          if (previousMessageIsMy && nextMessageIsMy) {
-            borders.borderTopLeftRadius = 5;
-            borders.borderBottomLeftRadius = 5;
-          }
-        }
+    const borders: any = {};
 
-        return (
-          <View
-            key={index}
+    if (itsMyMessage) {
+      borders.borderTopRightRadius =
+        previousMessageIsMy && !nextMessageIsMy ? 5 : 15;
+      borders.borderBottomRightRadius =
+        !previousMessageIsMy && nextMessageIsMy ? 5 : 15;
+      if (previousMessageIsMy && nextMessageIsMy) {
+        borders.borderTopRightRadius = 5;
+        borders.borderBottomRightRadius = 5;
+      }
+    } else {
+      borders.borderTopLeftRadius =
+        previousMessageIsMy && !nextMessageIsMy ? 5 : 15;
+      borders.borderBottomLeftRadius =
+        !previousMessageIsMy && nextMessageIsMy ? 5 : 15;
+      if (previousMessageIsMy && nextMessageIsMy) {
+        borders.borderTopLeftRadius = 5;
+        borders.borderBottomLeftRadius = 5;
+      }
+    }
+
+    return (
+      <View
+        style={[
+          itsMyMessage ? styles.myMessage : styles.otherMessage,
+        ]}
+      >
+        <View style={itsMyMessage ? { maxWidth: "75%" } : {}}>
+          <Pressable
             style={[
-              itsMyMessage ? styles.myMessage : styles.otherMessage,
-              index === 0 ? { marginTop: 10 } : {},
+              styles.message,
+              borders,
+              {
+                backgroundColor: itsMyMessage
+                  ? "#2f95dc"
+                  : colors.otherUserMessageCard,
+              },
             ]}
+            {...(message?.image && {
+              onPress: () => {
+                router.navigate({
+                  pathname: "chat/imageView",
+                  params: { image: message?.image },
+                })
+              }
+            })}
+            onLongPress={() => {
+              setMessageModal(message);
+              setMessageModalContent(message.content);
+              open();
+            }}
           >
-            <View style={itsMyMessage ? { maxWidth: "75%" } : {}}>
-              <Pressable
-                style={[
-                  styles.message,
-                  borders,
-                  {
-                    backgroundColor: itsMyMessage
-                      ? "#2f95dc"
-                      : colors.otherUserMessageCard,
-                  },
-                ]}
-                onLongPress={() => {
-                  setMessageModal(message);
-                  setMessageModalContent(message.content);
-                  open();
+            {message?.image && (
+              <Image
+                source={{ uri: message?.image }}
+                style={styles.messageImage}
+              />
+            )}
+            {message.content && (
+              <Text
+                style={{
+                  maxWidth: "100%",
+                  color: itsMyMessage
+                    ? "white"
+                    : colors.defaultColors.text,
                 }}
               >
-                <Text
-                  style={{
-                    maxWidth: "100%",
-                    color: itsMyMessage
-                      ? "white"
-                      : colors.defaultColors.text,
-                  }}
-                >
-                  {message.content}
+                {message.content}
+              </Text>
+            )}
+          </Pressable>
+          <View
+            style={[
+              styles.messageProps,
+              {
+                justifyContent: itsMyMessage ? "flex-end" : "flex-start",
+              },
+            ]}
+          >
+            {!nextMessageIsMy && (
+              <>
+                <Text style={styles.messageCreatedAt}>
+                  {messageTime.slice(0, 5)}
                 </Text>
-              </Pressable>
-              <View
-                style={[
-                  styles.messageProps,
-                  {
-                    justifyContent: itsMyMessage ? "flex-end" : "flex-start",
-                  },
-                ]}
-              >
-                {!nextMessageIsMy && (
-                  <>
-                    <Text style={styles.messageCreatedAt}>
-                      {messageTime.slice(0, 5)}
-                    </Text>
-                    {itsMyMessage && (
-                      <Ionicons
-                        name="checkmark-done"
-                        size={20}
-                        color={message.read ? "#04f500" : "gray"}
-                        style={{ marginRight: 2 }}
-                      />
-                    )}
-                  </>
+                {itsMyMessage && (
+                  <Ionicons
+                    name="checkmark-done"
+                    size={20}
+                    color={message.read ? "#04f500" : "gray"}
+                    style={{ marginRight: 2 }}
+                  />
                 )}
-              </View>
-            </View>
+              </>
+            )}
           </View>
-        );
-      })}
-    </ScrollView>
+        </View>
+      </View>
+    );
+  }
+
+  useEffect(() => {
+    if (chat.messages.length) {
+      listRef.current?.scrollToEnd({ animated: false });
+    }
+  }, [chat, chat.messages]);
+
+  return (
+    <FlatList
+      ref={listRef}
+      data={chat.messages}
+      renderItem={({ item, index }) => <MessageBubble message={item} index={index}/>}
+      keyExtractor={(item) => item.id}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+      onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  messageContainer: {
+  container: {
     flex: 1,
+  },
+  content: {
+    flexGrow: 1,
+    justifyContent: "flex-end",
+    paddingHorizontal: 8,
+    paddingBottom: 10,
+  },
+
+  messageContainer: {
     paddingHorizontal: 5,
-    flexDirection: "column-reverse",
     paddingBottom: 15,
   },
   myMessage: {
@@ -345,4 +381,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 5,
   },
+  messageImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 20,
+  }
 });

@@ -9,12 +9,18 @@ import { Entypo, Feather } from '@expo/vector-icons';
 import SearchChat from '@/components/ui/searchChat';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import { ChatsContext } from '@/contexts/chats';
+import { t } from 'i18next';
+
+import { useRouter } from "expo-router";
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const colors = getColors();
   const { chats, updateChats } = useContext(ChatsContext);
   const [unreadChats, setUnreadChats] = React.useState(0);
+
+  const router = useRouter();
 
   const optionsStyles = {
     optionsContainer: {
@@ -48,7 +54,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="calls"
         options={{
-          title: 'Calls',
+          title: t("tabs.titles.calls"),
           tabBarIcon: ({ color }) => <Ionicons name="call" size={28} color={color} />,
           headerShown: false,
         }}
@@ -56,7 +62,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={({ navigation }) => ({
-          title: "Chats",
+          title: t("tabs.titles.chats"),
           tabBarBadge: unreadChats > 0 ? unreadChats : undefined,
           headerTitleStyle: {
             fontSize: 15,
@@ -72,7 +78,7 @@ export default function TabLayout() {
           ),
           headerLeft: () => (
             <Pressable
-              onPress={() => navigation.navigate("/camera/camera")}
+              onPress={() => router.navigate("camera/camera")}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
                 marginLeft: 5,
@@ -141,7 +147,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: t("tabs.titles.settings"),
           tabBarIcon: ({ color }) => <Ionicons name="settings" size={28} color={color} />,
           headerShown: false,
 

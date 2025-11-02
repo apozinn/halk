@@ -2,6 +2,7 @@ import { io, Socket } from "socket.io-client";
 import { nanoid } from "nanoid/non-secure";
 import { User, Chat, Message } from "@/types";
 import { t } from "i18next";
+import * as FileSystem from "expo-file-system/legacy";
 
 type SocketEventPayloads = {
   joinRoom: { room: string; otherUser: string };
@@ -126,32 +127,25 @@ export class SocketController {
     this.emit("verifyIfUserIsOnline", { userId: chat.user.id });
   }
 
-  public sendMessage(chat: Chat, text: string): void {
-    if (!this.accessors || !this.socket) {
-      console.error(t("socket.error.noAccessorsOrSocket"));
-      return;
-    }
+  public async sendMessage({ chat, messageContent, ImageBase64=undefined, localImageUri=undefined }: { chat: Chat, messageContent: string , ImageBase64: string | undefined, localImageUri: string | undefined }): Promise<void> {
+    if (!this.accessors || !this.socket) return console.error(t("socket.error.noAccessorsOrSocket"));
 
     const user = this.accessors.getUser();
     let chats = this.accessors.getChats() ?? [];
+    if (!user) return console.error(t("socket.error.noUser"));
+    if (!messageContent?.trim() && !localImageUri) return console.warn(t("socket.warn.emptyMessage"));
 
-    if (!user) {
-      console.error(t("socket.error.noUser"));
-      return;
-    }
-
-    if (!text.trim()) {
-      console.warn(t("socket.warn.emptyMessage"));
-      return;
-    }
+    const isLocalImage = localImageUri?.startsWith("file://");
+    const localImageName = isLocalImage ? localImageUri?.split("/").pop()! : undefined;
 
     const message: Message = {
       chatId: chat.id,
       authorId: user.id,
       createdAt: Date.now(),
       read: false,
-      content: text,
+      content: messageContent,
       id: nanoid(),
+      image: ImageBase64,
     };
 
     this.emit("sendMessage", {
@@ -161,8 +155,9 @@ export class SocketController {
       newChat: chat.newChat,
     });
 
-    const chatIndex = chats.findIndex((c) => c.id === chat.id || c.user.id === chat.user.id);
+    message.image = localImageUri;
 
+    const chatIndex = chats.findIndex((c) => c.id === chat.id || c.user.id === chat.user.id);
     if (chatIndex !== -1) {
       chats[chatIndex] = {
         ...chats[chatIndex],
@@ -174,6 +169,22 @@ export class SocketController {
       chats = [...chats, newChat];
     }
 
-    this.accessors.updateChats(chats);
+    if (isLocalImage && localImageUri) {
+      try {
+        const dir = FileSystem.documentDirectory + "chats/" + chat.id + "/";
+        await FileSystem.makeDirectoryAsync(dir, { intermediates: true });
+
+        const fileName = localImageName!;
+        const newPath = dir + fileName;
+
+        if (localImageUri !== newPath) {
+          await FileSystem.copyAsync({ from: localImageUri, to: newPath });
+        }
+      } catch (err) {
+        console.error("erro ao salvar imagem local:", err);
+      }
+    }
+
+    await this.accessors.updateChats(chats);
   }
 }

@@ -16,6 +16,7 @@ export type Message = {
     createdAt: number;
     read: boolean;
     chatId: string;
+    image?: string
 };
 
 export type Chat = {
