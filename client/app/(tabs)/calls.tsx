@@ -7,9 +7,6 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Text } from "@/components/themed/Themed";
-import { UserContext } from "@/contexts/user";
-import { ChatsContext } from "@/contexts/chats";
-import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { useTranslation } from "react-i18next";
@@ -28,7 +25,7 @@ export default function Calls() {
     if (!calls.length) {
       setCalls([
         {
-          title: t("calls_recent"),
+          title: t("calls.recent"),
           data: [{ props: null }],
         },
       ]);
@@ -47,9 +44,9 @@ export default function Calls() {
           <MaterialIcons name="add-ic-call" size={27} color="white" />
         </View>
         <View style={{ marginLeft: 10 }}>
-          <Text style={styles.newCallTitle}>{t("calls_newCall")}</Text>
+          <Text style={styles.newCallTitle}>{t("calls.newCall")}</Text>
           <Text style={styles.newCallDescription}>
-            {t("calls_newCallDescription")}
+            {t("calls.newCallDescription")}
           </Text>
         </View>
       </TouchableOpacity>

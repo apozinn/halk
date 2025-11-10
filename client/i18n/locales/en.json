@@ -1,4 +1,112 @@
 {
-  "welcome": "Welcome to the app!",
-  "language_changed": "Language changed to English"
+  "welcome": {
+    "title": "Welcome to Halk!",
+    "description": "Lightweight, fast, and secure — Halk keeps your chats smooth, simple, and always accessible.",
+    "button": {
+      "signIn": "Sign In",
+      "signUp": "Sign Up"
+    }
+  },
+  "common": {
+    "continue": "Continue",
+    "bio": "Bio",
+    "name": "Name",
+    "username": "Username",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "errors": {
+    "uploadingImage": "Error uploading image. Please try again.",
+    "waitAvatarUpload": "Please wait for the avatar to finish uploading before continuing.",
+    "fillRequiredFields": "Please fill in the required fields.",
+    "unexpected": "An unexpected error occurred. Please try again later."
+  },
+  "createProfile": {
+    "title": "Create Profile",
+    "chooseAvatar": "Choose an avatar",
+    "uploading": "Uploading...",
+    "enterName": "Enter your name",
+    "enterUsername": "Enter your username",
+    "writeBio": "Write a short bio"
+  },
+  "settings": {
+    "general": "General",
+    "setStatus": "Set status",
+    "profile": "Profile",
+    "editProfile": "Edit profile",
+    "privacySecurity": "Privacy and security",
+    "app": "App",
+    "chats": "Chats",
+    "language": "Language",
+    "storage": "Storage",
+    "notifications": "Notifications",
+    "appearance": "Appearance",
+    "support": "Support",
+    "supportHelp": "Help and support",
+    "report": "Report a problem",
+    "acknowledgements": "Acknowledgements",
+    "account": "Account",
+    "logout": "Log out",
+    "switchAccount": "Switch account",
+    "updates": "Updates",
+    "whatsNew": "What’s new",
+    "developer": "Developer",
+    "sourceCode": "Source code",
+    "licenses": "Licenses",
+    "debugLogs": "Debug logs",
+    "clientInfo": "Client info",
+    "apiInfo": "API info"
+  },
+  "notFound": {
+    "title": "This screen doesn’t exist.",
+    "goHome": "Go to home screen!"
+  },
+  "chat": {
+    "typing": "Typing...",
+    "sendAMessageInputPlaceHolder": "Type a message...",
+    "isImageMessage": "Photo"
+  },
+  "message": {
+    "reply": "Reply",
+    "delete_message": "Delete message",
+    "pin_message": "Pin message",
+    "share": "Share",
+    "react": "React to message",
+    "copy": "Copy content",
+    "report": "Report"
+  },
+  "newChat": {
+    "searchPlaceholder": "Search user...",
+    "emptyMessage": "Search for a user to start a conversation.",
+    "noResults": "No users found with that name."
+  },
+  "errorBoundary": {
+    "title": "An error occurred",
+    "message": "Something unexpected happened. Please try again.",
+    "tryAgain": "Try again"
+  },
+  "tabs": {
+    "titles": {
+      "chats": "Chats",
+      "calls": "Calls",
+      "settings": "Settings"
+    }
+  },
+  "camera": {
+    "permissionDenied": "Camera permission denied. You need to grant access to continue.",
+    "grantPermission": "Grant permission",
+    "photoTaken": "Photo captured successfully!",
+    "takeAnother": "Take another photo",
+    "noImage": "No image captured.",
+    "error": "Error capturing image. Please try again."
+  },
+  "selectChatModal": {
+    "title": "Select a chat"
+  },
+  "calls": {
+    "recent": "Recent",
+    "newCall": "New call",
+    "newCallDescription": "Select a contact to start a call."
+  }
 }

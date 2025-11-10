@@ -39,7 +39,7 @@ export default function BottomContent({ chat }: { chat: Chat }) {
 			url: process.env.EXPO_PUBLIC_API_URL,
 			token: user.id
 		});
-		socketController.sendMessage({ chat, messageContent: text });
+		socketController.sendMessage({ chat, messageContent: text, ImageBase64: undefined, localImageUri: undefined });
 		setText("");
 	}
 
@@ -61,7 +61,6 @@ export default function BottomContent({ chat }: { chat: Chat }) {
 					onChangeText={(value) => setText(value)}
 					onSubmitEditing={() => sendMessage()}
 					maxLength={4100}
-					autoFocus={true}
 				/>
 			</View>
 			{text ? (

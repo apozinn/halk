@@ -8,34 +8,49 @@
     "icon": "./assets/images/halk.png",
     "scheme": "halk",
     "userInterfaceStyle": "automatic",
+
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+
+    "assetBundlePatterns": ["**/*"],
+
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.apozin.halk"
+      "bundleIdentifier": "com.apozinn.halk",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Halk needs access to your camera to take profile pictures and send images in chats.",
+        "NSPhotoLibraryUsageDescription": "Halk needs access to your photos to send images in chats.",
+        "NSUserTrackingUsageDescription": "Halk uses identifiers to personalize your experience and improve performance.",
+        "UIBackgroundModes": ["remote-notification"]
+      }
     },
+
     "android": {
+      "package": "com.apozinn.halk",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.VIBRATE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFFFFF"
       },
-      "package": "com.apozin.halk",
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "notification": {
+        "icon": "./assets/images/halk.png",
+        "color": "#ffffff",
+        "defaultChannel": "messages"
+      }
     },
-    "web": {
-      "favicon": "./assets/images/halk.png"
-    },
+
     "plugins": [
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to get your icon."
+          "photosPermission": "Halk needs access to your photos to send images in chats."
         }
       ],
       [
@@ -43,16 +58,20 @@
         {
           "backgroundColor": "#FFFFFF",
           "image": "./assets/images/halk.png",
-          "ios": {
-            "resizeMode": "cover"
-          },
-          "android": {
-            "imageWidth": 200, 
-            "imageHeight": 200 
-          }
+          "resizeMode": "contain"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/halk.png",
+          "color": "#ffffff",
+          "defaultChannel": "messages",
+          "enableBackgroundRemoteNotifications": false
         }
       ]
     ],
+
     "extra": {
       "eas": {
         "projectId": "305b36d1-5f3a-47bf-a826-cbe8acb748e1"

@@ -92,7 +92,6 @@ export default function ChatScreen() {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <ThemedView style={styles.container}>
-              {/* Top bar */}
               <View style={[styles.topContainer, { backgroundColor: colors.defaultColors.card }]}>
                 <View style={styles.topContainerLeft}>
                   <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("/")}>

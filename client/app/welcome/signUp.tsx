@@ -43,7 +43,7 @@ export default function SignUpPage() {
             <View style={styles.mainContainert}>
                 <View style={{ ...styles.titleContainer }}>
                     <View style={styles.titleContainer}>
-                        <Text style={{ fontSize: 40, fontWeight: "bold" }}>{t("signUpTitle")}</Text>
+                        <Text style={{ fontSize: 40, fontWeight: "bold" }}>{t("commom.signUp")}</Text>
                         <View style={{ ...styles.titleLine, ...{ backgroundColor: colors.tint } }}></View>
                     </View>
                 </View>

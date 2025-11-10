@@ -43,7 +43,7 @@ export default function SettingsScreen() {
     });
     updateChats([]);
     navigation.replace("/welcome/welcome");
-  }
+  };
 
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <View
@@ -65,30 +65,16 @@ export default function SettingsScreen() {
   );
 
   return user ? (
-    <ThemedSafeAreaView style={{ marginHorizontal: 10}}>
-      <View
-        style={[
-          styles.topContainer,
-        ]}
-      >
+    <ThemedSafeAreaView style={{ marginHorizontal: 10 }}>
+      <View style={styles.topContainer}>
         <TouchableOpacity style={styles.profileContainer} onPress={() => { }}>
-          {user.profile.avatar ? (
-            <Avatar
-              size={60}
-              name={user.profile.username}
-              source={{ uri: user.profile.avatar }}
-              colorize
-              style={{ marginRight: 10 }}
-            />
-          ) : (
-            <Avatar
-              size={60}
-              name={user.profile.username}
-              colorize
-              style={{ marginRight: 10 }}
-            />
-          )}
-
+          <Avatar
+            size={60}
+            name={user.profile.username}
+            source={user.profile.avatar ? { uri: user.profile.avatar } : undefined}
+            colorize
+            style={{ marginRight: 10 }}
+          />
           <View>
             <Text style={styles.profileName}>{user.profile.name}</Text>
             <Text style={styles.profileBio}>{user.profile.username}</Text>
@@ -97,103 +83,42 @@ export default function SettingsScreen() {
       </View>
 
       <ScrollView style={styles.linksContainer}>
-        <Section title={t("settings_general")}>
-          <Link
-            icon={<MaterialCommunityIcons name="account-reactivate" size={25} color={colors.tint} />}
-            title={t("settings_setStatus")}
-          />
-          <Link
-            icon={<MaterialIcons name="account-box" size={25} color={colors.tint} />}
-            title={t("settings_profile")}
-          />
-          <Link
-            icon={<MaterialCommunityIcons name="pencil" size={25} color={colors.tint} />}
-            title={t("settings_editProfile")}
-          />
-          <Link
-            icon={<MaterialIcons name="security" size={25} color={colors.tint} />}
-            title={t("settings_privacySecurity")}
-          />
+        <Section title={t("settings.general")}>
+          <Link icon={<MaterialCommunityIcons name="account-reactivate" size={25} color={colors.tint} />} title={t("settings.setStatus")} />
+          <Link icon={<MaterialIcons name="account-box" size={25} color={colors.tint} />} title={t("settings.profile")} />
+          <Link icon={<MaterialCommunityIcons name="pencil" size={25} color={colors.tint} />} title={t("settings.editProfile")} />
+          <Link icon={<MaterialIcons name="security" size={25} color={colors.tint} />} title={t("settings.privacySecurity")} />
         </Section>
 
-        <Section title={t("settings_app")}>
-          <Link
-            icon={<MaterialIcons name="mark-chat-unread" size={25} color={colors.tint} />}
-            title={t("settings_chats")}
-          />
-          <Link
-            icon={<MaterialIcons name="translate" size={25} color={colors.tint} />}
-            title={t("settings_language")}
-          />
-          <Link
-            icon={<MaterialIcons name="storage" size={25} color={colors.tint} />}
-            title={t("settings_storage")}
-          />
-          <Link
-            icon={<MaterialIcons name="notifications" size={25} color={colors.tint} />}
-            title={t("settings_notifications")}
-          />
-          <Link
-            icon={<FontAwesome5 name="palette" size={25} color={colors.tint} />}
-            title={t("settings_appearance")}
-          />
+        <Section title={t("settings.app")}>
+          <Link icon={<MaterialIcons name="mark-chat-unread" size={25} color={colors.tint} />} title={t("settings.chats")} />
+          <Link icon={<MaterialIcons name="translate" size={25} color={colors.tint} />} title={t("settings.language")} />
+          <Link icon={<MaterialIcons name="storage" size={25} color={colors.tint} />} title={t("settings.storage")} />
+          <Link icon={<MaterialIcons name="notifications" size={25} color={colors.tint} />} title={t("settings.notifications")} />
+          <Link icon={<FontAwesome5 name="palette" size={25} color={colors.tint} />} title={t("settings.appearance")} />
         </Section>
 
-        <Section title={t("settings_support")}>
-          <Link
-            icon={<MaterialIcons name="help" size={25} color={colors.tint} />}
-            title={t("settings_supportHelp")}
-          />
-          <Link
-            icon={<MaterialIcons name="report" size={25} color={colors.tint} />}
-            title={t("settings_report")}
-          />
-          <Link
-            icon={<Ionicons name="star" size={25} color={colors.tint} />}
-            title={t("settings_acknowledgements")}
-          />
+        <Section title={t("settings.support")}>
+          <Link icon={<MaterialIcons name="help" size={25} color={colors.tint} />} title={t("settings.supportHelp")} />
+          <Link icon={<MaterialIcons name="report" size={25} color={colors.tint} />} title={t("settings.report")} />
+          <Link icon={<Ionicons name="star" size={25} color={colors.tint} />} title={t("settings.acknowledgements")} />
         </Section>
 
-        <Section title={t("settings_account")}>
-          <Link
-            icon={<MaterialIcons name="exit-to-app" size={25} color={colors.tint} />}
-            title={t("settings_logout")}
-            onPress={exit}
-          />
-          <Link
-            icon={<AntDesign name="swap" size={25} color={colors.tint} />}
-            title={t("settings_switchAccount")}
-          />
+        <Section title={t("settings.account")}>
+          <Link icon={<MaterialIcons name="exit-to-app" size={25} color={colors.tint} />} title={t("settings.logout")} onPress={exit} />
+          <Link icon={<AntDesign name="swap" size={25} color={colors.tint} />} title={t("settings.switchAccount")} />
         </Section>
 
-        <Section title={t("settings_updates")}>
-          <Link
-            icon={<MaterialIcons name="update" size={25} color={colors.tint} />}
-            title={t("settings_whatsNew")}
-          />
+        <Section title={t("settings.updates")}>
+          <Link icon={<MaterialIcons name="update" size={25} color={colors.tint} />} title={t("settings.whatsNew")} />
         </Section>
 
-        <Section title={t("settings_developer")}>
-          <Link
-            icon={<FontAwesome5 name="code" size={22} color={colors.tint} />}
-            title={t("settings_sourceCode")}
-          />
-          <Link
-            icon={<FontAwesome5 name="file-alt" size={22} color={colors.tint} />}
-            title={t("settings_licenses")}
-          />
-          <Link
-            icon={<FontAwesome5 name="bug" size={22} color={colors.tint} />}
-            title={t("settings_debugLogs")}
-          />
-          <Link
-            icon={<FontAwesome5 name="info-circle" size={22} color={colors.tint} />}
-            title={t("settings_clientInfo")}
-          />
-          <Link
-            icon={<FontAwesome5 name="server" size={22} color={colors.tint} />}
-            title={t("settings_apiInfo")}
-          />
+        <Section title={t("settings.developer")}>
+          <Link icon={<FontAwesome5 name="code" size={22} color={colors.tint} />} title={t("settings.sourceCode")} />
+          <Link icon={<FontAwesome5 name="file-alt" size={22} color={colors.tint} />} title={t("settings.licenses")} />
+          <Link icon={<FontAwesome5 name="bug" size={22} color={colors.tint} />} title={t("settings.debugLogs")} />
+          <Link icon={<FontAwesome5 name="info-circle" size={22} color={colors.tint} />} title={t("settings.clientInfo")} />
+          <Link icon={<FontAwesome5 name="server" size={22} color={colors.tint} />} title={t("settings.apiInfo")} />
         </Section>
       </ScrollView>
     </ThemedSafeAreaView>

@@ -146,9 +146,7 @@ export default function MessagesContainer({
   }
 
   useEffect(() => {
-    if (chat.messages.length) {
-      listRef.current?.scrollToEnd({ animated: false });
-    }
+    listRef.current?.scrollToEnd({ animated: true });
   }, [chat, chat.messages]);
 
   return chat && (
@@ -174,11 +172,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingBottom: 10,
   },
-
-  messageContainer: {
-    paddingHorizontal: 5,
-    paddingBottom: 15,
-  },
   myMessage: {
     justifyContent: "flex-end",
     flexDirection: "row",
@@ -203,46 +196,6 @@ const styles = StyleSheet.create({
   messageProps: {
     flexDirection: "row",
     alignItems: "center",
-  },
-  modal: {
-    justifyContent: "flex-end",
-    margin: 0,
-  },
-  scrollableModal: {
-    minHeight: 400,
-  },
-  modalContent: {
-    height: 400,
-    padding: 10,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  modalTopProfile: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 50,
-  },
-  modalLinks: {},
-  modalLink: {
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  modalLinkText: {
-    marginLeft: 10,
-    fontSize: 17,
-  },
-  modalBarContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalBar: {
-    backgroundColor: "#fff",
-    width: 60,
-    height: 10,
-    borderRadius: 10,
-    marginBottom: 5,
   },
   messageImage: {
     width: "100%",

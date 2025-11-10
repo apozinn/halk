@@ -10,14 +10,14 @@ import SearchChat from '@/components/ui/searchChat';
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from 'react-native-popup-menu';
 import { ChatsContext } from '@/contexts/chats';
 import { t } from 'i18next';
-
 import { useRouter } from "expo-router";
-
+import { UserContext } from '@/contexts/user';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const colors = getColors();
-  const { chats, updateChats } = useContext(ChatsContext);
+  const { chats } = useContext(ChatsContext);
+  const { user } = useContext(UserContext);
   const [unreadChats, setUnreadChats] = React.useState(0);
 
   const router = useRouter();
@@ -37,11 +37,11 @@ export default function TabLayout() {
   };
 
   useEffect(() => {
-    if (!chats) return;
+    if (!chats || !user) return;
     setUnreadChats(chats.filter((chat) =>
-      chat?.messages?.some((m) => m?.read === false)
+      chat?.messages?.some((m) => m.authorId !== user.id && m?.read === false)
     ).length);
-  }, [chats]);
+  }, [chats, user]);
 
   return (
     <Tabs

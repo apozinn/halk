@@ -24,7 +24,7 @@ interface SocketOptions {
 
 interface StateAccessors {
   getUser: () => User;
-  updateUser: (u: Partial<User>) => Promise<void>
+  updateUser: (newData: { user?: Partial<User>, logged?: boolean}) => Promise<void>
   getChats: () => Chat[];
   updateChats: (chats: Chat[]) => void;
 }

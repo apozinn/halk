@@ -12,7 +12,9 @@
     "bio": "Bio",
     "name": "Nome",
     "username": "Nome de usuário",
-    "password": "Senha"
+    "password": "Senha",
+    "signIn": "Entrar",
+    "signUp": "Cadastrar"
   },
   "errors": {
     "uploadingImage": "Erro ao enviar imagem. Tente novamente.",
@@ -30,21 +32,31 @@
   },
   "settings": {
     "general": "Geral",
-    "app": "Aplicativo",
-    "support": "Suporte",
-    "account": "Conta",
-    "updates": "Atualizações",
-    "developer": "Desenvolvedor",
     "setStatus": "Definir status",
     "profile": "Perfil",
     "editProfile": "Editar perfil",
     "privacySecurity": "Privacidade e segurança",
+    "app": "Aplicativo",
     "chats": "Conversas",
     "language": "Idioma",
     "storage": "Armazenamento",
     "notifications": "Notificações",
     "appearance": "Aparência",
-    "logout": "Sair"
+    "support": "Suporte",
+    "supportHelp": "Ajuda e suporte",
+    "report": "Reportar um problema",
+    "acknowledgements": "Agradecimentos",
+    "account": "Conta",
+    "logout": "Sair",
+    "switchAccount": "Trocar de conta",
+    "updates": "Atualizações",
+    "whatsNew": "O que há de novo",
+    "developer": "Desenvolvedor",
+    "sourceCode": "Código-fonte",
+    "licenses": "Licenças",
+    "debugLogs": "Logs de depuração",
+    "clientInfo": "Informações do cliente",
+    "apiInfo": "Informações da API"
   },
   "notFound": {
     "title": "Esta tela não existe.",
@@ -79,7 +91,7 @@
       "chats": "Conversas",
       "calls": "Chamadas",
       "settings": "Configurações"
-    } 
+    }
   },
   "camera": {
     "permissionDenied": "Permissão da câmera negada. Você precisa conceder acesso para continuar.",
@@ -91,5 +103,10 @@
   },
   "selectChatModal": {
     "title": "Selecione um chat"
+  },
+  "calls": {
+    "recent": "Recentes",
+    "newCall": "Nova chamada",
+    "newCallDescription": "Selecione um contato para iniciar uma chamada."
   }
 }
