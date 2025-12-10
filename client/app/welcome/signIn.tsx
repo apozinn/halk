@@ -23,8 +23,6 @@ export default function SignInScreen() {
     async function SignInRequest() {
         const result = await signIn(username, password);
 
-        console.log(result);
-
         if (result.logged) {
             updateUser({
                 logged: true,
