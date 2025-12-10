@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
   ScrollView,
   ImageBackground,
   TouchableOpacity,
-  ActivityIndicator,
 } from "react-native";
-import { searchUser } from "../../middleware/api";
 import { getColors } from "../../constants/Colors";
 import {
   AntDesign,
@@ -18,32 +16,31 @@ import {
 import { Text } from "../../components/themed/Themed";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { ThemedView } from "@/components/themed/ThemedView";
 import { User } from "@/types";
 import { ThemedSafeAreaView } from "@/components/themed/themedSafeAreaView";
+import { ChatsContext } from "@/contexts/chats";
 
 export default function Profile() {
+  const { chats } = useContext(ChatsContext);
   const [user, setUser] = useState<User>({} as User);
-  const { id } = useLocalSearchParams();
+
+  const { chatId } = useLocalSearchParams();
+
   const colors = getColors();
   const navigation = useRouter();
+
   const { t } = useTranslation();
 
   useEffect(() => {
-    (async () => {
-      if (!id) return;
-      try {
-        const data = await searchUser("", id.toString());
-        if (data && data.length > 0) setUser(data[0]);
-        else navigation.back();
-      } catch (error) {
-        alert(error);
-        navigation.back();
-      }
-    })();
-  }, [id]);
+    if (!chatId) return;
 
-  return user ? (
+    let thisChat = chats.filter((c) => c.id === chatId)[0];
+    if (thisChat) {
+      setUser(thisChat.user);
+    }
+  }, [chatId]);
+
+  return user?.id && (
     <ThemedSafeAreaView>
       <ScrollView style={styles.container}>
         <ImageBackground
@@ -79,7 +76,6 @@ export default function Profile() {
         </ImageBackground>
 
         <View style={styles.userInfoContainer}>
-          <Text style={styles.containerTitle}>{t("profile.info")}</Text>
 
           <View style={styles.userInfoContainerSection}>
             <Text style={styles.userInfoContainerUpper}>
@@ -96,28 +92,11 @@ export default function Profile() {
               {t("profile.username")}
             </Text>
           </View>
-
-          <View style={styles.userInfoContainerSection}>
-            <Text style={styles.userInfoContainerUpper}>
-              {t("profile.notificationsEnabled")}
-            </Text>
-            <Text style={styles.userInfoContainerLower}>
-              {t("profile.notifications")}
-            </Text>
-          </View>
         </View>
 
-        <View style={styles.mediaContainer}>
-          <Text style={styles.containerTitle}>{t("profile.sharedMedia")}</Text>
-        </View>
       </ScrollView>
     </ThemedSafeAreaView>
-  ) : (
-    <ThemedSafeAreaView>
-      <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.tint} />
-      </ThemedView>
-    </ThemedSafeAreaView>);
+  );
 }
 
 const styles = StyleSheet.create({
@@ -168,7 +147,6 @@ const styles = StyleSheet.create({
   },
   userInfoContainerLower: {
     fontSize: 13,
-    opacity: 0.7,
   },
   userInfoContainerSection: {
     paddingVertical: 10,

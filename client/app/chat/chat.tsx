@@ -102,7 +102,7 @@ export default function ChatScreen() {
                     onPress={() =>
                       navigation.navigate({
                         pathname: "/chat/profile",
-                        params: { id: chat.user.id },
+                        params: { chatId: chat.id },
                       })
                     }
                     style={styles.userProfile}

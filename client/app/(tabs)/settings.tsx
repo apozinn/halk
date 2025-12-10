@@ -65,7 +65,7 @@ export default function SettingsScreen() {
   );
 
   return user ? (
-    <ThemedSafeAreaView style={{ marginHorizontal: 10 }}>
+    <ThemedSafeAreaView style={{ paddingHorizontal: 10 }}>
       <View style={styles.topContainer}>
         <TouchableOpacity style={styles.profileContainer} onPress={() => { }}>
           <Avatar
