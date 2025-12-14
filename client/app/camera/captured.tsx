@@ -11,6 +11,7 @@ import { SocketController } from "@/socket/socketController";
 import { nanoid } from "nanoid/non-secure";
 import { UserContext } from "@/contexts/user";
 import { t } from "i18next";
+import SendImageMessage from "@/utils/sendImageMessage";
 
 export default function Captured() {
   const { imageUri } = useLocalSearchParams<{ imageUri?: string }>();
@@ -24,47 +25,8 @@ export default function Captured() {
 
   async function SelectedChat(chat: Chat) {
     if (!user?.id || !imageUri) return;
-
-    try {
-      const base64 = await FileSystem.readAsStringAsync(imageUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      if (!base64) {
-        Alert.alert(t("camera.noImage"));
-        return;
-      }
-
-      const chatDir = `${FileSystem.documentDirectory}chats/${chat.id}`;
-      await FileSystem.makeDirectoryAsync(chatDir, { intermediates: true });
-
-      const fileName = `msg_${Date.now()}_${nanoid(6)}.jpg`;
-      const filePath = `${chatDir}/${fileName}`;
-
-      await FileSystem.writeAsStringAsync(filePath, base64, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      const socket = SocketController.getInstance({
-        url: process.env.EXPO_PUBLIC_API_URL,
-        token: user.id,
-      });
-
-      await socket.sendMessage({
-        chat,
-        messageContent: "",
-        ImageBase64: base64,
-        localImageUri: filePath,
-      });
-
-      router.replace({
-        pathname: "/chat/chat",
-        params: { id: chat.id },
-      });
-    } catch (err) {
-      console.error(t("camera.error"), err);
-      Alert.alert("Error", t("camera.error"));
-    }
+    
+    SendImageMessage(user, chat, imageUri);
   }
 
   return (

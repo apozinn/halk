@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Alert } from "react-native";
 import {
 	Ionicons,
 	FontAwesome,
@@ -12,6 +12,9 @@ import { UserContext } from "@/contexts/user";
 import { SocketController } from "@/socket/socketController";
 import { Chat } from "@/types";
 import { t } from "i18next";
+import { router } from "expo-router";
+import * as ImagePicker from 'expo-image-picker'
+import SendImageMessage from "@/utils/sendImageMessage";
 
 export default function BottomContent({ chat }: { chat: Chat }) {
 	const { user } = useContext(UserContext);
@@ -43,6 +46,31 @@ export default function BottomContent({ chat }: { chat: Chat }) {
 		setText("");
 	}
 
+	const [image, setImage] = useState<string | null>(null);
+
+	const pickImage = async () => {
+		const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+		if (!permissionResult.granted) {
+			Alert.alert('Permission required', 'Permission to access the media library is required.');
+			return;
+		}
+
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ['images', 'videos'],
+			allowsEditing: true,
+			quality: 1,
+		});
+
+		if (!result.canceled) {
+			setImage(result.assets[0].uri);
+		}
+
+		if (!result.assets || !user?.id) return;
+
+		SendImageMessage(user, chat, result.assets[0].uri);
+	};
+
 	return (
 		<View
 			style={[
@@ -51,7 +79,9 @@ export default function BottomContent({ chat }: { chat: Chat }) {
 			]}
 		>
 			<View style={styles.buttonContentLeft}>
-				<TouchableOpacity style={{ ...styles.blueButton, backgroundColor: colors.tint }} onPress={() => { }}>
+				<TouchableOpacity style={{ ...styles.blueButton, backgroundColor: colors.tint }} onPress={() => {
+					router.navigate("camera/camera");
+				}}>
 					<Fontisto name="camera" size={20} color="white" />
 				</TouchableOpacity>
 				<TextInput
@@ -71,7 +101,7 @@ export default function BottomContent({ chat }: { chat: Chat }) {
 				</TouchableOpacity>
 			) : (
 				<View style={styles.othersMedias}>
-					<TouchableOpacity onPress={() => { }}>
+					<TouchableOpacity onPress={() => pickImage()}>
 						<Ionicons
 							name="add-circle-outline"
 							size={26}
