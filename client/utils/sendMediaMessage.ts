@@ -6,23 +6,35 @@ import { nanoid } from "nanoid/non-secure";
 import { Alert } from "react-native";
 import { Chat, User } from "@/types";
 
-export default async function SendImageMessage(user: User, chat: Chat, imageUri: string) {
-    try {
-        if (!user?.id || !chat?.id || !imageUri.length) return;
+type MediaType = "image" | "video" | "livePhoto" | "pairedVideo" | undefined | null;
 
-        const base64 = await FileSystem.readAsStringAsync(imageUri, {
+export default async function SendMediaMessage(
+    user: User,
+    chat: Chat,
+    mediaUri: string,
+    mediaType: MediaType
+) {
+    try {
+        if (!user?.id || !chat?.id || !mediaUri.length) return;
+
+        const base64 = await FileSystem.readAsStringAsync(mediaUri, {
             encoding: FileSystem.EncodingType.Base64,
         });
 
         if (!base64) {
-            Alert.alert(t("camera.noImage"));
+            Alert.alert(
+                mediaType === "image"
+                    ? t("camera.noImage")
+                    : t("camera.noVideo")
+            );
             return;
         }
 
         const chatDir = `${FileSystem.documentDirectory}chats/${chat.id}`;
         await FileSystem.makeDirectoryAsync(chatDir, { intermediates: true });
 
-        const fileName = `msg_${Date.now()}_${nanoid(6)}.jpg`;
+        const extension = mediaType === "image" ? "jpg" : "mp4";
+        const fileName = `msg_${Date.now()}_${nanoid(6)}.${extension}`;
         const filePath = `${chatDir}/${fileName}`;
 
         await FileSystem.writeAsStringAsync(filePath, base64, {
@@ -37,8 +49,10 @@ export default async function SendImageMessage(user: User, chat: Chat, imageUri:
         await socket.sendMessage({
             chat,
             messageContent: "",
-            ImageBase64: base64,
-            localImageUri: filePath,
+            ImageBase64: mediaType === "image" ? base64 : undefined,
+            VideoBase64: mediaType === "video" ? base64 : undefined,
+            localImageUri: mediaType === "image" ? filePath : undefined,
+            localVideoUri: mediaType === "video" ? filePath : undefined,
         });
 
         router.replace({

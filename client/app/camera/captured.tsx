@@ -11,7 +11,7 @@ import { SocketController } from "@/socket/socketController";
 import { nanoid } from "nanoid/non-secure";
 import { UserContext } from "@/contexts/user";
 import { t } from "i18next";
-import SendImageMessage from "@/utils/sendImageMessage";
+import SendImageMessage from "@/utils/sendMediaMessage";
 
 export default function Captured() {
   const { imageUri } = useLocalSearchParams<{ imageUri?: string }>();
@@ -26,7 +26,7 @@ export default function Captured() {
   async function SelectedChat(chat: Chat) {
     if (!user?.id || !imageUri) return;
     
-    SendImageMessage(user, chat, imageUri);
+    SendImageMessage(user, chat, imageUri, "image");
   }
 
   return (

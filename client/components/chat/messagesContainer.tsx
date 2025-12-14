@@ -1,112 +1,172 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
-  ScrollView,
   View,
   StyleSheet,
   Pressable,
-  TouchableOpacity,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
   Image,
-  FlatList
+  FlatList,
 } from "react-native";
-import { Ionicons, MaterialIcons, Entypo } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Text } from "../themed/Themed";
-import Modal from "react-native-modal";
-import { Avatar } from "@kolking/react-native-avatar";
 import { Chat, Message, User } from "@/types";
-import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
-import * as FileSystem from "expo-file-system/legacy";
+import * as VideoThumbnails from "expo-video-thumbnails";
 
 interface MessagesContainerProps {
   user: User;
   chat: Chat;
   colors: any;
-  setMessageModal: (message: Message) => void
+  setMessageModal: (message: Message) => void;
 }
 
-export default function MessagesContainer({
-  user,
-  chat,
-  colors,
-  setMessageModal
-}: MessagesContainerProps) {
-  const listRef = useRef<FlatList>(null);
+/* ----------------------------- Helpers ----------------------------- */
 
-  function MessageBubble({ message, index }: { message: Message, index: number }) {
-    if (!message?.authorId) return null;
+function getBubbleBorders(
+  itsMyMessage: boolean,
+  prevSame: boolean,
+  nextSame: boolean
+) {
+  const radiusBig = 18;
+  const radiusSmall = 6;
+
+  if (itsMyMessage) {
+    return {
+      borderTopRightRadius: prevSame && !nextSame ? radiusSmall : radiusBig,
+      borderBottomRightRadius: !prevSame && nextSame ? radiusSmall : radiusBig,
+    };
+  }
+
+  return {
+    borderTopLeftRadius: prevSame && !nextSame ? radiusSmall : radiusBig,
+    borderBottomLeftRadius: !prevSame && nextSame ? radiusSmall : radiusBig,
+  };
+}
+
+/* -------------------------- MessageBubble --------------------------- */
+
+interface MessageBubbleProps {
+  message: Message;
+  index: number;
+  chat: Chat;
+  user: User;
+  colors: any;
+  setMessageModal: (message: Message) => void;
+}
+
+const MessageBubble = memo(
+  ({ message, index, chat, user, colors, setMessageModal }: MessageBubbleProps) => {
+    const [videoThumb, setVideoThumb] = useState<string | null>(null);
 
     const itsMyMessage = message.authorId === user.id;
-    const messageTime = new Date(message.createdAt).toLocaleTimeString();
 
     const prevMsg = chat.messages[index - 1];
     const nextMsg = chat.messages[index + 1];
 
-    const previousMessageIsMy = prevMsg?.authorId === message.authorId;
-    const nextMessageIsMy = nextMsg?.authorId === message.authorId;
+    const previousMessageIsSameAuthor = prevMsg?.authorId === message.authorId;
+    const nextMessageIsSameAuthor = nextMsg?.authorId === message.authorId;
 
-    const borders: any = {};
+    const messageTime = useMemo(
+      () => new Date(message.createdAt).toLocaleTimeString().slice(0, 5),
+      [message.createdAt]
+    );
 
-    if (itsMyMessage) {
-      borders.borderTopRightRadius =
-        previousMessageIsMy && !nextMessageIsMy ? 5 : 15;
-      borders.borderBottomRightRadius =
-        !previousMessageIsMy && nextMessageIsMy ? 5 : 15;
-      if (previousMessageIsMy && nextMessageIsMy) {
-        borders.borderTopRightRadius = 5;
-        borders.borderBottomRightRadius = 5;
+    /* ---------- Video thumbnail ---------- */
+    useEffect(() => {
+      if (!message.video) return;
+
+      let active = true;
+
+      VideoThumbnails.getThumbnailAsync(message.video, {
+        time: 1000,
+        quality: 0.8,
+      })
+        .then(({ uri }) => {
+          if (active) setVideoThumb(uri);
+        })
+        .catch(() => {});
+
+      return () => {
+        active = false;
+      };
+    }, [message.video]);
+
+    /* ---------- Handlers ---------- */
+    const handlePress = useCallback(() => {
+      if (message.image) {
+        router.navigate({
+          pathname: "chat/imageView",
+          params: { image: message.image },
+        });
+      } else if (message.video) {
+        router.navigate({
+          pathname: "chat/videoView",
+          params: { video: message.video },
+        });
       }
-    } else {
-      borders.borderTopLeftRadius =
-        previousMessageIsMy && !nextMessageIsMy ? 5 : 15;
-      borders.borderBottomLeftRadius =
-        !previousMessageIsMy && nextMessageIsMy ? 5 : 15;
-      if (previousMessageIsMy && nextMessageIsMy) {
-        borders.borderTopLeftRadius = 5;
-        borders.borderBottomLeftRadius = 5;
-      }
-    }
+    }, [message.image, message.video]);
+
+    const handleLongPress = useCallback(() => {
+      setMessageModal(message);
+    }, [message, setMessageModal]);
+
+    const bubbleBorders = useMemo(
+      () =>
+        getBubbleBorders(
+          itsMyMessage,
+          previousMessageIsSameAuthor,
+          nextMessageIsSameAuthor
+        ),
+      [itsMyMessage, previousMessageIsSameAuthor, nextMessageIsSameAuthor]
+    );
 
     return (
-      <View
-        style={[
-          itsMyMessage ? styles.myMessage : styles.otherMessage,
-        ]}
-      >
-        <View style={itsMyMessage ? { maxWidth: "75%" } : {}}>
+      <View style={itsMyMessage ? styles.myMessage : styles.otherMessage}>
+        <View style={itsMyMessage ? styles.myMessageWrapper : undefined}>
           <Pressable
             style={[
               styles.message,
-              borders,
+              bubbleBorders,
               {
                 backgroundColor: itsMyMessage
                   ? "#2f95dc"
                   : colors.otherUserMessageCard,
               },
             ]}
-            {...(message?.image && {
-              onPress: () => {
-                router.navigate({
-                  pathname: "chat/imageView",
-                  params: { image: message?.image },
-                })
-              }
-            })}
-            onLongPress={() => {
-              setMessageModal(message);
-            }}
+            onPress={handlePress}
+            onLongPress={handleLongPress}
           >
-            {message?.image && (
+            {message.image && (
               <Image
-                source={{ uri: message?.image }}
+                source={{ uri: message.image }}
                 style={styles.messageImage}
               />
             )}
-            {message.content && (
+
+            {message.video && (
+              <View style={styles.videoContainer}>
+                {!!videoThumb && (
+                  <Image
+                    source={{ uri: videoThumb }}
+                    style={styles.videoThumb}
+                    resizeMode="contain"
+                  />
+                )}
+                <View style={styles.playOverlay}>
+                  <Ionicons name="play" size={34} color="#fff" />
+                </View>
+              </View>
+            )}
+
+            {!!message.content && (
               <Text
                 style={{
-                  maxWidth: "100%",
                   color: itsMyMessage
                     ? "white"
                     : colors.defaultColors.text,
@@ -116,56 +176,78 @@ export default function MessagesContainer({
               </Text>
             )}
           </Pressable>
-          <View
-            style={[
-              styles.messageProps,
-              {
-                justifyContent: itsMyMessage ? "flex-end" : "flex-start",
-              },
-            ]}
-          >
-            {!nextMessageIsMy && (
-              <>
-                <Text style={styles.messageCreatedAt}>
-                  {messageTime.slice(0, 5)}
-                </Text>
-                {itsMyMessage && (
-                  <Ionicons
-                    name="checkmark-done"
-                    size={20}
-                    color={message.read ? "#04f500" : "gray"}
-                    style={{ marginRight: 2 }}
-                  />
-                )}
-              </>
-            )}
-          </View>
+
+          {!nextMessageIsSameAuthor && (
+            <View
+              style={[
+                styles.messageProps,
+                { justifyContent: itsMyMessage ? "flex-end" : "flex-start" },
+              ]}
+            >
+              <Text style={styles.messageCreatedAt}>{messageTime}</Text>
+
+              {itsMyMessage && (
+                <Ionicons
+                  name="checkmark-done"
+                  size={18}
+                  color={message.read ? "#04f500" : "gray"}
+                />
+              )}
+            </View>
+          )}
         </View>
       </View>
     );
   }
+);
+
+/* ------------------------ MessagesContainer ------------------------- */
+
+export default function MessagesContainer({
+  user,
+  chat,
+  colors,
+  setMessageModal,
+}: MessagesContainerProps) {
+  const listRef = useRef<FlatList>(null);
 
   useEffect(() => {
     listRef.current?.scrollToEnd({ animated: true });
-  }, [chat, chat.messages]);
+  }, [chat.messages.length]);
 
-  return chat && (
+  const renderItem = useCallback(
+    ({ item, index }: { item: Message; index: number }) => (
+      <MessageBubble
+        message={item}
+        index={index}
+        chat={chat}
+        user={user}
+        colors={colors}
+        setMessageModal={setMessageModal}
+      />
+    ),
+    [chat, user, colors, setMessageModal]
+  );
+
+  return (
     <FlatList
       ref={listRef}
       data={chat.messages}
-      renderItem={({ item, index }) => <MessageBubble message={item} index={index} />}
+      renderItem={renderItem}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
-      onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+      keyboardShouldPersistTaps="handled"
+      initialNumToRender={12}
+      windowSize={7}
+      removeClippedSubviews
     />
   );
 }
 
+/* ------------------------------- Styles ------------------------------ */
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   content: {
     flexGrow: 1,
     justifyContent: "flex-end",
@@ -173,8 +255,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   myMessage: {
-    justifyContent: "flex-end",
     flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  myMessageWrapper: {
+    maxWidth: "75%",
   },
   otherMessage: {
     alignSelf: "flex-start",
@@ -183,23 +268,43 @@ const styles = StyleSheet.create({
   message: {
     padding: 7,
     borderRadius: 20,
-    flexDirection: "row",
     marginBottom: 2,
-    alignItems: "baseline",
     flexWrap: "wrap",
+  },
+  messageProps: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   messageCreatedAt: {
     fontSize: 10,
     marginHorizontal: 5,
     marginTop: 5,
   },
-  messageProps: {
-    flexDirection: "row",
+  messageImage: {
+    width: 240,
+    height: 300,
+    borderRadius: 20,
+  },
+  videoContainer: {
+    width: 240,
+    height: 300,
+    borderRadius: 20,
+    overflow: "hidden",
+    backgroundColor: "#000",
+    justifyContent: "center",
     alignItems: "center",
   },
-  messageImage: {
+  videoThumb: {
     width: "100%",
-    height: 200,
-    borderRadius: 20,
-  }
+    height: "100%",
+  },
+  playOverlay: {
+    position: "absolute",
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

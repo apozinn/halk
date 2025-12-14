@@ -14,7 +14,7 @@ import { Chat } from "@/types";
 import { t } from "i18next";
 import { router } from "expo-router";
 import * as ImagePicker from 'expo-image-picker'
-import SendImageMessage from "@/utils/sendImageMessage";
+import SendMediaMessage from "@/utils/sendMediaMessage";
 
 export default function BottomContent({ chat }: { chat: Chat }) {
 	const { user } = useContext(UserContext);
@@ -68,7 +68,7 @@ export default function BottomContent({ chat }: { chat: Chat }) {
 
 		if (!result.assets || !user?.id) return;
 
-		SendImageMessage(user, chat, result.assets[0].uri);
+		SendMediaMessage(user, chat, result.assets[0].uri, result.assets[0].type);
 	};
 
 	return (

@@ -120,23 +120,38 @@ export class SocketController {
     if (chat.id) {
       this.emit("joinRoom", { room: chat.id, otherUser: chat.user.id });
       this.emit("readMessage", { chat: chat.id, otherUser: chat.user.id });
-    } else {
-      console.warn(t("socket.warn.chatWithoutId"));
     }
 
     this.emit("verifyIfUserIsOnline", { userId: chat.user.id });
   }
 
-  public async sendMessage({ chat, messageContent, ImageBase64=undefined, localImageUri=undefined }: { chat: Chat, messageContent: string , ImageBase64: string | undefined, localImageUri: string | undefined }): Promise<void> {
-    if (!this.accessors || !this.socket) return console.error(t("socket.error.noAccessorsOrSocket"));
+  public async sendMessage({
+    chat,
+    messageContent,
+    ImageBase64 = undefined,
+    VideoBase64 = undefined,
+    localImageUri = undefined,
+    localVideoUri = undefined,
+  }: {
+    chat: Chat;
+    messageContent: string;
+    ImageBase64?: string;
+    VideoBase64?: string;
+    localImageUri?: string;
+    localVideoUri?: string;
+  }): Promise<void> {
+    if (!this.accessors || !this.socket) return;
 
     const user = this.accessors.getUser();
     let chats = this.accessors.getChats() ?? [];
-    if (!user) return console.error(t("socket.error.noUser"));
-    if (!messageContent?.trim() && !localImageUri) return console.warn(t("socket.warn.emptyMessage"));
+    if (!user) return;
+    if (!messageContent?.trim() && !localImageUri && !localVideoUri) return;
 
     const isLocalImage = localImageUri?.startsWith("file://");
-    const localImageName = isLocalImage ? localImageUri?.split("/").pop()! : undefined;
+    const isLocalVideo = localVideoUri?.startsWith("file://");
+
+    const localImageName = isLocalImage ? localImageUri!.split("/").pop()! : undefined;
+    const localVideoName = isLocalVideo ? localVideoUri!.split("/").pop()! : undefined;
 
     const message: Message = {
       chatId: chat.id,
@@ -146,6 +161,7 @@ export class SocketController {
       content: messageContent,
       id: nanoid(),
       image: ImageBase64,
+      video: VideoBase64,
     };
 
     this.emit("sendMessage", {
@@ -155,7 +171,8 @@ export class SocketController {
       newChat: chat.newChat,
     });
 
-    message.image = localImageUri;
+    if (localImageUri) message.image = localImageUri;
+    if (localVideoUri) message.video = localVideoUri;
 
     const chatIndex = chats.findIndex((c) => c.id === chat.id || c.user.id === chat.user.id);
     if (chatIndex !== -1) {
@@ -165,23 +182,23 @@ export class SocketController {
         messages: [...chats[chatIndex].messages, message],
       };
     } else {
-      const newChat: Chat = { ...chat, newChat: false, messages: [message] };
-      chats = [...chats, newChat];
+      chats = [...chats, { ...chat, newChat: false, messages: [message] }];
     }
 
+    const dir = FileSystem.documentDirectory + "chats/" + chat.id + "/";
+    await FileSystem.makeDirectoryAsync(dir, { intermediates: true });
+
     if (isLocalImage && localImageUri) {
-      try {
-        const dir = FileSystem.documentDirectory + "chats/" + chat.id + "/";
-        await FileSystem.makeDirectoryAsync(dir, { intermediates: true });
+      const newPath = dir + localImageName!;
+      if (localImageUri !== newPath) {
+        await FileSystem.copyAsync({ from: localImageUri, to: newPath });
+      }
+    }
 
-        const fileName = localImageName!;
-        const newPath = dir + fileName;
-
-        if (localImageUri !== newPath) {
-          await FileSystem.copyAsync({ from: localImageUri, to: newPath });
-        }
-      } catch (err) {
-        console.error("erro ao salvar imagem local:", err);
+    if (isLocalVideo && localVideoUri) {
+      const newPath = dir + localVideoName!;
+      if (localVideoUri !== newPath) {
+        await FileSystem.copyAsync({ from: localVideoUri, to: newPath });
       }
     }
 

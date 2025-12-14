@@ -8,13 +8,12 @@
     "icon": "./assets/images/halk.png",
     "scheme": "halk",
     "userInterfaceStyle": "automatic",
-
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-
-    "assetBundlePatterns": ["**/*"],
-
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.apozinn.halk",
@@ -22,10 +21,11 @@
         "NSCameraUsageDescription": "Halk needs access to your camera to take profile pictures and send images in chats.",
         "NSPhotoLibraryUsageDescription": "Halk needs access to your photos to send images in chats.",
         "NSUserTrackingUsageDescription": "Halk uses identifiers to personalize your experience and improve performance.",
-        "UIBackgroundModes": ["remote-notification"]
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
       }
     },
-
     "android": {
       "package": "com.apozinn.halk",
       "permissions": [
@@ -45,7 +45,6 @@
         "defaultChannel": "messages"
       }
     },
-
     "plugins": [
       [
         "expo-image-picker",
@@ -69,9 +68,17 @@
           "defaultChannel": "messages",
           "enableBackgroundRemoteNotifications": false
         }
-      ]
+      ],
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
+        }
+      ],
+      "expo-localization",
+      "expo-router"
     ],
-
     "extra": {
       "eas": {
         "projectId": "305b36d1-5f3a-47bf-a826-cbe8acb748e1"
