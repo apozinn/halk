@@ -45,7 +45,7 @@ export default function SignInScreen() {
             </View>
             <View style={styles.mainContainert}>
                 <View style={styles.titleContainer}>
-                    <Text style={{ fontSize: 40, fontWeight: "bold" }}>{t("commom.signIn")}</Text>
+                    <Text style={{ fontSize: 40, fontWeight: "bold" }}>{t("common.signIn")}</Text>
                     <View style={{ ...styles.titleLine, ...{ backgroundColor: colors.tint } }}></View>
                 </View>
                 <TextInput
