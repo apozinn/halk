@@ -7,7 +7,7 @@ import * as FileSystem from "expo-file-system/legacy";
 type SocketEventPayloads = {
   joinRoom: { room: string; otherUser: string };
   verifyIfUserIsOnline: { userId: string };
-  readMessage: { chat: string; otherUser: string };
+  readMessage: { chat: string; reader: string, messageAuthor: string };
   sendMessage: { room: string; toUser: string; message: Message; newChat: boolean };
   receiveMessage: { message: Message };
   newChat: { chat: Chat };
@@ -119,7 +119,7 @@ export class SocketController {
 
     if (chat.id) {
       this.emit("joinRoom", { room: chat.id, otherUser: chat.user.id });
-      this.emit("readMessage", { chat: chat.id, otherUser: chat.user.id });
+      this.emit("readMessage", { chat: chat.id, reader: user.id, messageAuthor: chat.user.id });
     }
 
     this.emit("verifyIfUserIsOnline", { userId: chat.user.id });

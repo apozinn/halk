@@ -45,10 +45,8 @@ export default function MessageModal({
       scrollOffsetMax={100}
       propagateSwipe
       style={styles.modal}
-      backdropTransitionOutTiming={0}
-      useNativeDriverForBackdrop
-      useNativeDriver
-      avoidKeyboard={false}
+      onBackButtonPress={close}
+      onBackdropPress={close}
     >
       <View style={styles.modalContainer}>
         <ScrollView onScroll={handleOnScroll} scrollEventThrottle={16}>
@@ -86,14 +84,14 @@ export default function MessageModal({
                 <TouchableOpacity style={styles.modalLink}>
                   <MaterialIcons name="delete" size={26} color={colors.tint} />
                   <Text style={styles.modalLinkText}>
-                    {t("delete_message")}
+                    {t("message.deleteMessage")}
                   </Text>
                 </TouchableOpacity>
               )}
 
               <TouchableOpacity style={styles.modalLink}>
                 <MaterialIcons name="push-pin" size={26} color={colors.tint} />
-                <Text style={styles.modalLinkText}>{t("message.pin_message")}</Text>
+                <Text style={styles.modalLinkText}>{t("message.pinMessage")}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.modalLink}>

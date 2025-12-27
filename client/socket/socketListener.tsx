@@ -83,10 +83,13 @@ export default function SocketListener() {
     });
 
     socketController.on("readMessage", ({ chat: chatId }: { chat: string }) => {
-      const updatedChats = chats.map((c) =>
-        c.id === chatId
-          ? { ...c, messages: c.messages.map((m) => ({ ...m, read: true })) }
-          : c
+      const updatedChats = chats.map((c) => {
+        if(c.id === chatId) {
+          c.messages.filter((m) => m.authorId === user.id && !m.read).map((m) => m.read = true);
+        }
+
+        return c;
+      }
       );
 
       updateChats(updatedChats);

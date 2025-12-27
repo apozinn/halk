@@ -102,12 +102,15 @@ export class ChatGateway
   }
 
   @SubscribeMessage("readMessage")
-  readMessage(client: Socket, payload: { chat: string; otherUser: string }) {
-    if (!payload.otherUser) return;
-    this.emitToUser(payload.otherUser, "readMessage", {
+  readMessage(client: Socket, payload: { chat: string; reader: string, messageAuthor: string}) {
+    if (!payload.reader || !payload.chat) return;
+
+    this.emitToUser(payload.messageAuthor, "readMessage", {
       chat: payload.chat,
-      user: payload.otherUser,
+      messageAuthor: payload.messageAuthor,
+      reader: payload.reader
     });
+
   }
 
   handleConnection(client: Socket) {

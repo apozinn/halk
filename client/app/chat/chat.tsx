@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
 import {
-  StatusBar,
   StyleSheet,
   View,
   TouchableOpacity,
@@ -45,8 +44,10 @@ export default function ChatScreen() {
 
   const colors = getColors();
 
+  const [socket, setSocket] = useState<SocketController>();
+
   useEffect(() => {
-    if (!id || !chats.length) return;
+    if (!id || !chats.length || !user) return;
 
     const currentChat = chats.find((c) => c.id === id);
     if (!currentChat) {
@@ -54,18 +55,26 @@ export default function ChatScreen() {
       return;
     }
 
+    if (currentChat.messages.length === chat?.messages.length) return;
+
     setChat(currentChat);
+
+    currentChat.messages.filter((m) => m.authorId !== user.id && !m.read).map((m) => m.read = true);
   }, [chats, id]);
 
   useEffect(() => {
     if (!user || !chat) return;
 
-    const socket = SocketController.getInstance({
+    setSocket(SocketController.getInstance({
       url: process.env.EXPO_PUBLIC_API_URL,
       token: user.id,
-    });
+    }));
+
+    if (!socket) return;
 
     socket.emit("verifyIfUserIsOnline", { userId: chat.user.id });
+
+    socket.emit("readMessage", { chat: chat.id, reader: user.id, messageAuthor: chat.user.id });
 
     const handleTyping = (data: any) => setUserIsTyping(data.typing);
     const handleOnline = (data: any) => setUserIsOnline(data.isOnline);
@@ -124,8 +133,8 @@ export default function ChatScreen() {
                         {userIsTyping
                           ? t("chat.typing")
                           : userIsOnline
-                          ? "online"
-                          : ""}
+                            ? "online"
+                            : ""}
                       </ThemedText>
                     </View>
                   </TouchableOpacity>

@@ -65,12 +65,20 @@
   "chat": {
     "typing": "Typing...",
     "sendAMessageInputPlaceHolder": "Type a message...",
-    "isImageMessage": "Photo"
+    "isImageMessage": "Photo",
+    "profile": "View profile",
+    "pin": "Pin chat",
+    "markAsRead": "Mark as read",
+    "notifications": "Notifications",
+    "blockUser": "Block user",
+    "reportUser": "Report user",
+    "copyId": "Copy ID",
+    "deleteChat": "Delete chat"
   },
   "message": {
     "reply": "Reply",
-    "delete_message": "Delete message",
-    "pin_message": "Pin message",
+    "deleteMessage": "Delete message",
+    "pinMessage": "Pin message",
     "share": "Share",
     "react": "React to message",
     "copy": "Copy content",
@@ -108,5 +116,12 @@
     "recent": "Recent",
     "newCall": "New call",
     "newCallDescription": "Select a contact to start a call."
+  },
+  "profile": {
+    "bio": "Bio",
+    "name": "Name",
+    "username": "Username",
+    "avatar": "Avatar",
+    "edit": "Edit"
   }
 }

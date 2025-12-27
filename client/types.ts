@@ -26,3 +26,9 @@ export type Chat = {
     user: User;
     newChat: boolean;
 };
+
+export type ReadMessageCallBack = {
+    chat: string;
+    reader: string;
+    messageAuthor: string;
+}
