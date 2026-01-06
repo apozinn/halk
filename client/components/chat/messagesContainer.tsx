@@ -6,13 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  Image,
-  FlatList,
-} from "react-native";
+import { View, StyleSheet, Pressable, Image, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "../themed/Themed";
 import { Chat, Message, User } from "@/types";
@@ -25,8 +19,6 @@ interface MessagesContainerProps {
   colors: any;
   setMessageModal: (message: Message) => void;
 }
-
-/* ----------------------------- Helpers ----------------------------- */
 
 function getBubbleBorders(
   itsMyMessage: boolean,
@@ -49,8 +41,6 @@ function getBubbleBorders(
   };
 }
 
-/* -------------------------- MessageBubble --------------------------- */
-
 interface MessageBubbleProps {
   message: Message;
   index: number;
@@ -61,7 +51,14 @@ interface MessageBubbleProps {
 }
 
 const MessageBubble = memo(
-  ({ message, index, chat, user, colors, setMessageModal }: MessageBubbleProps) => {
+  ({
+    message,
+    index,
+    chat,
+    user,
+    colors,
+    setMessageModal,
+  }: MessageBubbleProps) => {
     const [videoThumb, setVideoThumb] = useState<string | null>(null);
 
     const itsMyMessage = message.authorId === user.id;
@@ -77,7 +74,6 @@ const MessageBubble = memo(
       [message.createdAt]
     );
 
-    /* ---------- Video thumbnail ---------- */
     useEffect(() => {
       if (!message.video) return;
 
@@ -97,7 +93,6 @@ const MessageBubble = memo(
       };
     }, [message.video]);
 
-    /* ---------- Handlers ---------- */
     const handlePress = useCallback(() => {
       if (message.image) {
         router.navigate({
@@ -167,9 +162,7 @@ const MessageBubble = memo(
             {!!message.content && (
               <Text
                 style={{
-                  color: itsMyMessage
-                    ? "white"
-                    : colors.defaultColors.text,
+                  color: itsMyMessage ? "white" : colors.defaultColors.text,
                 }}
               >
                 {message.content}
@@ -200,8 +193,6 @@ const MessageBubble = memo(
     );
   }
 );
-
-/* ------------------------ MessagesContainer ------------------------- */
 
 export default function MessagesContainer({
   user,
@@ -244,8 +235,6 @@ export default function MessagesContainer({
     />
   );
 }
-
-/* ------------------------------- Styles ------------------------------ */
 
 const styles = StyleSheet.create({
   content: {

@@ -14,18 +14,30 @@ interface SelectChatModalProps {
   SelectedChat: (chat: Chat) => void;
 }
 
-export default function SelectChatModal({ isVisible, SelectedChat }: SelectChatModalProps) {
+export default function SelectChatModal({
+  isVisible,
+  SelectedChat,
+}: SelectChatModalProps) {
   const { chats } = useContext(ChatsContext);
   const colors = getColors();
 
   const renderItem = useCallback(
     ({ item }: { item: Chat }) => (
       <TouchableOpacity onPress={() => SelectedChat(item)}>
-        <ThemedView style={[styles.chatContainer, { backgroundColor: colors.defaultColors.card }]}>
+        <ThemedView
+          style={[
+            styles.chatContainer,
+            { backgroundColor: colors.defaultColors.card },
+          ]}
+        >
           <Avatar
             size={55}
             name={item.user.profile.username || item.user.profile.name}
-            source={item.user.profile.avatar ? { uri: item.user.profile.avatar } : undefined}
+            source={
+              item.user.profile.avatar
+                ? { uri: item.user.profile.avatar }
+                : undefined
+            }
             colorize
             radius={50}
           />

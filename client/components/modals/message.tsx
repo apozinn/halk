@@ -91,7 +91,9 @@ export default function MessageModal({
 
               <TouchableOpacity style={styles.modalLink}>
                 <MaterialIcons name="push-pin" size={26} color={colors.tint} />
-                <Text style={styles.modalLinkText}>{t("message.pinMessage")}</Text>
+                <Text style={styles.modalLinkText}>
+                  {t("message.pinMessage")}
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.modalLink}>
@@ -116,7 +118,9 @@ export default function MessageModal({
               {messageModal.authorId !== user.id && (
                 <TouchableOpacity style={styles.modalLink}>
                   <MaterialIcons name="report" size={26} color={colors.tint} />
-                  <Text style={styles.modalLinkText}>{t("message.report")}</Text>
+                  <Text style={styles.modalLinkText}>
+                    {t("message.report")}
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>

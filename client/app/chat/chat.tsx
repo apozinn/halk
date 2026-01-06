@@ -8,12 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import {
-  AntDesign,
-  Ionicons,
-  Feather,
-  FontAwesome,
-} from "@expo/vector-icons";
+import { AntDesign, Ionicons, Feather, FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar } from "@kolking/react-native-avatar";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -26,7 +21,7 @@ import { ThemedView } from "@/components/themed/ThemedView";
 import { ThemedText } from "@/components/themed/ThemedText";
 import MessagesContainer from "@/components/chat/messagesContainer";
 import BottomContent from "@/components/chat/bottomContent";
-import MessageModal from "@/components/chat/messageModal";
+import MessageModal from "@/components/modals/message";
 import { Chat, Message } from "@/types";
 import { SocketController } from "@/socket/socketController";
 
@@ -59,22 +54,30 @@ export default function ChatScreen() {
 
     setChat(currentChat);
 
-    currentChat.messages.filter((m) => m.authorId !== user.id && !m.read).map((m) => m.read = true);
+    currentChat.messages
+      .filter((m) => m.authorId !== user.id && !m.read)
+      .map((m) => (m.read = true));
   }, [chats, id]);
 
   useEffect(() => {
     if (!user || !chat) return;
 
-    setSocket(SocketController.getInstance({
-      url: process.env.EXPO_PUBLIC_API_URL,
-      token: user.id,
-    }));
+    setSocket(
+      SocketController.getInstance({
+        url: process.env.EXPO_PUBLIC_API_URL,
+        token: user.id,
+      })
+    );
 
     if (!socket) return;
 
     socket.emit("verifyIfUserIsOnline", { userId: chat.user.id });
 
-    socket.emit("readMessage", { chat: chat.id, reader: user.id, messageAuthor: chat.user.id });
+    socket.emit("readMessage", {
+      chat: chat.id,
+      reader: user.id,
+      messageAuthor: chat.user.id,
+    });
 
     const handleTyping = (data: any) => setUserIsTyping(data.typing);
     const handleOnline = (data: any) => setUserIsOnline(data.isOnline);
@@ -92,19 +95,42 @@ export default function ChatScreen() {
 
   return (
     <>
-      <MessageModal messageModal={messageModal} setMessageModal={setMessageModal} />
+      <MessageModal
+        messageModal={messageModal}
+        setMessageModal={setMessageModal}
+      />
 
-      <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.defaultColors.card }]}>
+      <SafeAreaView
+        style={[
+          styles.safeArea,
+          { backgroundColor: colors.defaultColors.card },
+        ]}
+      >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
         >
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <TouchableWithoutFeedback
+            onPress={Keyboard.dismiss}
+            accessible={false}
+          >
             <ThemedView style={styles.container}>
-              <View style={[styles.topContainer, { backgroundColor: colors.defaultColors.card }]}>
+              <View
+                style={[
+                  styles.topContainer,
+                  { backgroundColor: colors.defaultColors.card },
+                ]}
+              >
                 <View style={styles.topContainerLeft}>
-                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("/")}>
-                    <AntDesign name="arrow-left" size={25} color={colors.tint} />
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => navigation.navigate("/")}
+                  >
+                    <AntDesign
+                      name="arrow-left"
+                      size={25}
+                      color={colors.tint}
+                    />
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -133,8 +159,8 @@ export default function ChatScreen() {
                         {userIsTyping
                           ? t("chat.typing")
                           : userIsOnline
-                            ? "online"
-                            : ""}
+                          ? "online"
+                          : ""}
                       </ThemedText>
                     </View>
                   </TouchableOpacity>
@@ -146,11 +172,19 @@ export default function ChatScreen() {
                   </TouchableOpacity>
 
                   <TouchableOpacity style={styles.button}>
-                    <FontAwesome name="video-camera" size={24} color={colors.tint} />
+                    <FontAwesome
+                      name="video-camera"
+                      size={24}
+                      color={colors.tint}
+                    />
                   </TouchableOpacity>
 
                   <TouchableOpacity style={styles.button}>
-                    <Feather name="more-vertical" size={24} color={colors.tint} />
+                    <Feather
+                      name="more-vertical"
+                      size={24}
+                      color={colors.tint}
+                    />
                   </TouchableOpacity>
                 </View>
               </View>

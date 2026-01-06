@@ -17,7 +17,6 @@ export default function ImageViewer() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }}>
-      {/* Placeholder / Loader */}
       {loading && (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color="#fff" />
@@ -44,7 +43,10 @@ export default function ImageViewer() {
       )}
 
       <ThemedSafeAreaView style={styles.overlay}>
-        <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => router.back()}
+        >
           <MaterialIcons name="close" size={24} color="white" />
         </TouchableOpacity>
       </ThemedSafeAreaView>

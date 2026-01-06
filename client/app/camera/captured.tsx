@@ -4,13 +4,9 @@ import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { StyleSheet, Image, Pressable, View, Alert } from "react-native";
 import React, { useState, useContext } from "react";
-import SelectChatModal from "@/components/chat/selectChatModal";
+import SelectChatModal from "@/components/modals/selectChat";
 import { Chat } from "@/types";
-import * as FileSystem from "expo-file-system/legacy";
-import { SocketController } from "@/socket/socketController";
-import { nanoid } from "nanoid/non-secure";
 import { UserContext } from "@/contexts/user";
-import { t } from "i18next";
 import SendImageMessage from "@/utils/sendMediaMessage";
 
 export default function Captured() {
@@ -25,18 +21,25 @@ export default function Captured() {
 
   async function SelectedChat(chat: Chat) {
     if (!user?.id || !imageUri) return;
-    
+
     SendImageMessage(user, chat, imageUri, "image");
   }
 
   return (
     <View style={styles.container}>
       <SelectChatModal isVisible={showModal} SelectedChat={SelectedChat} />
-      <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" />
+      <Image
+        source={{ uri: imageUri }}
+        style={styles.image}
+        resizeMode="cover"
+      />
       <ThemedView style={styles.overlay}>
         <Pressable
           onPress={() => router.back()}
-          style={({ pressed }) => [styles.iconButton, pressed && { opacity: 0.7 }]}
+          style={({ pressed }) => [
+            styles.iconButton,
+            pressed && { opacity: 0.7 },
+          ]}
         >
           <MaterialIcons name="arrow-back" size={30} color="#fff" />
         </Pressable>
