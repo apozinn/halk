@@ -36,18 +36,20 @@ export default function BottomContent({ chat }: { chat: Chat }) {
   }, [text]);
 
   function sendMessage() {
-    if (!chat || !user) return;
-    if (!text) return;
+    if (!chat || !user || !text) return;
+
     const socketController = SocketController.getInstance({
       url: process.env.EXPO_PUBLIC_API_URL,
       token: user.id,
     });
+
     socketController.sendMessage({
       chat,
       messageContent: text,
       ImageBase64: undefined,
       localImageUri: undefined,
     });
+    
     setText("");
   }
 

@@ -30,7 +30,7 @@ export default function NewChat() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    if(!user) return;
+    if (!user) return;
     if (search.trim()) {
       searchUser(user.id, search).then((data) => {
         setResults(data || []);
@@ -63,7 +63,7 @@ export default function NewChat() {
       pathname: "/chat/chat",
       params: {
         id: newChat.id,
-      }
+      },
     });
   }
 
@@ -95,15 +95,11 @@ export default function NewChat() {
       <ScrollView style={styles.results}>
         {!search.trim() ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              {t("newChat.emptyMessage")}
-            </Text>
+            <Text style={styles.emptyText}>{t("newChat.emptyMessage")}</Text>
           </View>
         ) : results.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              {t("newChat.noResults")}
-            </Text>
+            <Text style={styles.emptyText}>{t("newChat.noResults")}</Text>
           </View>
         ) : (
           results.map((userItem, index) => (

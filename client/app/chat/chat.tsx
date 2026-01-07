@@ -38,42 +38,31 @@ export default function ChatScreen() {
   const [userIsTyping, setUserIsTyping] = useState(false);
 
   const colors = getColors();
-
   const [socket, setSocket] = useState<SocketController>();
 
   useEffect(() => {
     if (!id || !chats.length || !user) return;
-
-    const currentChat = chats.find((c) => c.id === id);
-    if (!currentChat) {
-      navigation.back();
-      return;
-    }
-
-    if (currentChat.messages.length === chat?.messages.length) return;
-
-    setChat(currentChat);
-
-    currentChat.messages
-      .filter((m) => m.authorId !== user.id && !m.read)
-      .map((m) => (m.read = true));
+    setChat(chats.filter((c) => c.id == id)[0] ?? ({} as Chat));
   }, [chats, id]);
 
   useEffect(() => {
     if (!user || !chat) return;
 
-    setSocket(
+    let currentSocketConnection =
+      socket ??
       SocketController.getInstance({
         url: process.env.EXPO_PUBLIC_API_URL,
         token: user.id,
-      })
-    );
+      });
 
-    if (!socket) return;
+    if (socket !== currentSocketConnection) setSocket(currentSocketConnection);
+    if (!currentSocketConnection) return;
 
-    socket.emit("verifyIfUserIsOnline", { userId: chat.user.id });
+    currentSocketConnection.emit("verifyIfUserIsOnline", {
+      userId: chat.user.id,
+    });
 
-    socket.emit("readMessage", {
+    currentSocketConnection.emit("readMessage", {
       chat: chat.id,
       reader: user.id,
       messageAuthor: chat.user.id,
@@ -82,122 +71,130 @@ export default function ChatScreen() {
     const handleTyping = (data: any) => setUserIsTyping(data.typing);
     const handleOnline = (data: any) => setUserIsOnline(data.isOnline);
 
-    socket.on("userTyping", handleTyping);
-    socket.on("verifyIfUserIsOnline", handleOnline);
+    currentSocketConnection.on("userTyping", handleTyping);
+    currentSocketConnection.on("verifyIfUserIsOnline", handleOnline);
 
     return () => {
-      socket.off("userTyping", handleTyping);
-      socket.off("verifyIfUserIsOnline", handleOnline);
+      currentSocketConnection.off("userTyping", handleTyping);
+      currentSocketConnection.off("verifyIfUserIsOnline", handleOnline);
     };
   }, [user, chat]);
 
-  if (!chat || !user) return null;
-
   return (
-    <>
-      <MessageModal
-        messageModal={messageModal}
-        setMessageModal={setMessageModal}
-      />
+    chat &&
+    user && (
+      <>
+        <MessageModal
+          messageModal={messageModal}
+          setMessageModal={setMessageModal}
+        />
 
-      <SafeAreaView
-        style={[
-          styles.safeArea,
-          { backgroundColor: colors.defaultColors.card },
-        ]}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
+        <SafeAreaView
+          style={[
+            styles.safeArea,
+            { backgroundColor: colors.defaultColors.card },
+          ]}
         >
-          <TouchableWithoutFeedback
-            onPress={Keyboard.dismiss}
-            accessible={false}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
           >
-            <ThemedView style={styles.container}>
-              <View
-                style={[
-                  styles.topContainer,
-                  { backgroundColor: colors.defaultColors.card },
-                ]}
-              >
-                <View style={styles.topContainerLeft}>
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => navigation.navigate("/")}
-                  >
-                    <AntDesign
-                      name="arrow-left"
-                      size={25}
-                      color={colors.tint}
-                    />
-                  </TouchableOpacity>
+            <TouchableWithoutFeedback
+              onPress={Keyboard.dismiss}
+              accessible={false}
+            >
+              <ThemedView style={styles.container}>
+                <View
+                  style={[
+                    styles.topContainer,
+                    { backgroundColor: colors.defaultColors.card },
+                  ]}
+                >
+                  <View style={styles.topContainerLeft}>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => navigation.navigate("/")}
+                    >
+                      <AntDesign
+                        name="arrow-left"
+                        size={25}
+                        color={colors.tint}
+                      />
+                    </TouchableOpacity>
 
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate({
-                        pathname: "/chat/profile",
-                        params: { chatId: chat.id },
-                      })
-                    }
-                    style={styles.userProfile}
-                  >
-                    <Avatar
-                      size={45}
-                      name={chat.user.profile.avatar}
-                      source={{ uri: chat.user.profile.avatar }}
-                      colorize
-                      radius={50}
-                    />
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate({
+                          pathname: "/chat/profile",
+                          params: { chatId: chat.id },
+                        })
+                      }
+                      style={styles.userProfile}
+                    >
+                      <Avatar
+                        size={45}
+                        name={chat.user.profile.avatar}
+                        source={{ uri: chat.user.profile.avatar }}
+                        colorize
+                        radius={50}
+                      />
 
-                    <View style={styles.userInfo}>
-                      <ThemedText style={styles.username}>
-                        {chat.user.profile.name}
-                      </ThemedText>
+                      <View style={styles.userInfo}>
+                        <ThemedText style={styles.username}>
+                          {chat.user.profile.name}
+                        </ThemedText>
 
-                      <ThemedText style={styles.isOnline}>
-                        {userIsTyping
-                          ? t("chat.typing")
-                          : userIsOnline
-                          ? "online"
-                          : ""}
-                      </ThemedText>
-                    </View>
-                  </TouchableOpacity>
+                        <ThemedText style={styles.isOnline}>
+                          {userIsTyping
+                            ? t("chat.typing")
+                            : userIsOnline
+                            ? "online"
+                            : ""}
+                        </ThemedText>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.topContainerRight}>
+                    <TouchableOpacity style={styles.button}>
+                      <Ionicons name="call" size={24} color={colors.tint} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button}>
+                      <FontAwesome
+                        name="video-camera"
+                        size={24}
+                        color={colors.tint}
+                      />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button}>
+                      <Feather
+                        name="more-vertical"
+                        size={24}
+                        color={colors.tint}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
 
-                <View style={styles.topContainerRight}>
-                  <TouchableOpacity style={styles.button}>
-                    <Ionicons name="call" size={24} color={colors.tint} />
-                  </TouchableOpacity>
-
-                  <TouchableOpacity style={styles.button}>
-                    <FontAwesome
-                      name="video-camera"
-                      size={24}
-                      color={colors.tint}
-                    />
-                  </TouchableOpacity>
-
-                  <TouchableOpacity style={styles.button}>
-                    <Feather
-                      name="more-vertical"
-                      size={24}
-                      color={colors.tint}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <MessagesContainer
-                {...{ user, chats, updateChats, chat, colors, setMessageModal }}
-              />
-              <BottomContent chat={chat} />
-            </ThemedView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </>
+                <MessagesContainer
+                  {...{
+                    user,
+                    chats,
+                    updateChats,
+                    chat,
+                    colors,
+                    setMessageModal,
+                  }}
+                />
+                <BottomContent chat={chat} />
+              </ThemedView>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      </>
+    )
   );
 }
 

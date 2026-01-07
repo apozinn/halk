@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View, ScrollView } from "react-native";
 import { Avatar } from "@kolking/react-native-avatar";
 import {
@@ -36,7 +36,9 @@ export default function ChatModal({
   const close = () => setVisible(false);
 
   const removeChat = () => {
-    updateChats(chats.filter((c) => c.id !== chat.id));
+    let chatsBuffer = chats;
+    chatsBuffer = chatsBuffer.filter((c) => c.id !== chat.id);
+    updateChats(chatsBuffer);
     close();
   };
 
