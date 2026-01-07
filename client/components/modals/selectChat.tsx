@@ -61,7 +61,7 @@ export default function SelectChatModal({
       propagateSwipe
       useNativeDriverForBackdrop
     >
-      <ThemedView style={styles.mainContainer}>
+      <ThemedView style={styles.modalContainer}>
         <ThemedView style={styles.headerContainer}>
           <ThemedText style={styles.headerText}>
             {t("selectChatModal.title")}
@@ -82,14 +82,62 @@ export default function SelectChatModal({
 
 const styles = StyleSheet.create({
   modal: {
-    margin: 0,
     justifyContent: "flex-end",
+    alignItems: "center",
+    margin: 0,
+    padding: 0,
   },
-  mainContainer: {
+  modalContainer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
     maxHeight: "80%",
-    padding: 16,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
+    overflow: "hidden",
+  },
+  modalContent: {
+    padding: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  modalTopProfile: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 50,
+  },
+  modalLinks: {},
+  modalLink: {
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  modalLinkText: {
+    marginLeft: 10,
+    fontSize: 17,
+  },
+  modalBarContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalBar: {
+    backgroundColor: "#fff",
+    width: 60,
+    height: 10,
+    borderRadius: 10,
+    marginBottom: 5,
+  },
+  chatContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    padding: 12,
+    borderRadius: 12,
+  },
+  usernameText: {
+    fontSize: 15,
+    fontWeight: "500",
   },
   headerContainer: {
     alignItems: "center",
@@ -102,16 +150,5 @@ const styles = StyleSheet.create({
   chatsContainer: {
     gap: 12,
     paddingBottom: 24,
-  },
-  chatContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    padding: 12,
-    borderRadius: 12,
-  },
-  usernameText: {
-    fontSize: 15,
-    fontWeight: "500",
   },
 });

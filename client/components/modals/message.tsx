@@ -34,9 +34,7 @@ export default function MessageModal({
     []
   );
 
-  if (!messageModal || !user) return null;
-
-  return (
+  return messageModal && user && (
     <Modal
       isVisible={isVisible()}
       onSwipeComplete={close}
@@ -80,15 +78,6 @@ export default function MessageModal({
                 <Text style={styles.modalLinkText}>{t("message.reply")}</Text>
               </TouchableOpacity>
 
-              {messageModal.authorId === user.id && (
-                <TouchableOpacity style={styles.modalLink}>
-                  <MaterialIcons name="delete" size={26} color={colors.tint} />
-                  <Text style={styles.modalLinkText}>
-                    {t("message.deleteMessage")}
-                  </Text>
-                </TouchableOpacity>
-              )}
-
               <TouchableOpacity style={styles.modalLink}>
                 <MaterialIcons name="push-pin" size={26} color={colors.tint} />
                 <Text style={styles.modalLinkText}>
@@ -123,6 +112,15 @@ export default function MessageModal({
                   </Text>
                 </TouchableOpacity>
               )}
+              {/* 
+              {messageModal.authorId === user.id && (
+                <TouchableOpacity style={styles.modalLink}>
+                  <MaterialIcons name="delete" size={26} color={"red"} />
+                  <Text style={styles.modalLinkText}>
+                    {t("message.deleteMessage")}
+                  </Text>
+                </TouchableOpacity>
+              )} */}
             </View>
           </View>
         </ScrollView>
@@ -142,7 +140,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    height: "50%",
+    maxHeight: "80%",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     overflow: "hidden",

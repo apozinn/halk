@@ -54,7 +54,7 @@ export default function ChatModal({
       onBackButtonPress={close}
       onBackdropPress={close}
     >
-      <View style={styles.scrollableModal}>
+      <View style={styles.modalContainer}>
         <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
           <View style={styles.modalBarContainer}>
             <View style={styles.modalBar} />
@@ -173,10 +173,22 @@ export default function ChatModal({
 }
 
 const styles = StyleSheet.create({
-  modal: { justifyContent: "flex-end", margin: 0 },
-  scrollableModal: { minHeight: 500 },
+  modal: {
+    justifyContent: "flex-end",
+    alignItems: "center",
+    margin: 0,
+    padding: 0,
+  },
+  modalContainer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    maxHeight: "80%",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    overflow: "hidden",
+  },
   modalContent: {
-    height: 500,
     padding: 10,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
@@ -186,16 +198,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderRadius: 50,
-    gap: 10,
+  },
+  modalLinks: {},
+  modalLink: {
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  modalLinkText: {
+    marginLeft: 10,
+    fontSize: 17,
+  },
+  modalBarContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   profileName: { fontWeight: "bold", fontSize: 15 },
-  modalLink: { padding: 10, flexDirection: "row", alignItems: "center" },
-  modalLinkText: { marginLeft: 10, fontSize: 17 },
-  modalBarContainer: { justifyContent: "center", alignItems: "center" },
   modalBar: {
     backgroundColor: "#fff",
     width: 60,
-    height: 6,
+    height: 10,
     borderRadius: 10,
     marginBottom: 5,
   },
