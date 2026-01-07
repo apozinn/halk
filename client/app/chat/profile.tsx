@@ -56,7 +56,7 @@ export default function Profile() {
             <TouchableOpacity onPress={() => navigation.back()}>
               <AntDesign name="arrow-left" size={26} color={colors.icon} />
             </TouchableOpacity>
-            <View style={styles.iconGroup}>
+            {/* <View style={styles.iconGroup}>
               <TouchableOpacity>
                 <Ionicons name="call" size={26} color={colors.icon} />
               </TouchableOpacity>
@@ -66,7 +66,7 @@ export default function Profile() {
               <TouchableOpacity>
                 <Feather name="more-vertical" size={26} color={colors.icon} />
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
           <View style={styles.topContainerInfo}>

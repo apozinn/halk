@@ -123,5 +123,8 @@
     "username": "Username",
     "avatar": "Avatar",
     "edit": "Edit"
+  },
+  "homeMenuOptions": {
+    "settings": "Settings"
   }
 }

@@ -112,7 +112,7 @@ export default function TabLayout() {
                     />
                   </MenuTrigger>
                   <MenuOptions customStyles={optionsStyles}>
-                    <MenuOption
+                    {/* <MenuOption
                       onSelect={() => alert(`Save`)}
                       text="Novo chat"
                       customStyles={optionStyles}
@@ -131,10 +131,10 @@ export default function TabLayout() {
                       onSelect={() => alert(`Save`)}
                       text="Editar perfil"
                       customStyles={optionStyles}
-                    />
+                    /> */}
                     <MenuOption
-                      onSelect={() => alert(`Save`)}
-                      text="Configurações"
+                      onSelect={() => navigation.navigate("settings")}
+                      text={t("homeMenuOptions.settings")}
                       customStyles={optionStyles}
                     />
                   </MenuOptions>

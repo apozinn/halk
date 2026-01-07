@@ -108,5 +108,8 @@
     "recent": "Recentes",
     "newCall": "Nova chamada",
     "newCallDescription": "Selecione um contato para iniciar uma chamada."
+  },
+  "homeMenuOptions": {
+    "settings": "Configurações"
   }
 }

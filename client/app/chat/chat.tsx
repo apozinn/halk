@@ -155,7 +155,7 @@ export default function ChatScreen() {
                     </TouchableOpacity>
                   </View>
 
-                  <View style={styles.topContainerRight}>
+                  {/* <View style={styles.topContainerRight}>
                     <TouchableOpacity style={styles.button}>
                       <Ionicons name="call" size={24} color={colors.tint} />
                     </TouchableOpacity>
@@ -175,7 +175,7 @@ export default function ChatScreen() {
                         color={colors.tint}
                       />
                     </TouchableOpacity>
-                  </View>
+                  </View> */}
                 </View>
 
                 <MessagesContainer

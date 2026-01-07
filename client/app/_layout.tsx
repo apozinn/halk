@@ -3,7 +3,11 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ActivityIndicator } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { ThemeProvider, DarkTheme, DefaultTheme } from "@react-navigation/native";
+import {
+  ThemeProvider,
+  DarkTheme,
+  DefaultTheme,
+} from "@react-navigation/native";
 import { MenuProvider } from "react-native-popup-menu";
 import { useFonts } from "expo-font";
 
@@ -16,6 +20,10 @@ import ErrorBoundary from "@/app/errors/errorBoundary";
 import useColorScheme from "@/hooks/useColorScheme";
 import { getColors } from "@/constants/Colors";
 import { initI18n } from "@/i18n";
+
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs(["SafeAreaView has been deprecated"]);
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -33,7 +41,10 @@ export default function RootLayout() {
   if (!i18nReady || !fontsLoaded) {
     return (
       <SafeAreaProvider>
-        <ActivityIndicator size="large" style={{ flex: 1, justifyContent: "center" }} />
+        <ActivityIndicator
+          size="large"
+          style={{ flex: 1, justifyContent: "center" }}
+        />
       </SafeAreaProvider>
     );
   }
@@ -41,7 +52,9 @@ export default function RootLayout() {
   return (
     <ErrorBoundary {...{ colors }}>
       <SafeAreaProvider>
-        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
           <MenuProvider>
             <UserProvider>
               <ChatsProvider>

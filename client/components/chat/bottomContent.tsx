@@ -119,13 +119,13 @@ export default function BottomContent({ chat }: { chat: Chat }) {
           <TouchableOpacity onPress={() => pickImage()}>
             <Ionicons name="add-circle-outline" size={26} color={colors.tint} />
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginLeft: 8 }} onPress={() => {}}>
+          {/* <TouchableOpacity style={{ marginLeft: 8 }} onPress={() => {}}>
             <MaterialIcons
               name="keyboard-voice"
               size={26}
               color={colors.tint}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       )}
     </View>
