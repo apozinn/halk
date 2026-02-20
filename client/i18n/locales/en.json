@@ -73,7 +73,8 @@
     "blockUser": "Block user",
     "reportUser": "Report user",
     "copyId": "Copy ID",
-    "deleteChat": "Delete chat"
+    "deleteChat": "Delete chat",
+    "copied": "Copied"
   },
   "message": {
     "reply": "Reply",

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { StyleSheet, TouchableOpacity, View, ScrollView } from "react-native";
+import { StyleSheet, TouchableOpacity, View, ScrollView, ToastAndroid } from "react-native";
 import { Avatar } from "@kolking/react-native-avatar";
 import {
   Ionicons,
@@ -12,10 +12,13 @@ import Modal from "react-native-modal";
 import { t } from "i18next";
 
 import { ChatsContext } from "@/contexts/chats";
-import { Chat } from "@/types";
+import { Chat, Message } from "@/types";
 import { getColors } from "@/constants/Colors";
 import { ThemedText } from "../themed/ThemedText";
 import { router } from "expo-router";
+import { UserContext } from "@/contexts/user";
+
+import * as Clipboard from "expo-clipboard";
 
 export default function ChatModal({
   chat,
@@ -27,6 +30,7 @@ export default function ChatModal({
   setVisible: Function;
 }) {
   const { chats, updateChats } = useContext(ChatsContext);
+  const { user } = useContext(UserContext);
   const colors = getColors();
 
   const [scrollOffset, setScrollOffset] = useState(0);
@@ -105,15 +109,17 @@ export default function ChatModal({
                     />
                   ),
                   text: t("chat.profile"),
-                  onPress: () => { router.push({ 
-                    pathname: "chat/profile",
-                    params: { chatId: chat.id },
-                  }) },
+                  onPress: () => {
+                    router.push({
+                      pathname: "chat/profile",
+                      params: { chatId: chat.id },
+                    });
+                  },
                 },
-                {
-                  icon: <AntDesign name="star" size={26} color={colors.tint} />,
-                  text: t("chat.pin"),
-                },
+                // {
+                //   icon: <AntDesign name="star" size={26} color={colors.tint} />,
+                //   text: t("chat.pin"),
+                // },
                 {
                   icon: (
                     <MaterialIcons
@@ -123,34 +129,53 @@ export default function ChatModal({
                     />
                   ),
                   text: t("chat.markAsRead"),
+                  onPress: () => {
+                    if (!user || !chat) return;
+
+                    chats
+                      .filter((c) => c.id === chat.id)[0]
+                      .messages.filter(
+                        (m: Message) =>
+                          m.read === false && m.authorId !== user.id,
+                      )
+                      .map((m) => {
+                        m.read = true;
+                      });
+                    let newChats = [...chats];
+                    updateChats(newChats);
+                  },
                 },
-                {
-                  icon: (
-                    <MaterialIcons
-                      name="notification-important"
-                      size={26}
-                      color={colors.tint}
-                    />
-                  ),
-                  text: t("chat.notifications"),
-                },
-                {
-                  icon: <Entypo name="block" size={26} color={colors.tint} />,
-                  text: t("chat.blockUser"),
-                },
-                {
-                  icon: (
-                    <MaterialIcons
-                      name="report"
-                      size={26}
-                      color={colors.tint}
-                    />
-                  ),
-                  text: t("chat.reportUser"),
-                },
+                // {
+                //   icon: (
+                //     <MaterialIcons
+                //       name="notification-important"
+                //       size={26}
+                //       color={colors.tint}
+                //     />
+                //   ),
+                //   text: t("chat.notifications"),
+                // },
+                // {
+                //   icon: <Entypo name="block" size={26} color={colors.tint} />,
+                //   text: t("chat.blockUser"),
+                // },
+                // {
+                //   icon: (
+                //     <MaterialIcons
+                //       name="report"
+                //       size={26}
+                //       color={colors.tint}
+                //     />
+                //   ),
+                //   text: t("chat.reportUser"),
+                // },
                 {
                   icon: <Ionicons name="copy" size={26} color={colors.tint} />,
                   text: t("chat.copyId"),
+                  onPress: async() => {
+                    await Clipboard.setStringAsync(chat.id);
+                    ToastAndroid.show(t("chat.copied"), ToastAndroid.SHORT);
+                  },
                 },
                 {
                   icon: <MaterialIcons name="delete" size={26} color="red" />,

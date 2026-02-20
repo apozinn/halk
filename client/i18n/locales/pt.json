@@ -65,7 +65,8 @@
   "chat": {
     "typing": "Digitando...",
     "sendAMessageInputPlaceHolder": "Digite uma mensagem...",
-    "isImageMessage": "Foto"
+    "isImageMessage": "Foto",
+    "copied": "Copiado"
   },
   "message": {
     "reply": "Responder",

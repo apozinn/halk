@@ -21,6 +21,7 @@
     "expo-asset": "~12.0.8",
     "expo-blur": "~15.0.8",
     "expo-camera": "~17.0.10",
+    "expo-clipboard": "~8.0.8",
     "expo-constants": "~18.0.8",
     "expo-crypto": "~15.0.8",
     "expo-device": "~8.0.10",
