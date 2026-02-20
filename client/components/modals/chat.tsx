@@ -15,6 +15,7 @@ import { ChatsContext } from "@/contexts/chats";
 import { Chat } from "@/types";
 import { getColors } from "@/constants/Colors";
 import { ThemedText } from "../themed/ThemedText";
+import { router } from "expo-router";
 
 export default function ChatModal({
   chat,
@@ -104,6 +105,10 @@ export default function ChatModal({
                     />
                   ),
                   text: t("chat.profile"),
+                  onPress: () => { router.push({ 
+                    pathname: "chat/profile",
+                    params: { chatId: chat.id },
+                  }) },
                 },
                 {
                   icon: <AntDesign name="star" size={26} color={colors.tint} />,
