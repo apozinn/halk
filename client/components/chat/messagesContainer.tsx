@@ -1,51 +1,42 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { View, StyleSheet, Pressable, Image, FlatList } from "react-native";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  Image,
+  FlatList,
+  ListRenderItem,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "../themed/Themed";
-import { Chat, Message, User } from "@/types";
+import { Message } from "@/types";
 import { router } from "expo-router";
 import * as VideoThumbnails from "expo-video-thumbnails";
 
-interface MessagesContainerProps {
-  user: User;
-  chat: Chat;
-  colors: any;
-  setMessageModal: (message: Message) => void;
-}
-
-function getBubbleBorders(
+const getBubbleBorders = (
   itsMyMessage: boolean,
   prevSame: boolean,
-  nextSame: boolean
-) {
+  nextSame: boolean,
+) => {
   const radiusBig = 18;
   const radiusSmall = 6;
-
   if (itsMyMessage) {
     return {
-      borderTopRightRadius: prevSame && !nextSame ? radiusSmall : radiusBig,
-      borderBottomRightRadius: !prevSame && nextSame ? radiusSmall : radiusBig,
+      borderTopRightRadius: prevSame ? radiusSmall : radiusBig,
+      borderBottomRightRadius: nextSame ? radiusSmall : radiusBig,
     };
   }
-
   return {
-    borderTopLeftRadius: prevSame && !nextSame ? radiusSmall : radiusBig,
-    borderBottomLeftRadius: !prevSame && nextSame ? radiusSmall : radiusBig,
+    borderTopLeftRadius: prevSame ? radiusSmall : radiusBig,
+    borderBottomLeftRadius: nextSame ? radiusSmall : radiusBig,
   };
-}
+};
 
 interface MessageBubbleProps {
   message: Message;
-  index: number;
-  chat: Chat;
-  user: User;
+  itsMyMessage: boolean;
+  isPrevSame: boolean;
+  isNextSame: boolean;
   colors: any;
   setMessageModal: (message: Message) => void;
 }
@@ -53,77 +44,48 @@ interface MessageBubbleProps {
 const MessageBubble = memo(
   ({
     message,
-    index,
-    chat,
-    user,
+    itsMyMessage,
+    isPrevSame,
+    isNextSame,
     colors,
     setMessageModal,
   }: MessageBubbleProps) => {
     const [videoThumb, setVideoThumb] = useState<string | null>(null);
 
-    const itsMyMessage = message.authorId === user.id;
-
-    const prevMsg = chat.messages[index - 1];
-    const nextMsg = chat.messages[index + 1];
-
-    const previousMessageIsSameAuthor = prevMsg?.authorId === message.authorId;
-    const nextMessageIsSameAuthor = nextMsg?.authorId === message.authorId;
-
     const messageTime = useMemo(
       () => new Date(message.createdAt).toLocaleTimeString().slice(0, 5),
-      [message.createdAt]
+      [message.createdAt],
     );
 
     useEffect(() => {
       if (!message.video) return;
-
-      let active = true;
-
+      let isMounted = true;
       VideoThumbnails.getThumbnailAsync(message.video, {
         time: 1000,
-        quality: 0.8,
+        quality: 0.5,
       })
-        .then(({ uri }) => {
-          if (active) setVideoThumb(uri);
-        })
+        .then((thumb) => isMounted && setVideoThumb(thumb.uri))
         .catch(() => {});
-
       return () => {
-        active = false;
+        isMounted = false;
       };
     }, [message.video]);
 
-    const handlePress = useCallback(() => {
-      if (message.image) {
-        router.navigate({
-          pathname: "chat/imageView",
-          params: { image: message.image },
-        });
-      } else if (message.video) {
-        router.navigate({
-          pathname: "chat/videoView",
-          params: { video: message.video },
-        });
-      }
-    }, [message.image, message.video]);
-
-    const handleLongPress = useCallback(() => {
-      setMessageModal(message);
-    }, [message, setMessageModal]);
-
     const bubbleBorders = useMemo(
-      () =>
-        getBubbleBorders(
-          itsMyMessage,
-          previousMessageIsSameAuthor,
-          nextMessageIsSameAuthor
-        ),
-      [itsMyMessage, previousMessageIsSameAuthor, nextMessageIsSameAuthor]
+      () => getBubbleBorders(itsMyMessage, isPrevSame, isNextSame),
+      [itsMyMessage, isPrevSame, isNextSame],
     );
 
     return (
-      <View style={itsMyMessage ? styles.myMessage : styles.otherMessage}>
-        <View style={itsMyMessage ? styles.myMessageWrapper : undefined}>
+      <View
+        style={[
+          itsMyMessage ? styles.myMessage : styles.otherMessage,
+          { marginBottom: isNextSame ? 2 : 10 },
+        ]}
+      >
+        <View
+          style={itsMyMessage ? styles.myMessageWrapper : { maxWidth: "75%" }}
+        >
           <Pressable
             style={[
               styles.message,
@@ -134,8 +96,19 @@ const MessageBubble = memo(
                   : colors.otherUserMessageCard,
               },
             ]}
-            onPress={handlePress}
-            onLongPress={handleLongPress}
+            onPress={() => {
+              if (message.image)
+                router.navigate({
+                  pathname: "chat/imageView",
+                  params: { image: message.image },
+                });
+              if (message.video)
+                router.navigate({
+                  pathname: "chat/videoView",
+                  params: { video: message.video },
+                });
+            }}
+            onLongPress={() => setMessageModal(message)}
           >
             {message.image && (
               <Image
@@ -143,14 +116,12 @@ const MessageBubble = memo(
                 style={styles.messageImage}
               />
             )}
-
             {message.video && (
               <View style={styles.videoContainer}>
                 {!!videoThumb && (
                   <Image
                     source={{ uri: videoThumb }}
                     style={styles.videoThumb}
-                    resizeMode="contain"
                   />
                 )}
                 <View style={styles.playOverlay}>
@@ -158,7 +129,6 @@ const MessageBubble = memo(
                 </View>
               </View>
             )}
-
             {!!message.content && (
               <Text
                 style={{
@@ -170,7 +140,7 @@ const MessageBubble = memo(
             )}
           </Pressable>
 
-          {!nextMessageIsSameAuthor && (
+          {!isNextSame && (
             <View
               style={[
                 styles.messageProps,
@@ -178,11 +148,10 @@ const MessageBubble = memo(
               ]}
             >
               <Text style={styles.messageCreatedAt}>{messageTime}</Text>
-
               {itsMyMessage && (
                 <Ionicons
                   name="checkmark-done"
-                  size={18}
+                  size={16}
                   color={message.read ? "#04f500" : "gray"}
                 />
               )}
@@ -191,7 +160,15 @@ const MessageBubble = memo(
         </View>
       </View>
     );
-  }
+  },
+  (prev, next) => {
+    return (
+      prev.message.id === next.message.id &&
+      prev.message.read === next.message.read &&
+      prev.isPrevSame === next.isPrevSame &&
+      prev.isNextSame === next.isNextSame
+    );
+  },
 );
 
 export default function MessagesContainer({
@@ -199,97 +176,74 @@ export default function MessagesContainer({
   chat,
   colors,
   setMessageModal,
-}: MessagesContainerProps) {
-  const listRef = useRef<FlatList>(null);
+}: any) {
+  const invertedData = useMemo(
+    () => [...chat.messages].reverse(),
+    [chat.messages],
+  );
 
-  const renderItem = useCallback(
-    ({ item, index }: { item: Message; index: number }) => (
-      <MessageBubble
-        message={item}
-        index={index}
-        chat={chat}
-        user={user}
-        colors={colors}
-        setMessageModal={setMessageModal}
-      />
-    ),
-    [chat, user, colors, setMessageModal]
+  const renderItem: ListRenderItem<Message> = useCallback(
+    ({ item, index }) => {
+      const isPrevSame = invertedData[index + 1]?.authorId === item.authorId;
+      const isNextSame = invertedData[index - 1]?.authorId === item.authorId;
+
+      return (
+        <MessageBubble
+          message={item}
+          itsMyMessage={item.authorId === user.id}
+          isPrevSame={isPrevSame}
+          isNextSame={isNextSame}
+          colors={colors}
+          setMessageModal={setMessageModal}
+        />
+      );
+    },
+    [invertedData, user.id, colors, setMessageModal],
   );
 
   return (
     <FlatList
-      ref={listRef}
-      data={chat.messages}
+      data={invertedData}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
+      inverted
       contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
+      removeClippedSubviews={true}
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
+      windowSize={5}
       keyboardShouldPersistTaps="handled"
-      initialNumToRender={12}
-      windowSize={7}
-      removeClippedSubviews
-      onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: true })}
     />
   );
 }
 
 const styles = StyleSheet.create({
   content: {
-    flexGrow: 1,
-    justifyContent: "flex-end",
     paddingHorizontal: 8,
-    paddingBottom: 10,
+    paddingTop: 10,
   },
-  myMessage: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-  },
-  myMessageWrapper: {
-    maxWidth: "75%",
-  },
-  otherMessage: {
-    alignSelf: "flex-start",
-    maxWidth: "75%",
-  },
-  message: {
-    padding: 7,
-    borderRadius: 20,
-    marginBottom: 2,
-    flexWrap: "wrap",
-  },
-  messageProps: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  messageCreatedAt: {
-    fontSize: 10,
-    marginHorizontal: 5,
-    marginTop: 5,
-  },
-  messageImage: {
-    width: 240,
-    height: 300,
-    borderRadius: 20,
-  },
+  myMessage: { flexDirection: "row", justifyContent: "flex-end" },
+  myMessageWrapper: { maxWidth: "75%" },
+  otherMessage: { alignSelf: "flex-start" },
+  message: { padding: 8, borderRadius: 18 },
+  messageProps: { flexDirection: "row", alignItems: "center", marginTop: 2 },
+  messageCreatedAt: { fontSize: 10, marginHorizontal: 4, color: "gray" },
+  messageImage: { width: 240, height: 300, borderRadius: 12 },
   videoContainer: {
     width: 240,
     height: 300,
-    borderRadius: 20,
-    overflow: "hidden",
+    borderRadius: 12,
     backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
+    overflow: "hidden",
   },
-  videoThumb: {
-    width: "100%",
-    height: "100%",
-  },
+  videoThumb: { width: "100%", height: "100%", position: "absolute" },
   playOverlay: {
-    position: "absolute",
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: "rgba(0,0,0,0.55)",
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "rgba(0,0,0,0.4)",
     justifyContent: "center",
     alignItems: "center",
   },
