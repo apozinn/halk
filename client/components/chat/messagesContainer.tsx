@@ -202,10 +202,6 @@ export default function MessagesContainer({
 }: MessagesContainerProps) {
   const listRef = useRef<FlatList>(null);
 
-  useEffect(() => {
-    listRef.current?.scrollToEnd({ animated: true });
-  }, [chat.messages.length]);
-
   const renderItem = useCallback(
     ({ item, index }: { item: Message; index: number }) => (
       <MessageBubble
@@ -232,6 +228,7 @@ export default function MessagesContainer({
       initialNumToRender={12}
       windowSize={7}
       removeClippedSubviews
+      onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: true })}
     />
   );
 }
