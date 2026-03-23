@@ -1,44 +1,56 @@
-# Halk
+<div align="center">
 
-Halk is a **real-time chat application template** built with **React Native (Expo)** on the client side and **NestJS** on the backend.  
-It is designed for learning, experimentation, or as a foundation for your own chat or messaging app.
+<br />
 
-> ⚠️ **Note**: This template is *not production-ready*. It lacks many production concerns such as security hardening, scaling, and full error handling.
+```
+██╗  ██╗ █████╗ ██╗     ██╗  ██╗
+██║  ██║██╔══██╗██║     ██║ ██╔╝
+███████║███████║██║     █████╔╝
+██╔══██║██╔══██║██║     ██╔═██╗
+██║  ██║██║  ██║███████╗██║  ██╗
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+```
 
----
+**A full-stack real-time messaging template.**  
+React Native · Expo · NestJS · WebSockets · TypeScript
 
-## Table of Contents
+<br />
 
-1. [Features](#features)  
-2. [Screenshot](#screenshot)  
-3. [Project Structure](#project-structure)  
-4. [Prerequisites](#prerequisites)  
-5. [Installation & Setup](#installation--setup)  
-6. [Running the App](#running-the-app)  
-7. [Environment Variables](#environment-variables)  
-8. [Roadmap & Next Steps](#roadmap--next-steps)  
-9. [License](#license)  
+![License](https://img.shields.io/badge/license-MIT-white?style=flat-square)
+![Node](https://img.shields.io/badge/node-%3E%3D18.x-white?style=flat-square)
+![TypeScript](https://img.shields.io/badge/typescript-5.x-white?style=flat-square)
+![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20Android-white?style=flat-square)
 
----
+<br />
 
-## Features
-
-- 📱 Cross-platform mobile using React Native + Expo  
-- ⚡ Real-time messaging via WebSockets  
-- 🏗 Modular backend architecture using NestJS  
-- 🛠 Entire stack written in TypeScript  
-- 🔄 Basic chat flow scaffolding (sending/receiving messages)  
+</div>
 
 ---
 
-## Screenshot
+## Overview
 
-Here is a screenshot of the chat UI when running in Expo:
+Halk is a developer-oriented template for building real-time chat applications. It provides a working foundation — mobile client and backend server — so you can skip the boilerplate and focus on shipping your product.
+
+The client is built with **React Native** and **Expo**, enabling cross-platform deployment to iOS and Android from a single codebase. The server uses **NestJS**, a structured and opinionated Node.js framework that scales well as your application grows. Communication between client and server is handled via **WebSockets**, enabling low-latency, bidirectional message delivery.
+
+> This template is intended as a development starting point. It is not hardened for production use. Security, scaling, and fault tolerance are left to the implementer.
+
+## Preview
 
 <p align="center">
-  <img src="https://camo.githubusercontent.com/d40f10f4e9f4556abc5bc36e51a1810beb9525c81d9d1220795a82b39ee01c39/68747470733a2f2f692e696d6775722e636f6d2f3338634e646b612e706e67" alt="Halk Chat Screenshot" width="300"/>
+  <img src="https://i.imgur.com/38cNdka.png" alt="Halk UI Preview" width="300" style="border-radius: 5px" />
 </p>
 
+---
+
+## Stack
+
+| Layer               | Technology              |
+| ------------------- | ----------------------- |
+| Mobile Client       | React Native, Expo      |
+| Backend Server      | NestJS                  |
+| Real-time Transport | WebSockets (Socket.IO)  |
+| Language            | TypeScript (full-stack) |
 
 ---
 
@@ -46,31 +58,29 @@ Here is a screenshot of the chat UI when running in Expo:
 
 ```
 halk/
-├── client/     # React Native / Expo mobile app
-└── server/     # NestJS backend, WebSocket gateway, APIs, etc.
+├── client/          # React Native / Expo application
+└── server/          # NestJS backend, WebSocket gateway, REST APIs
 ```
 
-Each folder is mostly self-contained, making it easier to work on one side without interfering with the other.
+Each workspace is self-contained with its own `package.json` and dependencies. You can develop, test, and deploy them independently.
 
 ---
 
 ## Prerequisites
 
-Before you begin, make sure you have:
+Ensure the following are installed before proceeding:
 
-- **Node.js** (recommended version: 18.x or newer)  
-- **npm** or **yarn**  
-- **Expo CLI**: `npm install -g expo-cli`  
-- **NestJS CLI** (optional but useful): `npm install -g @nestjs/cli`  
-- **Expo Go app** installed on a real device (iOS or Android), or an emulator/simulator  
+- **Node.js** 18.x or later
+- **npm** or **yarn**
+- **Expo CLI** — `npm install -g expo-cli`
+- **NestJS CLI** _(optional)_ — `npm install -g @nestjs/cli`
+- **Expo Go** installed on a physical device, or a configured iOS/Android emulator
 
 ---
 
-## Installation & Setup
+## Getting Started
 
-Follow these steps to get the project up and running:
-
-### 1. Clone repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/apozinn/halk.git
@@ -79,105 +89,47 @@ cd halk
 
 ### 2. Install dependencies
 
-#### Client
-
 ```bash
-cd client
-npm install
+# Client
+cd client && npm install
+
+# Server
+cd ../server && npm install
 ```
 
-or if you prefer yarn:
+### 3. Configure environment variables
 
-```bash
-yarn install
-```
+Create `.env` files in each workspace based on the examples below.
 
-#### Server
-
-```bash
-cd ../server
-npm install
-```
-
-or with yarn:
-
-```bash
-yarn install
-```
-
----
-
-## Running the App
-
-You can run both client and server in development mode side by side.
-
-### 1. Start the backend (NestJS)
-
-```bash
-cd server
-npm run start:dev
-```
-
-This will run the backend typically on `http://localhost:3000`.
-
-### 2. Start the client (Expo)
-
-From the **client** folder:
-
-```bash
-cd ../client
-npm start
-```
-
-This command will:
-
-- Open the Expo developer tools in the browser  
-- Show a QR code you can scan with the Expo Go app  
-- Let you run on a simulator/emulator  
-
-Once launched, you should see a mobile UI similar to the screenshot.
-
----
-
-## Environment Variables
-
-You may want to configure settings via `.env` files in each folder.
-
-### server/.env (example)
+**`server/.env`**
 
 ```env
 PORT=3000
-# Backend port
-DATABASE_URL=MONGO_DB_URL
-# DB connection URL.
+DATABASE_URL=your_mongodb_connection_string
 ```
 
-### client/.env (example)
+**`client/.env`**
 
 ```env
 EXPO_PUBLIC_API_URL=http://localhost:3000
-# You may add other client-side config variables here
 ```
 
-Make sure the `EXPO_PUBLIC_API_URL` points to where your backend is running (e.g. `http://10.0.2.2:3000` or your LAN IP, if testing on a real device).
+When testing on a physical device, replace `localhost` with your machine's LAN IP address (e.g. `http://192.168.1.x:3000`). For Android emulators, use `http://10.0.2.2:3000`.
 
----
+### 4. Start the development servers
 
-## Roadmap & Next Steps
+```bash
+# Terminal 1 — Backend
+cd server && npm run start:dev
 
-Here are some ideas you or contributors can build next:
+# Terminal 2 — Client
+cd client && npm start
+```
 
-- [ ] Add **user authentication** (JWT, login/signup flows)  
-- [ ] Persist messages in a database (PostgreSQL, MongoDB, etc.)  
-- [ ] Enhance error handling and reconnection logic  
-- [ ] Support **multiple chat rooms**, group chats, private messages  
-- [ ] Deploy backend to a cloud provider (Heroku, AWS, DigitalOcean)  
-- [ ] Add offline support, message queueing, retry logic  
-- [ ] Write unit + integration tests for both client and server  
-- [ ] Secure the app: input validation, authorization, rate limiting  
+The backend will be available at `http://localhost:3000`. The Expo CLI will display a QR code — scan it with the Expo Go app to launch on your device, or press `i` / `a` to open in a simulator.
 
 ---
 
 ## License
 
-This project is licensed under the **MIT License**.  
+Released under the [MIT License](./LICENSE).
