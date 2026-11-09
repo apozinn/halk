@@ -1,0 +1,88 @@
+{
+  "expo": {
+    "name": "Halk",
+    "slug": "halk-realtime-messages",
+    "version": "0.1.0",
+    "owner": "apozinn",
+    "orientation": "portrait",
+    "icon": "./assets/images/halk.png",
+    "scheme": "halk",
+    "userInterfaceStyle": "automatic",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.apozinn.halk",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Halk needs access to your camera to take profile pictures and send images in chats.",
+        "NSPhotoLibraryUsageDescription": "Halk needs access to your photos to send images in chats.",
+        "NSUserTrackingUsageDescription": "Halk uses identifiers to personalize your experience and improve performance.",
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
+      }
+    },
+    "android": {
+      "package": "com.apozinn.halk",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.VIBRATE"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "notification": {
+        "icon": "./assets/images/halk.png",
+        "color": "#ffffff",
+        "defaultChannel": "messages"
+      }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Halk needs access to your photos to send images in chats."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/halk.png",
+          "resizeMode": "contain"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/halk.png",
+          "color": "#ffffff",
+          "defaultChannel": "messages",
+          "enableBackgroundRemoteNotifications": false
+        }
+      ],
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
+        }
+      ],
+      "expo-localization",
+      "expo-router"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "305b36d1-5f3a-47bf-a826-cbe8acb748e1"
+      }
+    }
+  }
+}

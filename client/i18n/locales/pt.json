@@ -1,0 +1,123 @@
+{
+  "welcome": {
+    "title": "Bem-vindo ao Halk!",
+    "description": "Leve, rápido e seguro, o Halk mantém seus bate-papos fluidos, simples e sempre acessíveis.",
+    "button": {
+      "signIn": "Entrar",
+      "signUp": "Cadastrar"
+    }
+  },
+  "common": {
+    "continue": "Continuar",
+    "bio": "Bio",
+    "name": "Nome",
+    "username": "Nome de usuário",
+    "password": "Senha",
+    "signIn": "Entrar",
+    "signUp": "Cadastrar"
+  },
+  "errors": {
+    "uploadingImage": "Erro ao enviar imagem. Tente novamente.",
+    "waitAvatarUpload": "Aguarde o envio do avatar antes de continuar.",
+    "fillRequiredFields": "Preencha os campos obrigatórios.",
+    "unexpected": "Ocorreu um erro inesperado. Tente novamente mais tarde."
+  },
+  "createProfile": {
+    "title": "Criar Perfil",
+    "chooseAvatar": "Escolher avatar",
+    "uploading": "Enviando...",
+    "enterName": "Digite seu nome",
+    "enterUsername": "Digite seu nome de usuário",
+    "writeBio": "Escreva uma breve bio"
+  },
+  "settings": {
+    "general": "Geral",
+    "setStatus": "Definir status",
+    "profile": "Perfil",
+    "editProfile": "Editar perfil",
+    "privacySecurity": "Privacidade e segurança",
+    "app": "Aplicativo",
+    "chats": "Conversas",
+    "language": "Idioma",
+    "storage": "Armazenamento",
+    "notifications": "Notificações",
+    "appearance": "Aparência",
+    "support": "Suporte",
+    "supportHelp": "Ajuda e suporte",
+    "report": "Reportar um problema",
+    "acknowledgements": "Agradecimentos",
+    "account": "Conta",
+    "logout": "Sair",
+    "switchAccount": "Trocar de conta",
+    "updates": "Atualizações",
+    "whatsNew": "O que há de novo",
+    "developer": "Desenvolvedor",
+    "sourceCode": "Código-fonte",
+    "licenses": "Licenças",
+    "debugLogs": "Logs de depuração",
+    "clientInfo": "Informações do cliente",
+    "apiInfo": "Informações da API"
+  },
+  "notFound": {
+    "title": "Esta tela não existe.",
+    "goHome": "Ir para a tela inicial!"
+  },
+  "chat": {
+    "typing": "Digitando...",
+    "sendAMessageInputPlaceHolder": "Digite uma mensagem...",
+    "isImageMessage": "Foto",
+    "copied": "Copiado"
+  },
+  "message": {
+    "reply": "Responder",
+    "delete_message": "Apagar mensagem",
+    "pin_message": "Fixar mensagem",
+    "share": "Compartilhar",
+    "react": "Reagir à mensagem",
+    "copy": "Copiar conteúdo",
+    "report": "Denunciar"
+  },
+  "newChat": {
+    "searchPlaceholder": "Buscar usuário...",
+    "emptyMessage": "Pesquise por um usuário para iniciar uma conversa.",
+    "noResults": "Nenhum usuário encontrado com esse nome."
+  },
+  "errorBoundary": {
+    "title": "Ocorreu um erro",
+    "message": "Algo inesperado aconteceu. Por favor, tente novamente.",
+    "tryAgain": "Tentar novamente"
+  },
+  "tabs": {
+    "titles": {
+      "chats": "Conversas",
+      "calls": "Chamadas",
+      "settings": "Configurações"
+    }
+  },
+  "camera": {
+    "permissionDenied": "Permissão da câmera negada. Você precisa conceder acesso para continuar.",
+    "grantPermission": "Conceder permissão",
+    "photoTaken": "Foto capturada com sucesso!",
+    "takeAnother": "Tirar outra foto",
+    "noImage": "Nenhuma imagem capturada.",
+    "error": "Erro ao capturar imagem. Tente novamente."
+  },
+  "selectChatModal": {
+    "title": "Selecione um chat"
+  },
+  "calls": {
+    "recent": "Recentes",
+    "newCall": "Nova chamada",
+    "newCallDescription": "Selecione um contato para iniciar uma chamada."
+  },
+  "profile": {
+    "bio": "Bio",
+    "name": "Nome",
+    "username": "Username",
+    "avatar": "Avatar",
+    "edit": "Edit"
+  },
+  "homeMenuOptions": {
+    "settings": "Configurações"
+  }
+}
