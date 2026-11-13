@@ -59,21 +59,20 @@ export class UserController {
 
   @Post('/searchUser')
   async searchUser(@Body() body: any) {
-    const { userId, search } = body;
-    if (!search || !search.trim().length) throw new BadRequestException('Search query is required.');
-
+    const { searchString } = body;
+    if (!searchString) throw new BadRequestException('Search query is required.');
+    
     const users = await User.find({
-      id: { $ne: userId },
       $or: [
-        { 'profile.username': { $regex: search, $options: 'i' } },
-        { 'profile.name': { $regex: search, $options: 'i' } },
+      { 'id': { $regex: searchString, $options: 'i' } },
+        { 'profile.username': { $regex: searchString, $options: 'i' } },
+        { 'profile.name': { $regex: searchString, $options: 'i' } },
       ],
     }).lean();
 
     return users.map((u) => ({
       id: u.id,
-      profile: u.profile,
-      following: u.following,
+      profile: u.profile
     }));
   }
 

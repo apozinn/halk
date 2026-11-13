@@ -21,9 +21,11 @@ export default function ChatContainer({ chat }: { chat: Chat }) {
   const [visible, setVisible] = useState(false);
 
   const lastMessage = chat?.messages?.at(-1) as Message;
-  const unreadMessagesCount = chat.messages.filter(
+  let unreadMessagesCount = chat.messages.filter(
     (m) => !m.read && m.authorId !== user?.id
   ).length;
+  
+  if(lastMessage.authorId == user?.id) unreadMessagesCount = 0;
 
   const open = () => setVisible(true);
 

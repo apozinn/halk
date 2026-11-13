@@ -1,8 +1,8 @@
 import { DefaultTheme, DarkTheme } from "@react-navigation/native";
 import useColorScheme from "../hooks/useColorScheme";
 
-const tintColorLight = "#19dcdc";
-const tintColorDark = "#19dcdc";
+const tintColorLight = "#07b7e8";
+const tintColorDark = "#07b7e8";
 
 const colors = {
   light: {
@@ -13,7 +13,7 @@ const colors = {
     tabIconSelected: tintColorLight,
     scale1: "#F2F2F7",
     secondary: "#E5E5EA",
-    appColor: "#007AFF",
+    appColor: "#00a2ff",
     icon: "#6C6C70",
     border: "#C7C7CC",
     messagesContainer: "#f3f3f3ff",

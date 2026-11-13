@@ -7,6 +7,7 @@ import { saveChatImage } from "@/utils/saveChatImage";
 import { saveChatVideo } from "@/utils/saveChatVideo";
 import SendNotification from "@/notifications/sendNotification";
 import { usePathname } from "expo-router";
+import { searchUser } from "@/middleware/api";
 
 export default function SocketListener() {
   const { user, updateUser } = useContext(UserContext);
@@ -32,13 +33,30 @@ export default function SocketListener() {
     if (!socketController.isConnected()) socketController.connect();
 
     socketController.on("receiveMessage", async (message: Message) => {
-      const chatIndex = chats.findIndex((c) => c.id === message.chatId);
-      if (chatIndex === -1) return;
+      let chatIndex = chats.findIndex((c) => c.id === message.chatId);
+      let updatedChats = [...chats];
+      let chat = chats[chatIndex];
+      
+      if (chatIndex === -1) {
+          let authorObj = await searchUser(message.authorId);
+          if(authorObj.length > 0) authorObj = authorObj[0];
+          
+        if(!authorObj.id) return;
+          
+          let newChatObj = {
+              id: message.chatId,
+              user: { id: authorObj.id, profile: authorObj.profile },
+              messages: []
+          };
+          
+          updatedChats.push(newChatObj);
+          chat = newChatObj;
+          chatIndex = updatedChats.findIndex((c) => c.id === message.chatId);
 
-      const chat = chats[chatIndex];
+      } 
+      
       if (chat.messages.some((m) => m.id === message.id)) return;
-
-      const updatedChats = [...chats];
+      
       const newMessage = { ...message };
 
       if (newMessage.image) {

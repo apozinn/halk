@@ -65,10 +65,10 @@ export async function createProfile(profile: Record<string, any>) {
   });
 }
 
-export async function searchUser(userId: string, search: string) {
+export async function searchUser(searchString: string) {
   return request("/user/searchUser", {
     method: "POST",
     headers: DEFAULT_HEADERS,
-    body: JSON.stringify({ userId, search }),
+    body: JSON.stringify({ searchString }),
   });
 }

@@ -32,7 +32,7 @@ export default function NewChat() {
   useEffect(() => {
     if (!user) return;
     if (search.trim()) {
-      searchUser(user.id, search).then((data) => {
+      searchUser(search).then((data) => {
         setResults(data || []);
       });
     } else {

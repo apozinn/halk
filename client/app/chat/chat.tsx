@@ -73,7 +73,21 @@ export default function ChatScreen() {
 
     currentSocketConnection.on("userTyping", handleTyping);
     currentSocketConnection.on("verifyIfUserIsOnline", handleOnline);
+    
+    let unreadMessages = chat.messages.filter((m) => m.authorId !== user.id && !m.read);
+    if(unreadMessages.length > 0) {
+             const updatedChats = chats.map((c) => {
+        if(c.id === chat.id) {
+          c.messages.filter((m) => m.authorId !== user.id && !m.read).map((m) => m.read = true);
+        }
 
+        return c;
+      }
+      );
+
+      updateChats(updatedChats);
+    }
+    
     return () => {
       currentSocketConnection.off("userTyping", handleTyping);
       currentSocketConnection.off("verifyIfUserIsOnline", handleOnline);
